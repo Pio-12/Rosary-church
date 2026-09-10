@@ -19,6 +19,7 @@ type BibleVerse = {
 };
 
 type BibleChapter = {
+  chapter: number | string;
   verses: BibleVerse[];
 };
 
