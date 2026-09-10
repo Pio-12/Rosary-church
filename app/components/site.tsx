@@ -3,37 +3,34 @@
 import Link from "next/link";
 import {
   Menu,
+  X,
   MapPin,
   Phone,
   Mail,
   ArrowRight,
-  X,
 } from "lucide-react";
 import { useState } from "react";
 
 const links = [
   ["Home", "/"],
   ["About", "/about"],
-  ["History", "/history"],
   ["Mass Timings", "/mass-timings"],
   ["Readings", "/readings"],
   ["Events", "/events"],
   ["Gallery", "/gallery"],
-  ["Virtual Tour", "/virtual-tour"],
   ["Contact", "/contact"],
 ];
-
-/* =====================================================
-   HEADER
-===================================================== */
 
 export function Header() {
   const [open, setOpen] = useState(false);
 
+  const closeMenu = () => {
+    setOpen(false);
+  };
+
   return (
     <>
       {/* TOP BAR */}
-
       <div className="topbar">
         <div className="container">
           A living heritage of faith, hope and love in Madurai
@@ -41,21 +38,16 @@ export function Header() {
       </div>
 
       {/* HEADER */}
-
       <header className="header">
-
         <div className="container nav">
 
-          {/* BRAND */}
-
+          {/* LOGO */}
           <Link
             className="brand"
             href="/"
-            onClick={() => setOpen(false)}
+            onClick={closeMenu}
           >
-            <span className="brand-mark">
-              ✝
-            </span>
+            <span className="brand-mark">✝</span>
 
             <span className="brand-copy">
               Our Lady of Holy Rosary Church
@@ -63,186 +55,198 @@ export function Header() {
             </span>
           </Link>
 
-          {/* DESKTOP NAVIGATION */}
-
-          <nav
-            className={`desktop-links ${
-              open ? "open" : ""
-            }`}
-          >
-
-            {links.map(
-              ([label, href]) => (
-                <Link
-                  key={href}
-                  href={href}
-                  onClick={() =>
-                    setOpen(false)
-                  }
-                >
-                  {label}
-                </Link>
-              )
-            )}
-
+          {/* =========================
+              DESKTOP NAVIGATION
+             ========================= */}
+          <nav className="desktop-nav">
+            {links.map(([label, href]) => (
+              <Link key={href} href={href}>
+                {label}
+              </Link>
+            ))}
           </nav>
 
-          {/* DONATE */}
-
+          {/* DESKTOP DONATE */}
           <Link
-            className="button nav-donate"
+            className="button desktop-donate"
             href="/donations"
-            onClick={() =>
-              setOpen(false)
-            }
           >
             Donate
           </Link>
 
-          {/* MOBILE MENU */}
-
+          {/* =========================
+              MOBILE MENU BUTTON
+             ========================= */}
           <button
             className="mobile-toggle"
-            aria-label={
-              open
-                ? "Close navigation"
-                : "Open navigation"
-            }
+            type="button"
+            aria-label={open ? "Close navigation" : "Open navigation"}
             aria-expanded={open}
-            onClick={() =>
-              setOpen(!open)
-            }
+            onClick={() => setOpen(!open)}
           >
-            {open ? (
-              <X size={23} />
-            ) : (
-              <Menu size={23} />
-            )}
+            {open ? <X size={24} /> : <Menu size={24} />}
           </button>
+        </div>
+      </header>
 
+      {/* =========================
+          MOBILE BACKDROP
+         ========================= */}
+      <div
+        className={`mobile-backdrop ${
+          open ? "mobile-backdrop-visible" : ""
+        }`}
+        onClick={closeMenu}
+      />
+
+      {/* =========================
+          MOBILE SIDE DRAWER
+         ========================= */}
+      <aside
+        className={`mobile-drawer ${
+          open ? "mobile-drawer-open" : ""
+        }`}
+      >
+        {/* DRAWER HEADER */}
+        <div className="mobile-drawer-header">
+          <div>
+            <span className="mobile-drawer-eyebrow">
+              Our Church
+            </span>
+
+            <span className="mobile-drawer-title">
+              Navigation
+            </span>
+          </div>
+
+          <button
+            className="mobile-close"
+            type="button"
+            onClick={closeMenu}
+            aria-label="Close navigation"
+          >
+            <X size={22} />
+          </button>
         </div>
 
-      </header>
+        {/* LINKS */}
+        <nav className="mobile-nav">
+          {links.map(([label, href], index) => (
+            <Link
+              key={href}
+              href={href}
+              onClick={closeMenu}
+              style={
+                {
+                  "--mobile-delay": `${index * 70}ms`,
+                } as React.CSSProperties
+              }
+            >
+              <span>{label}</span>
+
+              <ArrowRight size={17} />
+            </Link>
+          ))}
+        </nav>
+
+        {/* DONATE */}
+        <Link
+          className="mobile-donate"
+          href="/donations"
+          onClick={closeMenu}
+        >
+          <span>Support Our Church</span>
+          <ArrowRight size={16} />
+        </Link>
+
+        {/* DECORATIVE CROSS */}
+        <div className="drawer-cross">✝</div>
+      </aside>
     </>
   );
 }
 
-/* =====================================================
+/* =========================================================
    FOOTER
-===================================================== */
+   ========================================================= */
 
 export function Footer() {
   return (
     <footer className="footer">
-
       <div className="container">
-
         <div className="footer-grid">
 
-          {/* CHURCH */}
-
           <div>
-
             <div className="brand">
-
-              <span className="brand-mark">
-                ✝
-              </span>
+              <span className="brand-mark">✝</span>
 
               <span
                 className="brand-copy"
-                style={{
-                  color: "#f8eadf",
-                }}
+                style={{ color: "#f8eadf" }}
               >
                 Our Lady of Holy Rosary Church
                 <span>Madurai</span>
               </span>
-
             </div>
 
             <p>
-              For more than four centuries,
-              a place of prayer, community and
-              enduring faith.
+              For more than four centuries, a place of prayer,
+              community and enduring faith.
             </p>
-
           </div>
 
-          {/* QUICK LINKS */}
-
           <div>
-
-            <h3>
-              Quick Links
-            </h3>
+            <h3>Quick Links</h3>
 
             <div className="footer-links">
-
-              {links
-                .slice(1)
-                .map(
-                  ([label, href]) => (
-                    <Link
-                      key={href}
-                      href={href}
-                    >
-                      {label}
-                    </Link>
-                  )
-                )}
-
+              {links.slice(1).map(([label, href]) => (
+                <Link key={href} href={href}>
+                  {label}
+                </Link>
+              ))}
             </div>
-
           </div>
-
-          {/* VISIT US */}
 
           <div>
+            <h3>Visit Us</h3>
 
-            <h3>
-              Visit Us
-            </h3>
-
-            <p>
+            <div className="visit-item">
               <MapPin size={13} />
-              Town Hall Road
-              <br />
-              Madurai, Tamil Nadu
-              <br />
-              625 001
-            </p>
 
-            <p>
+              <p>
+                Town Hall Road
+                <br />
+                Madurai, Tamil Nadu
+              </p>
+            </div>
+
+            <div className="visit-item">
               <Phone size={13} />
-              0452-2343490
-            </p>
 
-            <p>
+              <p>0452-2343490</p>
+            </div>
+
+            <div className="visit-item">
               <Mail size={13} />
-              Holy Rosary Church
-            </p>
 
+              <p>Contact the parish</p>
+            </div>
           </div>
 
         </div>
 
-        {/* COPYRIGHT */}
-
         <div className="copyright">
-          © 2026 Our Lady of Holy Rosary Church,
-          Madurai. All rights reserved.
+          © 2026 Our Lady of Holy Rosary Church, Madurai.
+          All rights reserved.
         </div>
-
       </div>
-
     </footer>
   );
 }
 
-/* =====================================================
+/* =========================================================
    PAGE HERO
-===================================================== */
+   ========================================================= */
 
 export function PageHero({
   title,
@@ -253,7 +257,6 @@ export function PageHero({
 }) {
   return (
     <section className="page-hero">
-
       <div className="container">
 
         <div className="eyebrow">
@@ -265,27 +268,16 @@ export function PageHero({
         </h1>
 
         <div className="breadcrumbs">
-
-          <Link href="/">
-            Home
-          </Link>
+          Home
 
           <ArrowRight
             size={12}
-            style={{
-              verticalAlign:
-                "middle",
-              margin:
-                "0 6px",
-            }}
           />
 
           {crumb}
-
         </div>
 
       </div>
-
     </section>
   );
 }

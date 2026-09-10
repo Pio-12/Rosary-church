@@ -4,13 +4,14 @@ export async function getSiteSettings() {
   const { data, error } = await supabase
     .from("site_settings")
     .select("*")
-    .limit(1)
-    .single();
+    .limit(1);
 
   if (error) {
-    console.error("Supabase site settings error:", error);
+    console.error("Supabase site settings error:", error.message);
+    console.error("Details:", error.details);
+    console.error("Hint:", error.hint);
     return null;
   }
 
-  return data;
+  return data?.[0] ?? null;
 }
