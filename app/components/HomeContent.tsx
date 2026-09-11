@@ -10,6 +10,7 @@ import {
 import { useLanguage } from "./LanguageProvider";
 import { translations } from "@/lib/supabase/translations";
 import ScrollReveal from "@/app/ScrollReveal";
+import AnimatedGallery from "./AnimatedGallery";
 
 type SiteSettings = {
   hero_image_url?: string | null;
@@ -186,7 +187,7 @@ export default function HomeContent({
           </div>
         </div>
       </section>
-
+<AnimatedGallery/> 
       {/* =====================================================
           STATS
          ===================================================== */}
