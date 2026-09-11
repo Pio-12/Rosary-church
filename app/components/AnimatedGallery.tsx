@@ -1,5 +1,8 @@
 "use client";
 
+import { translations } from "@/lib/supabase/translations";
+import { useLanguage } from "./LanguageProvider";
+
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 
 const galleryImages = [
@@ -26,21 +29,24 @@ const galleryImages = [
 ];
 
 export default function AnimatedGallery() {
+  const { language } = useLanguage();
+
+  const t = translations[language];
+
   return (
     <section className="animated-gallery-section">
       <div className="container">
         <div className="gallery-heading">
           <span className="section-eyebrow">
-            Our Church in Pictures
+            {t.home.gallery.eyebrow}
           </span>
 
           <h2 className="serif">
-            Moments of Faith and Community
+            {t.home.gallery.title}
           </h2>
 
           <p>
-            Explore the beauty, prayer, celebrations and memories
-            of our parish community.
+            {t.home.gallery.description}
           </p>
         </div>
 

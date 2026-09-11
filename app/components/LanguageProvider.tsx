@@ -13,9 +13,12 @@ export type Language = "en" | "ta";
 type LanguageContextType = {
   language: Language;
   setLanguage: (language: Language) => void;
+  toggleLanguage: () => void;
 };
 
-const LanguageContext = createContext<LanguageContextType | null>(null);
+const LanguageContext = createContext<LanguageContextType | undefined>(
+  undefined
+);
 
 export function LanguageProvider({
   children,
@@ -25,9 +28,7 @@ export function LanguageProvider({
   const [language, setLanguageState] = useState<Language>("en");
 
   useEffect(() => {
-    const savedLanguage = window.localStorage.getItem(
-      "church-language"
-    );
+    const savedLanguage = window.localStorage.getItem("church-language");
 
     if (savedLanguage === "en" || savedLanguage === "ta") {
       setLanguageState(savedLanguage);
@@ -36,14 +37,16 @@ export function LanguageProvider({
 
   useEffect(() => {
     document.documentElement.lang = language;
+    document.body.dataset.language = language;
   }, [language]);
 
   const setLanguage = (nextLanguage: Language) => {
     setLanguageState(nextLanguage);
-    window.localStorage.setItem(
-      "church-language",
-      nextLanguage
-    );
+    window.localStorage.setItem("church-language", nextLanguage);
+  };
+
+  const toggleLanguage = () => {
+    setLanguage(language === "en" ? "ta" : "en");
   };
 
   return (
@@ -51,6 +54,7 @@ export function LanguageProvider({
       value={{
         language,
         setLanguage,
+        toggleLanguage,
       }}
     >
       {children}
@@ -62,9 +66,7 @@ export function useLanguage() {
   const context = useContext(LanguageContext);
 
   if (!context) {
-    throw new Error(
-      "useLanguage must be used inside LanguageProvider"
-    );
+    throw new Error("useLanguage must be used inside LanguageProvider");
   }
 
   return context;

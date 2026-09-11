@@ -134,6 +134,13 @@ export const translations = {
         "Discover a community rooted in faith, prayer and service.",
       visitUs: "Visit Us",
       todaysReadings: "Today's Readings",
+
+      gallery: {
+        eyebrow: "Our Church in Pictures",
+        title: "Moments of Faith and Community",
+        description:
+          "Explore the beauty, prayer, celebrations and memories of our parish community.",
+      },
     },
   },
 
@@ -273,6 +280,13 @@ export const translations = {
         "நம்பிக்கை, ஜெபம் மற்றும் சேவையில் வேரூன்றிய சமூகத்தை அறிந்துகொள்ளுங்கள்.",
       visitUs: "எங்களைச் சந்திக்கவும்",
       todaysReadings: "இன்றைய வேதாகம வாசகங்கள்",
+
+      gallery: {
+        eyebrow: "படங்களில் எங்கள் திருச்சபை",
+        title: "நம்பிக்கையும் சமூகமும் நிறைந்த தருணங்கள்",
+        description:
+          "எங்கள் பங்குத் திருச்சபை சமூகத்தின் அழகு, ஜெபம், கொண்டாட்டங்கள் மற்றும் நினைவுகளை அனுபவியுங்கள்.",
+      },
     },
   },
 } as const;
