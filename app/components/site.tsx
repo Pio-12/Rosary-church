@@ -10,19 +10,51 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { useState } from "react";
+import { useLanguage } from "./LanguageProvider";
+import { translations } from "@/lib/supabase/translations";
 
 const links = [
-  ["Home", "/"],
-  ["About", "/about"],
-  ["Mass Timings", "/mass-timings"],
-  ["Readings", "/readings"],
-  ["Events", "/events"],
-  ["Gallery", "/gallery"],
-  ["Contact", "/contact"],
-];
+  ["home", "/"],
+  ["about", "/about"],
+  ["massTimings", "/mass-timings"],
+  ["readings", "/readings"],
+  ["events", "/events"],
+  ["gallery", "/gallery"],
+  ["prayerRequest", "/prayer-request"],
+  ["contact", "/contact"],
+] as const;
+const logoURL="https://ncedxbcsrcwuoailxsph.supabase.co/storage/v1/object/public/church-images/ChatGPT%20Image%20Sep%2011,%202026,%2009_33_49%20PM.png"
+function LanguageSwitcher() {
+  const { language, setLanguage } = useLanguage();
+
+  return (
+    <div className="language-switcher" aria-label="Language selection">
+      <button
+        type="button"
+        className={language === "en" ? "active" : ""}
+        onClick={() => setLanguage("en")}
+        aria-pressed={language === "en"}
+      >
+        English
+      </button>
+
+      <button
+        type="button"
+        className={language === "ta" ? "active" : ""}
+        onClick={() => setLanguage("ta")}
+        aria-pressed={language === "ta"}
+      >
+        தமிழ்
+      </button>
+    </div>
+  );
+}
 
 export function Header() {
   const [open, setOpen] = useState(false);
+  const { language } = useLanguage();
+
+  const t = translations[language];
 
   const closeMenu = () => {
     setOpen(false);
@@ -33,54 +65,61 @@ export function Header() {
       {/* TOP BAR */}
       <div className="topbar">
         <div className="container">
-          A living heritage of faith, hope and love in Madurai
+          {language === "ta"
+            ? "மதுரையின் இதயத்தில் நம்பிக்கை, எதிர்நோக்கு மற்றும் அன்பின் வாழும் பாரம்பரியம்"
+            : "A living heritage of faith, hope and love in Madurai"}
         </div>
       </div>
 
       {/* HEADER */}
       <header className="header">
         <div className="container nav">
-
           {/* LOGO */}
           <Link
             className="brand"
             href="/"
             onClick={closeMenu}
           >
-            <span className="brand-mark">✝</span>
+            <img
+  src={logoURL}
+  alt="Our Lady of Holy Rosary Church logo"
+  className="brand-logo"
+/>
 
             <span className="brand-copy">
-              Our Lady of Holy Rosary Church
-              <span>Madurai</span>
+              {t.common.churchName}
+              <span>{t.common.city}</span>
             </span>
           </Link>
 
-          {/* =========================
-              DESKTOP NAVIGATION
-             ========================= */}
+          {/* DESKTOP NAVIGATION */}
           <nav className="desktop-nav">
             {links.map(([label, href]) => (
               <Link key={href} href={href}>
-                {label}
+                {t.nav[label]}
               </Link>
             ))}
           </nav>
 
-          {/* DESKTOP DONATE */}
-          <Link
-            className="button desktop-donate"
-            href="/donations"
-          >
-            Donate
-          </Link>
+          {/* DESKTOP ACTIONS */}
+          <div className="desktop-actions">
+            <LanguageSwitcher />
 
-          {/* =========================
-              MOBILE MENU BUTTON
-             ========================= */}
+            <Link
+              className="button desktop-donate"
+              href="/donations"
+            >
+              {t.nav.donate}
+            </Link>
+          </div>
+
+          {/* MOBILE MENU BUTTON */}
           <button
             className="mobile-toggle"
             type="button"
-            aria-label={open ? "Close navigation" : "Open navigation"}
+            aria-label={
+              open ? "Close navigation" : "Open navigation"
+            }
             aria-expanded={open}
             onClick={() => setOpen(!open)}
           >
@@ -89,9 +128,7 @@ export function Header() {
         </div>
       </header>
 
-      {/* =========================
-          MOBILE BACKDROP
-         ========================= */}
+      {/* MOBILE BACKDROP */}
       <div
         className={`mobile-backdrop ${
           open ? "mobile-backdrop-visible" : ""
@@ -99,9 +136,7 @@ export function Header() {
         onClick={closeMenu}
       />
 
-      {/* =========================
-          MOBILE SIDE DRAWER
-         ========================= */}
+      {/* MOBILE SIDE DRAWER */}
       <aside
         className={`mobile-drawer ${
           open ? "mobile-drawer-open" : ""
@@ -111,11 +146,11 @@ export function Header() {
         <div className="mobile-drawer-header">
           <div>
             <span className="mobile-drawer-eyebrow">
-              Our Church
+              {t.nav.ourChurch}
             </span>
 
             <span className="mobile-drawer-title">
-              Navigation
+              {t.nav.navigation}
             </span>
           </div>
 
@@ -128,6 +163,9 @@ export function Header() {
             <X size={22} />
           </button>
         </div>
+
+        {/* MOBILE LANGUAGE SWITCHER */}
+        <LanguageSwitcher />
 
         {/* LINKS */}
         <nav className="mobile-nav">
@@ -142,8 +180,7 @@ export function Header() {
                 } as React.CSSProperties
               }
             >
-              <span>{label}</span>
-
+              <span>{t.nav[label]}</span>
               <ArrowRight size={17} />
             </Link>
           ))}
@@ -155,7 +192,7 @@ export function Header() {
           href="/donations"
           onClick={closeMenu}
         >
-          <span>Support Our Church</span>
+          <span>{t.nav.supportChurch}</span>
           <ArrowRight size={16} />
         </Link>
 
@@ -171,11 +208,13 @@ export function Header() {
    ========================================================= */
 
 export function Footer() {
+  const { language } = useLanguage();
+  const t = translations[language];
+
   return (
     <footer className="footer">
       <div className="container">
         <div className="footer-grid">
-
           <div>
             <div className="brand">
               <span className="brand-mark">✝</span>
@@ -184,60 +223,55 @@ export function Footer() {
                 className="brand-copy"
                 style={{ color: "#f8eadf" }}
               >
-                Our Lady of Holy Rosary Church
-                <span>Madurai</span>
+                {t.common.churchName}
+                <span>{t.common.city}</span>
               </span>
             </div>
 
-            <p>
-              For more than four centuries, a place of prayer,
-              community and enduring faith.
-            </p>
+            <p>{t.footer.description}</p>
           </div>
 
           <div>
-            <h3>Quick Links</h3>
+            <h3>{t.footer.quickLinks}</h3>
 
             <div className="footer-links">
               {links.slice(1).map(([label, href]) => (
                 <Link key={href} href={href}>
-                  {label}
+                  {t.nav[label]}
                 </Link>
               ))}
             </div>
           </div>
 
           <div>
-            <h3>Visit Us</h3>
+            <h3>{t.footer.visitUs}</h3>
 
             <div className="visit-item">
               <MapPin size={13} />
 
               <p>
-                Town Hall Road
+                {t.footer.addressLine1}
                 <br />
-                Madurai, Tamil Nadu
+                {t.footer.addressLine2}
               </p>
             </div>
 
             <div className="visit-item">
               <Phone size={13} />
 
-              <p>0452-2343490</p>
+              <p>{t.footer.phone}</p>
             </div>
 
             <div className="visit-item">
               <Mail size={13} />
 
-              <p>Contact the parish</p>
+              <p>{t.footer.email}</p>
             </div>
           </div>
-
         </div>
 
         <div className="copyright">
-          © 2026 Our Lady of Holy Rosary Church, Madurai.
-          All rights reserved.
+          {t.footer.copyright}
         </div>
       </div>
     </footer>
@@ -255,28 +289,23 @@ export function PageHero({
   title: string;
   crumb: string;
 }) {
+  const { language } = useLanguage();
+  const t = translations[language];
+
   return (
     <section className="page-hero">
       <div className="container">
-
         <div className="eyebrow">
-          Our Lady of Holy Rosary Church
+          {t.pageHero.eyebrow}
         </div>
 
-        <h1 className="serif">
-          {title}
-        </h1>
+        <h1 className="serif">{title}</h1>
 
         <div className="breadcrumbs">
-          Home
-
-          <ArrowRight
-            size={12}
-          />
-
+          {t.pageHero.home}
+          <ArrowRight size={12} />
           {crumb}
         </div>
-
       </div>
     </section>
   );
