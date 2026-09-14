@@ -1,8 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { ExternalLink } from "lucide-react";
-import { PageHero } from "../components/site";
+import { useEffect, useMemo, useState } from "react";
+import {
+  ArrowRight,
+  ExternalLink,
+  ChevronLeft,
+  ChevronRight,
+  Images,
+  Sparkles,
+} from "lucide-react";
 import { getGalleryItems } from "../../lib/supabase/gallery";
 
 type GalleryItem = {
@@ -13,10 +19,32 @@ type GalleryItem = {
   category_id?: string | null;
 };
 
+const categories = [
+  "All",
+  "Church",
+  "Holy Mass",
+  "Feasts",
+  "Processions",
+  "Events",
+  "Community",
+];
+
+const stripWords = [
+  "FAITH",
+  "HOPE",
+  "LOVE",
+  "PRAYER",
+  "COMMUNITY",
+  "GRACE",
+  "TOGETHERNESS",
+];
+
 export default function Gallery() {
   const [photos, setPhotos] = useState<GalleryItem[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [loading, setLoading] = useState(true);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [selectedPhoto, setSelectedPhoto] = useState<GalleryItem | null>(null);
 
   useEffect(() => {
     async function loadGallery() {
@@ -29,54 +57,263 @@ export default function Gallery() {
     loadGallery();
   }, []);
 
-  const categories = [
-    "All",
-    "Church",
-    "Holy Mass",
-    "Feasts",
-    "Processions",
-    "Events",
-    "Community",
-  ];
+  /*
+   * Automatically change the top gallery image.
+   */
+  useEffect(() => {
+    if (photos.length <= 1) return;
 
-  const filteredPhotos =
-    selectedCategory === "All"
-      ? photos
-      : photos.filter(
-          (photo) =>
-            photo.title
-              ?.toLowerCase()
-              .includes(selectedCategory.toLowerCase()) ||
-            photo.description
-              ?.toLowerCase()
-              .includes(selectedCategory.toLowerCase())
-        );
+    const timer = setInterval(() => {
+      setActiveIndex((previous) => (previous + 1) % photos.length);
+    }, 5000);
+
+    return () => clearInterval(timer);
+  }, [photos.length]);
+
+  const activePhoto = photos[activeIndex];
+
+  const filteredPhotos = useMemo(() => {
+    if (selectedCategory === "All") {
+      return photos;
+    }
+
+    return photos.filter((photo) => {
+      const searchableText = `
+        ${photo.title || ""}
+        ${photo.description || ""}
+        ${photo.category_id || ""}
+      `.toLowerCase();
+
+      return searchableText.includes(selectedCategory.toLowerCase());
+    });
+  }, [photos, selectedCategory]);
+
+  const previousSlide = () => {
+    if (!photos.length) return;
+
+    setActiveIndex((previous) =>
+      previous === 0 ? photos.length - 1 : previous - 1
+    );
+  };
+
+  const nextSlide = () => {
+    if (!photos.length) return;
+
+    setActiveIndex((previous) => (previous + 1) % photos.length);
+  };
 
   return (
-    <main>
-      <PageHero title="Gallery" crumb="Gallery" />
+    <main className="gallery-page">
+      {/* =====================================================
+          1. TOP ANIMATED GALLERY SHOWCASE
+      ====================================================== */}
+      <section className="gallery-showcase">
+        <div className="gallery-showcase-background">
+          {activePhoto ? (
+            <img
+              key={activePhoto.id}
+              src={activePhoto.image_url}
+              alt={activePhoto.title || "Church gallery image"}
+            />
+          ) : (
+            <div className="gallery-showcase-placeholder" />
+          )}
+        </div>
 
-      {/* Photo Gallery */}
-      <section className="section">
+        <div className="gallery-showcase-overlay" />
+
+        <div className="container gallery-showcase-content">
+          <div className="gallery-showcase-copy">
+            <div className="eyebrow gallery-light-eyebrow">
+              <Sparkles size={14} />
+              Life of our parish
+            </div>
+
+            <h1 className="gallery-showcase-title">
+              Moments of
+              <span>Faith & Grace</span>
+            </h1>
+
+            <p>
+              A collection of beautiful memories, celebrations, prayers and
+              moments from Our Lady of Holy Rosary Church.
+            </p>
+
+            <a href="#church-pictures" className="button gallery-showcase-button">
+              Explore the gallery
+              <ArrowRight size={16} />
+            </a>
+          </div>
+
+          {activePhoto && (
+            <div className="showcase-caption">
+              <span className="showcase-caption-number">
+                {String(activeIndex + 1).padStart(2, "0")}
+              </span>
+
+              <div>
+                <strong>
+                  {activePhoto.title || "Moments of Grace"}
+                </strong>
+
+                <span>
+                  {activePhoto.description ||
+                    "Memories from our parish community"}
+                </span>
+              </div>
+            </div>
+          )}
+
+          <div className="showcase-controls">
+            <button
+              type="button"
+              onClick={previousSlide}
+              aria-label="Previous image"
+            >
+              <ChevronLeft size={20} />
+            </button>
+
+            <div className="showcase-dots">
+              {photos.slice(0, 8).map((photo, index) => (
+                <button
+                  key={photo.id}
+                  type="button"
+                  className={activeIndex === index ? "active" : ""}
+                  onClick={() => setActiveIndex(index)}
+                  aria-label={`Show image ${index + 1}`}
+                />
+              ))}
+            </div>
+
+            <button
+              type="button"
+              onClick={nextSlide}
+              aria-label="Next image"
+            >
+              <ChevronRight size={20} />
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* =====================================================
+          2. MOVING TEXT STRIP
+      ====================================================== */}
+      <section className="gallery-marquee" aria-label="Parish values">
+        <div className="gallery-marquee-track">
+          {[...stripWords, ...stripWords].map((word, index) => (
+            <span key={`${word}-${index}`}>
+              {word}
+              <b>✦</b>
+            </span>
+          ))}
+        </div>
+      </section>
+
+      {/* =====================================================
+          3. EVERY MOMENT TELLS A STORY
+      ====================================================== */}
+      <section className="section gallery-story-section">
+        <div className="container gallery-story-grid">
+          <div className="gallery-story-visual">
+            {photos.length > 0 ? (
+              <>
+                <div className="story-image-main">
+                  <img
+                    src={
+                      photos[(activeIndex + 1) % photos.length]?.image_url ||
+                      photos[0].image_url
+                    }
+                    alt="Parish moment"
+                  />
+                </div>
+
+                <div className="story-image-small">
+                  <img
+                    src={
+                      photos[(activeIndex + 2) % photos.length]?.image_url ||
+                      photos[0].image_url
+                    }
+                    alt="Church celebration"
+                  />
+                </div>
+              </>
+            ) : (
+              <div className="story-image-placeholder" />
+            )}
+
+            <div className="story-floating-label">
+              <Images size={18} />
+              <span>Moments of grace</span>
+            </div>
+
+            <div className="story-circle story-circle-one" />
+            <div className="story-circle story-circle-two" />
+          </div>
+
+          <div className="gallery-story-content">
+            <div className="eyebrow">Life of our parish</div>
+
+            <h2 className="section-title">
+              Every Moment
+              <span>Tells a Story</span>
+            </h2>
+
+            <p className="body-copy">
+              From Holy Mass and processions to parish celebrations and
+              community gatherings, every photograph reflects the faith,
+              devotion and togetherness of our church family.
+            </p>
+
+            <div className="story-stats">
+              <div>
+                <strong>{photos.length || "12"}+</strong>
+                <span>Memories</span>
+              </div>
+
+              <div>
+                <strong>1</strong>
+                <span>Faith community</span>
+              </div>
+
+              <div>
+                <strong>∞</strong>
+                <span>Grace-filled moments</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* =====================================================
+          4. OUR CHURCH IN PICTURES
+      ====================================================== */}
+      <section className="section gallery-pictures-section" id="church-pictures">
         <div className="container">
-          <div className="eyebrow">Moments of faith</div>
+          <div className="gallery-heading-row">
+            <div>
+              <div className="eyebrow">Moments of faith</div>
 
-          <h2 className="section-title">
-            Our Church in Pictures
-          </h2>
+              <h2 className="section-title">
+                Our Church in Pictures
+              </h2>
+            </div>
 
-          <p className="body-copy">
-            Explore moments from the life of Our Lady of Holy Rosary Church,
-            from worship and celebrations to community life.
-          </p>
+            <p className="body-copy gallery-heading-copy">
+              Explore moments from the life of Our Lady of Holy Rosary Church,
+              from worship and celebrations to community life.
+            </p>
+          </div>
 
-          {/* Filters */}
-          <div className="filter-row">
+          {/* =================================================
+              5. FILTER BUTTONS
+          ================================================== */}
+          <div className="gallery-filter-row">
             {categories.map((category) => (
               <button
                 key={category}
                 type="button"
-                className={`filter ${
+                className={`gallery-filter ${
                   selectedCategory === category ? "active" : ""
                 }`}
                 onClick={() => setSelectedCategory(category)}
@@ -86,29 +323,48 @@ export default function Gallery() {
             ))}
           </div>
 
-          {/* Gallery */}
+          {/* =================================================
+              6. ANIMATED IMAGE GRID
+          ================================================== */}
           {loading ? (
-            <div className="empty-state">
-              <p>Loading gallery...</p>
+            <div className="gallery-loading">
+              <div className="gallery-loader" />
+              <p>Loading beautiful memories...</p>
             </div>
           ) : filteredPhotos.length === 0 ? (
             <div className="empty-state">
-              <p>No gallery images available.</p>
+              <p>No gallery images available for this category.</p>
             </div>
           ) : (
-            <div className="gallery-grid">
-              {filteredPhotos.map((photo) => (
-                <div className="gallery-item" key={photo.id}>
-                  <img
-                    src={photo.image_url}
-                    alt={
-                      photo.title ||
-                      "Our Lady of Holy Rosary Church, Madurai"
-                    }
-                  />
+            <div className="animated-gallery-grid">
+              {filteredPhotos.map((photo, index) => (
+                <button
+                  type="button"
+                  className={`animated-gallery-card gallery-card-${index % 6}`}
+                  key={photo.id}
+                  onClick={() => setSelectedPhoto(photo)}
+                >
+                  <div className="animated-gallery-image">
+                    <img
+                      src={photo.image_url}
+                      alt={
+                        photo.title ||
+                        "Our Lady of Holy Rosary Church, Madurai"
+                      }
+                    />
+
+                    <div className="animated-gallery-overlay">
+                      <span>View memory</span>
+                      <ArrowRight size={17} />
+                    </div>
+
+                    <div className="gallery-card-number">
+                      {String(index + 1).padStart(2, "0")}
+                    </div>
+                  </div>
 
                   {(photo.title || photo.description) && (
-                    <div className="gallery-caption">
+                    <div className="animated-gallery-caption">
                       {photo.title && <h3>{photo.title}</h3>}
 
                       {photo.description && (
@@ -116,22 +372,43 @@ export default function Gallery() {
                       )}
                     </div>
                   )}
-                </div>
+                </button>
               ))}
             </div>
           )}
         </div>
       </section>
 
-      {/* Virtual Tour */}
-      <section className="section">
+      {/* =====================================================
+          MOVING IMAGE STRIP
+      ====================================================== */}
+      {!loading && photos.length > 0 && (
+        <section className="moving-image-strip" aria-label="Gallery highlights">
+          <div className="moving-image-track">
+            {[...photos, ...photos].map((photo, index) => (
+              <div className="moving-strip-image" key={`${photo.id}-${index}`}>
+                <img
+                  src={photo.image_url}
+                  alt={photo.title || "Parish gallery"}
+                />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* =====================================================
+          7. VIRTUAL TOUR
+      ====================================================== */}
+      <section className="section virtual-tour-section">
         <div className="container">
-          <div className="two-col">
-            <div>
+          <div className="virtual-tour-grid">
+            <div className="virtual-tour-content">
               <div className="eyebrow">Explore the church</div>
 
               <h2 className="section-title">
-                Take a 360° Virtual Tour
+                Take a 360°
+                <span>Virtual Tour</span>
               </h2>
 
               <p className="body-copy">
@@ -151,22 +428,12 @@ export default function Gallery() {
               </a>
             </div>
 
-            <div
-              className="map"
-              style={{
-                minHeight: 360,
-                overflow: "hidden",
-                borderRadius: "12px",
-              }}
-            >
+            <div className="virtual-tour-map">
               <iframe
                 src="https://www.google.com/maps?q=Our%20Lady%20of%20Holy%20Rosary%20Church%2C%20Madurai&output=embed"
                 width="100%"
                 height="100%"
-                style={{
-                  border: 0,
-                  minHeight: 360,
-                }}
+                style={{ border: 0 }}
                 loading="lazy"
                 allowFullScreen
                 referrerPolicy="no-referrer-when-downgrade"
@@ -176,6 +443,45 @@ export default function Gallery() {
           </div>
         </div>
       </section>
+
+      {/* =====================================================
+          IMAGE LIGHTBOX
+      ====================================================== */}
+      {selectedPhoto && (
+        <div
+          className="gallery-lightbox"
+          onClick={() => setSelectedPhoto(null)}
+        >
+          <button
+            type="button"
+            className="gallery-lightbox-close"
+            onClick={() => setSelectedPhoto(null)}
+            aria-label="Close image"
+          >
+            ×
+          </button>
+
+          <div
+            className="gallery-lightbox-content"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <img
+              src={selectedPhoto.image_url}
+              alt={selectedPhoto.title || "Gallery image"}
+            />
+
+            {(selectedPhoto.title || selectedPhoto.description) && (
+              <div className="gallery-lightbox-caption">
+                {selectedPhoto.title && <h3>{selectedPhoto.title}</h3>}
+
+                {selectedPhoto.description && (
+                  <p>{selectedPhoto.description}</p>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </main>
   );
 }
