@@ -99,23 +99,26 @@ export const translations = {
       legacyDescription:
         "A story shaped by generations of missionaries, scholars and communities who served the people of Madurai.",
 
-      people: [
-        {
-          name: "Fr. Gonçalo Fernandes",
-          role: "Pioneer missionary",
-          photo: "photo-1507692049790-de58290a4334",
-        },
-        {
-          name: "Robert de Nobili",
-          role: "Jesuit missionary",
-          photo: "photo-1548625361-1e6f7a0e06a3",
-        },
-        {
-          name: "Veeramamunivar",
-          role: "Scholar and poet",
-          photo: "photo-1548013146-72479768bada",
-        },
-      ],
+people: [
+  {
+    name: "Robert de Nobili",
+    role: "Jesuit Missionary",
+  photo: "/images/robert-de-nobili.jpg",
+    shortDescription:
+      "A Jesuit missionary who approached Tamil culture with deep respect.",
+    description:
+      "Robert de Nobili was an Italian Jesuit missionary who worked in South India. He adopted the lifestyle and customs of a Tamil scholar, learned local languages, and presented Christianity in ways that respected the cultural and intellectual traditions of the people.",
+  },
+  {
+    name: "Veeramamunivar",
+    role: "Scholar and Poet",
+  photo: "/images/veeramamunivar.jpg",
+    shortDescription:
+      "A scholar and poet who enriched Tamil Christian literature.",
+    description:
+      "Veeramamunivar, also known as Costanzo Giuseppe Beschi, was an Italian Jesuit missionary and a renowned Tamil scholar. His contributions to Tamil grammar, literature, poetry, and Christian writing helped bring the Christian message closer to Tamil-speaking communities.",
+  },
+],
 
       personDescription: "who shaped our shared story.",
 
@@ -141,6 +144,8 @@ export const translations = {
         description:
           "Explore the beauty, prayer, celebrations and memories of our parish community.",
       },
+        prayerRequestButton: "Prayer Request",
+
     },
   },
 
@@ -245,22 +250,25 @@ export const translations = {
         "மதுரை மக்களுக்கு சேவை செய்த பல தலைமுறை மறைப்பணியாளர்கள், அறிஞர்கள் மற்றும் சமூகங்களால் உருவாக்கப்பட்ட வரலாறு.",
 
       people: [
-        {
-          name: "அருட்தந்தை கொன்சாலோ பெர்னாண்டஸ்",
-          role: "முன்னோடி மறைப்பணியாளர்",
-          photo: "photo-1507692049790-de58290a4334",
-        },
-        {
-          name: "ராபர்ட் டி நொபிலி",
-          role: "இயேசு சபை மறைப்பணியாளர்",
-          photo: "photo-1548625361-1e6f7a0e06a3",
-        },
-        {
-          name: "வீரமாமுனிவர்",
-          role: "அறிஞரும் கவிஞரும்",
-          photo: "photo-1548013146-72479768bada",
-        },
-      ],
+  {
+    name: "ராபர்ட் டி நொபிலி",
+    role: "இயேசு சபை மறைப்பணியாளர்",
+  photo: "/images/robert-de-nobili.jpg",
+    shortDescription:
+      "தமிழ் கலாச்சாரத்தை ஆழ்ந்த மரியாதையுடன் அணுகிய இயேசு சபை மறைப்பணியாளர்.",
+    description:
+      "ராபர்ட் டி நொபிலி இத்தாலிய இயேசு சபை மறைப்பணியாளராக தென்னிந்தியாவில் பணியாற்றினார். தமிழ் அறிஞரின் வாழ்க்கை முறையையும் பழக்கவழக்கங்களையும் ஏற்றுக்கொண்டு, உள்ளூர் மொழிகளைக் கற்று, மக்களின் கலாச்சாரத்தையும் அறிவுசார் மரபுகளையும் மதிக்கும் வகையில் கிறிஸ்தவத்தைப் போதித்தார்.",
+  },
+  {
+    name: "வீரமாமுனிவர்",
+    role: "தமிழறிஞரும் கவிஞரும்",
+  photo: "/images/veeramamunivar.jpg",
+    shortDescription:
+      "தமிழ் கிறிஸ்தவ இலக்கியத்தை வளப்படுத்திய தமிழறிஞரும் கவிஞரும்.",
+    description:
+      "வீரமாமுனிவர் என்று அழைக்கப்படும் கான்ஸ்டான்சோ பெஸ்கி, இத்தாலிய இயேசு சபை மறைப்பணியாளரும் புகழ்பெற்ற தமிழறிஞரும் ஆவார். தமிழ் இலக்கணம், இலக்கியம், கவிதை மற்றும் கிறிஸ்தவ எழுத்துகளில் அவர் செய்த பங்களிப்புகள் கிறிஸ்தவ செய்தியைத் தமிழ் மக்களுக்கு நெருக்கமாகக் கொண்டு வந்தன.",
+  },
+],
 
       personDescription:
         "எங்கள் பொதுவான வரலாற்றை உருவாக்கியவர்.",
@@ -287,6 +295,9 @@ export const translations = {
         description:
           "எங்கள் பங்குத் திருச்சபை சமூகத்தின் அழகு, ஜெபம், கொண்டாட்டங்கள் மற்றும் நினைவுகளை அனுபவியுங்கள்.",
       },
+            prayerRequestButton: "ஜெப வேண்டுகோள்",
+
     },
+
   },
 } as const;

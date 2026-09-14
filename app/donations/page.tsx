@@ -110,8 +110,8 @@ export default function Donations() {
   // ── DONE ─────────────────────────────────────────────────────────────────
   if (step === "done") {
     return (
-      <main>
-        <PageHero title="Thank You" crumb="Donations" />
+<main className="donation-page">
+          <PageHero title="Thank You" crumb="Donations" />
         <section className="section">
           <div
             className="container"
@@ -193,142 +193,293 @@ export default function Donations() {
           </div>
 
           {/* ══════════════════════════════════════════
-              STEP 1 — DONATION FORM
-          ══════════════════════════════════════════ */}
-          {step === "form" && (
-            <div
-              style={{
-                maxWidth: 560,
-                margin: "50px auto 0",
-                background: "var(--warm-white, #fffaf7)",
-                borderRadius: 16,
-                padding: "40px 36px",
-                boxShadow: "0 4px 32px rgba(0,0,0,0.08)",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 10,
-                  marginBottom: 24,
-                }}
-              >
-                <Heart size={22} color="#8b1c1c" />
-                <h2 style={{ margin: 0, fontSize: "1.35rem" }}>
-                  Donate via GPay / UPI
-                </h2>
-              </div>
+    STEP 1 — DONATION FORM
+══════════════════════════════════════════ */}
+{step === "form" && (
+  <div
+    style={{
+      maxWidth: 720,
+      width: "100%",
+      margin: "50px auto 0",
+      background: "#fffdf9",
+      border: "1px solid rgba(13, 91, 115, 0.12)",
+      borderRadius: 24,
+      padding: "40px",
+      boxShadow: "0 18px 50px rgba(13, 91, 115, 0.10)",
+    }}
+  >
+    {/* FORM HEADING */}
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 12,
+        marginBottom: 28,
+        paddingBottom: 20,
+        borderBottom: "1px solid rgba(13, 91, 115, 0.12)",
+      }}
+    >
+      <div
+        style={{
+          width: 46,
+          height: 46,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          borderRadius: "50%",
+          background: "rgba(13, 91, 115, 0.10)",
+          color: "#0d5b73",
+          flexShrink: 0,
+        }}
+      >
+        <Heart size={23} strokeWidth={1.8} />
+      </div>
 
-              {error && (
-                <p style={{ color: "crimson", marginBottom: 16 }}>{error}</p>
-              )}
+      <div>
+        <h2
+          style={{
+            margin: 0,
+            color: "#0d5b73",
+            fontSize: "clamp(1.25rem, 2vw, 1.6rem)",
+            fontWeight: 700,
+            lineHeight: 1.3,
+          }}
+        >
+          Donate via GPay / UPI
+        </h2>
 
-              <form onSubmit={handleFormSubmit}>
-                <div className="form-grid">
-                  <input
-                    className="field"
-                    name="name"
-                    placeholder="Full Name *"
-                    value={form.name}
-                    onChange={handleChange}
-                    required
-                  />
-                  <input
-                    className="field"
-                    type="email"
-                    name="email"
-                    placeholder="Email Address *"
-                    value={form.email}
-                    onChange={handleChange}
-                    required
-                  />
-                  <input
-                    className="field"
-                    type="tel"
-                    name="phone"
-                    placeholder="Phone Number"
-                    value={form.phone}
-                    onChange={handleChange}
-                  />
-                  <select
-                    className="field"
-                    name="purpose"
-                    value={form.purpose}
-                    onChange={handleChange}
-                  >
-                    {PURPOSES.map((p) => (
-                      <option key={p} value={p}>
-                        {p}
-                      </option>
-                    ))}
-                  </select>
+        <p
+          style={{
+            margin: "5px 0 0",
+            color: "#6d777b",
+            fontSize: "0.9rem",
+          }}
+        >
+          Your contribution helps support our parish ministry.
+        </p>
+      </div>
+    </div>
 
-                  {/* Quick amounts */}
-                  <div style={{ gridColumn: "1 / -1" }}>
-                    <p
-                      style={{
-                        margin: "0 0 8px",
-                        fontSize: "0.85rem",
-                        color: "#666",
-                      }}
-                    >
-                      Quick select amount
-                    </p>
-                    <div
-                      style={{
-                        display: "flex",
-                        flexWrap: "wrap",
-                        gap: 8,
-                        marginBottom: 12,
-                      }}
-                    >
-                      {QUICK_AMOUNTS.map((amt) => (
-                        <button
-                          key={amt}
-                          type="button"
-                          onClick={() =>
-                            setForm((p) => ({ ...p, amount: String(amt) }))
-                          }
-                          style={{
-                            padding: "6px 16px",
-                            borderRadius: 20,
-                            border: "1.5px solid #8b1c1c",
-                            background:
-                              form.amount === String(amt)
-                                ? "#8b1c1c"
-                                : "transparent",
-                            color:
-                              form.amount === String(amt) ? "white" : "#8b1c1c",
-                            cursor: "pointer",
-                            fontWeight: 600,
-                            fontSize: "0.9rem",
-                            transition: "all 0.15s",
-                          }}
-                        >
-                          ₹{amt}
-                        </button>
-                      ))}
-                    </div>
-                    <input
-                      className="field"
-                      type="number"
-                      name="amount"
-                      placeholder="Or enter amount (₹) *"
-                      value={form.amount}
-                      onChange={handleChange}
-                      min={1}
-                      required
-                    />
-                  </div>
+    {/* ERROR MESSAGE */}
+    {error && (
+      <div
+        style={{
+          marginBottom: 20,
+          padding: "12px 15px",
+          borderRadius: 10,
+          background: "#fff1f1",
+          border: "1px solid #f0caca",
+          color: "#a33a3a",
+          fontSize: "0.9rem",
+        }}
+      >
+        {error}
+      </div>
+    )}
 
-                  <button type="submit" className="button full">
-                    Proceed to Pay →
-                  </button>
-                </div>
-              </form>
-            </div>
-          )}
+    <form onSubmit={handleFormSubmit}>
+      <div className="form-grid">
+        {/* NAME */}
+        <input
+          className="field"
+          name="name"
+          placeholder="Full Name *"
+          value={form.name}
+          onChange={handleChange}
+          required
+          style={{
+            color: "#174b5c",
+            background: "#ffffff",
+            borderColor: "rgba(13, 91, 115, 0.20)",
+          }}
+        />
+
+        {/* EMAIL */}
+        <input
+          className="field"
+          type="email"
+          name="email"
+          placeholder="Email Address *"
+          value={form.email}
+          onChange={handleChange}
+          required
+          style={{
+            color: "#174b5c",
+            background: "#ffffff",
+            borderColor: "rgba(13, 91, 115, 0.20)",
+          }}
+        />
+
+        {/* PHONE */}
+        <input
+          className="field"
+          type="tel"
+          name="phone"
+          placeholder="Phone Number"
+          value={form.phone}
+          onChange={handleChange}
+          style={{
+            color: "#174b5c",
+            background: "#ffffff",
+            borderColor: "rgba(13, 91, 115, 0.20)",
+          }}
+        />
+
+        {/* PURPOSE */}
+        <select
+          className="field"
+          name="purpose"
+          value={form.purpose}
+          onChange={handleChange}
+          style={{
+            color: "#174b5c",
+            background: "#ffffff",
+            borderColor: "rgba(13, 91, 115, 0.20)",
+          }}
+        >
+          {PURPOSES.map((p) => (
+            <option key={p} value={p}>
+              {p}
+            </option>
+          ))}
+        </select>
+
+        {/* QUICK AMOUNTS */}
+        <div
+          style={{
+            gridColumn: "1 / -1",
+            marginTop: 8,
+          }}
+        >
+          <p
+            style={{
+              margin: "0 0 12px",
+              color: "#52666d",
+              fontSize: "0.95rem",
+              fontWeight: 600,
+            }}
+          >
+            Quick select amount
+          </p>
+
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 10,
+              marginBottom: 16,
+            }}
+          >
+            {QUICK_AMOUNTS.map((amt) => {
+              const isSelected = form.amount === String(amt);
+
+              return (
+                <button
+                  key={amt}
+                  type="button"
+                  onClick={() =>
+                    setForm((p) => ({
+                      ...p,
+                      amount: String(amt),
+                    }))
+                  }
+                  style={{
+                    minWidth: 82,
+                    padding: "10px 18px",
+                    borderRadius: 999,
+                    border: isSelected
+                      ? "1.5px solid #0d5b73"
+                      : "1.5px solid rgba(13, 91, 115, 0.35)",
+                    background: isSelected
+                      ? "#0d5b73"
+                      : "#ffffff",
+                    color: isSelected
+                      ? "#ffffff"
+                      : "#0d5b73",
+                    cursor: "pointer",
+                    fontWeight: 700,
+                    fontSize: "0.9rem",
+                    transition:
+                      "background 0.2s ease, color 0.2s ease, transform 0.2s ease, border-color 0.2s ease",
+                  }}
+                  onMouseEnter={(event) => {
+                    event.currentTarget.style.background = "#0d5b73";
+                    event.currentTarget.style.color = "#ffffff";
+                    event.currentTarget.style.borderColor = "#0d5b73";
+                    event.currentTarget.style.transform = "translateY(-2px)";
+                  }}
+                  onMouseLeave={(event) => {
+                    event.currentTarget.style.background = isSelected
+                      ? "#0d5b73"
+                      : "#ffffff";
+                    event.currentTarget.style.color = isSelected
+                      ? "#ffffff"
+                      : "#0d5b73";
+                    event.currentTarget.style.borderColor = isSelected
+                      ? "#0d5b73"
+                      : "rgba(13, 91, 115, 0.35)";
+                    event.currentTarget.style.transform = "translateY(0)";
+                  }}
+                >
+                  ₹{amt}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* CUSTOM AMOUNT */}
+          <input
+            className="field"
+            type="number"
+            name="amount"
+            placeholder="Or enter amount (₹) *"
+            value={form.amount}
+            onChange={handleChange}
+            min={1}
+            required
+            style={{
+              color: "#174b5c",
+              background: "#ffffff",
+              borderColor: "rgba(13, 91, 115, 0.20)",
+            }}
+          />
+        </div>
+
+        {/* SUBMIT BUTTON */}
+        <button
+          type="submit"
+          className="button full"
+          disabled={loading}
+          style={{
+            background: loading ? "#7c9ba5" : "#0d5b73",
+            color: "#ffffff",
+            border: "none",
+            marginTop: 8,
+            transition:
+              "background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease",
+          }}
+          onMouseEnter={(event) => {
+            if (!loading) {
+              event.currentTarget.style.background = "#08465a";
+              event.currentTarget.style.transform = "translateY(-2px)";
+              event.currentTarget.style.boxShadow =
+                "0 8px 20px rgba(13, 91, 115, 0.22)";
+            }
+          }}
+          onMouseLeave={(event) => {
+            event.currentTarget.style.background = loading
+              ? "#7c9ba5"
+              : "#0d5b73";
+            event.currentTarget.style.transform = "translateY(0)";
+            event.currentTarget.style.boxShadow = "none";
+          }}
+        >
+          {loading ? "Sending..." : "Proceed to Pay →"}
+        </button>
+      </div>
+    </form>
+  </div>
+)}
 
           {/* ══════════════════════════════════════════
               STEP 2 — QR CODE PAYMENT

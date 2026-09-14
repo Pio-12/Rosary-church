@@ -1,5 +1,5 @@
-@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap");
-
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@400;500;600;700&display=swap");
 :root {
   --blue: #0789b5;
   --blue-deep: #045f80;
@@ -220,6 +220,7 @@ body::before {
   letter-spacing: 0.13em;
   text-align: center;
   text-transform: uppercase;
+  position: relative;
 }
 
 /* =========================================================
@@ -227,7 +228,7 @@ body::before {
    ========================================================= */
 
 .header {
-  position: sticky;
+  position: relative;
   top: 0;
   z-index: 100;
   background: rgba(251, 249, 244, 0.94);
@@ -5556,5 +5557,2777 @@ body.tamil button,
     animation: none !important;
     overflow-x: auto;
     padding-bottom: 14px;
+  }
+}
+
+/* =====================================================
+   LEGACY SECTION
+   ===================================================== */
+
+.legacy-section {
+  position: relative;
+  overflow: hidden;
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+}
+
+.legacy-heading {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto 2.5rem;
+  text-align: center;
+}
+
+.legacy-heading .eyebrow {
+  margin-bottom: 0.75rem;
+}
+
+.legacy-heading .section-title {
+  margin-bottom: 1rem;
+}
+
+.legacy-heading > p {
+  max-width: 650px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+/* =====================================================
+   DESKTOP CARD LAYOUT
+   ===================================================== */
+
+.people-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 360px));
+  justify-content: center;
+  align-items: start;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+/* =====================================================
+   PERSON CARD
+   ===================================================== */
+
+.person-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 1.25rem;
+  background: rgba(255, 255, 255, 0.08);
+  outline: none;
+
+  /* Only animate hover movement, not opacity */
+  transform: translateY(0);
+  transition:
+    transform 0.3s ease,
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+/* Do not hide the card */
+.person-card.reveal-up,
+.person-card.person,
+.person-card.person-card {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Desktop hover */
+@media (hover: hover) and (pointer: fine) {
+  .person-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.28);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.16);
+  }
+
+  .person-card:hover .person-image img {
+    transform: scale(1.04);
+  }
+}
+
+/* Keyboard focus */
+.person-card:focus-visible {
+  border-color: #e3bd72;
+  box-shadow: 0 0 0 3px rgba(227, 189, 114, 0.28);
+}
+
+/* Touch feedback only; no disappearing */
+.person-card:active {
+  transform: scale(0.99);
+}
+
+/* =====================================================
+   PERSON IMAGE
+   ===================================================== */
+
+.person-image {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  overflow: hidden;
+  background: #174f62;
+  flex-shrink: 0;
+}
+
+.person-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  opacity: 1;
+  visibility: visible;
+  transition: transform 0.5s ease;
+}
+
+/* Broken-image fallback background */
+.person-image::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.06),
+      rgba(0, 0, 0, 0.08)
+    );
+}
+
+.person-image img {
+  position: relative;
+  z-index: 1;
+}
+
+/* =====================================================
+   CARD OVERLAY ICON
+   ===================================================== */
+
+.person-overlay {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+  pointer-events: none;
+  transition:
+    background-color 0.3s ease,
+    transform 0.3s ease;
+}
+
+.person-card.is-expanded .person-overlay {
+  background: #c79a45;
+}
+
+.person-overlay svg {
+  transition: transform 0.3s ease;
+}
+
+.person-overlay svg.is-rotated {
+  transform: rotate(90deg);
+}
+
+/* =====================================================
+   CARD CONTENT
+   ===================================================== */
+
+.person-content {
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem;
+}
+
+.person-content h3 {
+  margin: 0;
+  color: #ffffff;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.35rem, 2vw, 1.65rem);
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.person-role {
+  margin: 0.5rem 0 0;
+  color: #e3bd72;
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.person-short-description {
+  margin: 0.7rem 0 0;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+/* =====================================================
+   EXPANDABLE DESCRIPTION
+   ===================================================== */
+
+.person-full-description {
+  display: grid;
+  grid-template-rows: 0fr;
+  margin-top: 0;
+  opacity: 0;
+  transition:
+    grid-template-rows 0.35s ease,
+    opacity 0.3s ease,
+    margin-top 0.35s ease;
+}
+
+.person-full-description > p {
+  min-height: 0;
+  margin: 0;
+  overflow: hidden;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 0.92rem;
+  line-height: 1.65;
+}
+
+.person-full-description.show {
+  grid-template-rows: 1fr;
+  margin-top: 0.9rem;
+  opacity: 1;
+}
+
+.person-read-more {
+  display: inline-block;
+  margin-top: 0.85rem;
+  color: #e3bd72;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* =====================================================
+   MOBILE HORIZONTAL SCROLL
+   ===================================================== */
+
+@media (max-width: 640px) {
+  .legacy-section {
+    padding-top: 3.5rem;
+    padding-bottom: 3.5rem;
+  }
+
+  .legacy-heading {
+    margin-bottom: 2rem;
+    text-align: left;
+  }
+
+  .legacy-heading > p {
+    margin-left: 0;
+  }
+
+  .people-grid {
+    display: flex;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 1rem;
+    width: calc(100% + 1rem);
+    max-width: none;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0.25rem 1rem 1rem 0.1rem;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .people-grid::-webkit-scrollbar {
+    height: 5px;
+  }
+
+  .people-grid::-webkit-scrollbar-track {
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .people-grid::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: rgba(227, 189, 114, 0.75);
+  }
+
+  .person-card {
+    flex: 0 0 82%;
+    width: 82%;
+    max-width: 330px;
+    scroll-snap-align: start;
+  }
+
+  .person-image {
+    height: 260px;
+  }
+
+  .person-content {
+    padding: 1.1rem;
+  }
+
+  .person-content h3 {
+    font-size: 1.35rem;
+  }
+
+  .person-short-description,
+  .person-full-description > p {
+    font-size: 0.9rem;
+  }
+
+  /* Prevent desktop hover behavior on touch screens */
+  .person-card:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .person-card:active {
+    transform: scale(0.99);
+  }
+}
+
+/* Small mobile screens */
+@media (max-width: 380px) {
+  .person-card {
+    flex-basis: 88%;
+    width: 88%;
+  }
+
+  .person-image {
+    height: 240px;
+  }
+}
+
+/* Reduced motion accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .person-card,
+  .person-image img,
+  .person-overlay,
+  .person-overlay svg,
+  .person-full-description {
+    transition: none;
+  }
+}
+/* =====================================================
+   LEGACY V2 - ISOLATED STYLES
+   ===================================================== */
+
+.legacy-v2-section {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  padding: 4rem 0;
+  background: #096b83;
+}
+
+.legacy-v2-section .container {
+  width: 100%;
+}
+
+.legacy-v2-heading {
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto 2rem;
+  text-align: center;
+}
+
+.legacy-v2-heading p {
+  margin: 0.75rem auto 0;
+  max-width: 650px;
+  line-height: 1.6;
+}
+
+/* Desktop layout */
+.legacy-v2-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 350px));
+  justify-content: center;
+  align-items: start;
+  gap: 1.25rem;
+  width: 100%;
+}
+
+/* Card */
+.legacy-v2-card {
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-self: start !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: none;
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+  animation: none !important;
+}
+
+/* Prevent old reveal animations from affecting the cards */
+.legacy-v2-card.reveal-up,
+.legacy-v2-card.person,
+.legacy-v2-card.person-card {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+  animation: none !important;
+}
+
+.legacy-v2-card:hover {
+  background: rgba(255, 255, 255, 0.11);
+  border-color: rgba(255, 255, 255, 0.28);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+}
+
+.legacy-v2-card:focus-visible {
+  outline: 3px solid rgba(227, 189, 114, 0.75);
+  outline-offset: 3px;
+}
+
+.legacy-v2-card:active {
+  transform: none !important;
+}
+
+/* Image */
+.legacy-v2-image {
+  position: relative;
+  width: 100%;
+  height: 270px !important;
+  min-height: 270px !important;
+  max-height: 270px !important;
+  overflow: hidden;
+  background: #17586a;
+}
+
+.legacy-v2-image img {
+  position: relative;
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  object-fit: cover;
+  object-position: center;
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none;
+  transition: transform 0.45s ease;
+}
+
+.legacy-v2-card:hover .legacy-v2-image img {
+  transform: scale(1.035);
+}
+
+/* Arrow */
+.legacy-v2-arrow {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 50%;
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.52);
+  pointer-events: none;
+  backdrop-filter: blur(6px);
+}
+
+.legacy-v2-card-open .legacy-v2-arrow {
+  background: #c79a45;
+}
+
+.legacy-v2-arrow svg {
+  transition: transform 0.25s ease;
+}
+
+.legacy-v2-arrow-rotated {
+  transform: rotate(90deg);
+}
+
+/* Content */
+.legacy-v2-content {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: auto !important;
+  min-height: 0 !important;
+  padding: 1.1rem !important;
+  overflow: visible !important;
+}
+
+.legacy-v2-content h3 {
+  margin: 0;
+  color: #ffffff;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.5rem;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.legacy-v2-role {
+  margin: 0.45rem 0 0;
+  color: #e3bd72;
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.legacy-v2-short {
+  margin: 0.7rem 0 0;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.legacy-v2-details {
+  margin-top: 0.9rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.legacy-v2-details p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+
+.legacy-v2-read-label {
+  display: inline-block;
+  margin-top: 0.8rem;
+  color: #e3bd72;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+/* =====================================================
+   MOBILE HORIZONTAL SCROLL
+   ===================================================== */
+
+@media (max-width: 640px) {
+  .legacy-v2-section {
+    padding: 3rem 0;
+  }
+
+  .legacy-v2-heading {
+    margin-bottom: 1.5rem;
+    text-align: left;
+  }
+
+  .legacy-v2-heading p {
+    margin-left: 0;
+  }
+
+  .legacy-v2-grid {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+    align-items: stretch !important;
+    gap: 0.9rem;
+    width: calc(100% + 1rem);
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    padding: 0.2rem 1rem 1rem 0;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .legacy-v2-grid::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .legacy-v2-grid::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 999px;
+  }
+
+  .legacy-v2-grid::-webkit-scrollbar-thumb {
+    background: rgba(227, 189, 114, 0.75);
+    border-radius: 999px;
+  }
+
+  .legacy-v2-card {
+    flex: 0 0 82% !important;
+    width: 82% !important;
+    max-width: 320px !important;
+    scroll-snap-align: start;
+  }
+
+  .legacy-v2-image {
+    height: 240px !important;
+    min-height: 240px !important;
+    max-height: 240px !important;
+  }
+
+  .legacy-v2-content {
+    padding: 1rem !important;
+  }
+
+  .legacy-v2-content h3 {
+    font-size: 1.35rem;
+  }
+
+  .legacy-v2-card:hover {
+    box-shadow: none;
+  }
+
+  .legacy-v2-card:hover .legacy-v2-image img {
+    transform: none;
+  }
+}
+
+@media (max-width: 380px) {
+  .legacy-v2-card {
+    flex-basis: 88% !important;
+    width: 88% !important;
+  }
+
+  .legacy-v2-image {
+    height: 225px !important;
+    min-height: 225px !important;
+    max-height: 225px !important;
+  }
+}
+
+/* =====================================================
+   LEGACY HEADING COLOR FIX
+   ===================================================== */
+
+.legacy-v2-section .legacy-v2-heading .section-title {
+  color: #f8f3e8 !important;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.legacy-v2-section .legacy-v2-heading > p {
+  color: rgba(255, 255, 255, 0.88) !important;
+}
+
+.legacy-v2-section .legacy-v2-heading .eyebrow {
+  color: #e3bd72 !important;
+}
+
+/* =====================================================
+   GLOBAL FONT - ENGLISH + TAMIL
+   ===================================================== */
+
+:root {
+  --site-font: "Noto Sans Tamil", Arial, sans-serif;
+}
+
+html,
+body {
+  font-family: var(--site-font);
+}
+
+body,
+button,
+input,
+textarea,
+select,
+option {
+  font-family: var(--site-font);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+a,
+span,
+li,
+label,
+button,
+input,
+textarea,
+select {
+  font-family: var(--site-font);
+}
+
+/* =========================================================
+   HOLY ROSARY CHURCH — ABOUT PAGE
+   Everything scoped under .about-page (add this class to the
+   <main> in page.tsx) so nothing leaks onto navbar/shared UI.
+   Palette / fonts preserved from original reference file.
+
+   NOTE on animation: real "reveal as you scroll" is powered
+   by native CSS scroll-driven animations (animation-timeline:
+   view()) which currently only Chrome/Edge support. Those
+   browsers get true scroll-linked reveals; everything else
+   gracefully falls back to a one-time fade/slide-in on load,
+   so no browser is left with zero motion.
+========================================================= */
+
+.about-page {
+  --hrc-navy: #073f55;
+  --hrc-blue: #075d76;
+  --hrc-blue-dark: #064d64;
+  --hrc-gold: #c99728;
+  --hrc-gold-bright: #f0b72f;
+  --hrc-cream: #f8f7f3;
+  --hrc-white: #ffffff;
+  --hrc-text: #53616a;
+  --hrc-border: #dce5e8;
+}
+
+/* =========================================================
+   KEYFRAMES
+========================================================= */
+
+@keyframes hrc-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hrc-fade-scale {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes hrc-underline {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes hrc-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.06);
+  }
+}
+
+/* =========================================================
+   LAYOUT PRIMITIVES
+========================================================= */
+
+.about-page .container {
+  width: min(1180px, calc(100% - 136px));
+  margin: 0 auto;
+}
+
+.about-page .section {
+  padding: 130px 0;
+  background: var(--hrc-cream);
+  color: var(--hrc-navy);
+  overflow: hidden;
+}
+
+.about-page .wine-band {
+  background: var(--hrc-blue);
+  color: var(--hrc-white);
+  overflow: hidden;
+}
+
+.about-page .wine-band h1,
+.about-page .wine-band h2,
+.about-page .wine-band h3,
+.about-page .wine-band p,
+.about-page .wine-band strong,
+.about-page .wine-band span {
+  color: var(--hrc-white);
+}
+
+.about-page .wine-band .body-copy {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.about-page .wine-band .eyebrow {
+  color: var(--hrc-gold-bright);
+}
+
+.about-page .two-col {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: start;
+  gap: 80px;
+}
+
+/* =========================================================
+   TYPOGRAPHY
+========================================================= */
+
+.about-page h1,
+.about-page h2,
+.about-page h3,
+.about-page p {
+  margin: 0 0 0 0;
+}
+
+.about-page h1,
+.about-page h2,
+.about-page h3 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  color: var(--hrc-navy);
+  line-height: 1.15;
+}
+
+.about-page h1 {
+  max-width: 900px;
+  margin-bottom: 28px;
+  color: var(--hrc-white);
+  font-size: clamp(48px, 7vw, 92px);
+  line-height: 1.02;
+  animation: hrc-fade-up 0.9s ease both;
+}
+
+.about-page .section-title {
+  max-width: 850px;
+  margin-bottom: 0;
+  font-size: clamp(34px, 4.5vw, 56px);
+  line-height: 1.1;
+}
+
+.about-page h3 {
+  color: var(--hrc-blue);
+  font-size: 24px;
+  line-height: 1.3;
+  margin-bottom: 12px;
+  transition: color 0.25s ease, transform 0.25s ease;
+}
+
+.about-page p,
+.about-page .body-copy {
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--hrc-text);
+  font-size: 17px;
+  line-height: 1.8;
+  margin-bottom: 16px;
+}
+
+.about-page .body-copy:last-child {
+  margin-bottom: 0;
+}
+
+.about-page .eyebrow {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 18px;
+  padding-bottom: 8px;
+  color: var(--hrc-gold);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.about-page .eyebrow::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 34px;
+  height: 2px;
+  background: currentColor;
+  transform-origin: left center;
+  animation: hrc-underline 0.7s ease 0.2s both;
+}
+
+/* =========================================================
+   SECTION HEADINGS
+========================================================= */
+
+.about-page .section-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
+  margin-bottom: 48px;
+  animation: hrc-fade-up 0.8s ease both;
+}
+
+/* =========================================================
+   QUOTE
+========================================================= */
+
+.about-page .quote {
+  position: relative;
+  margin: 32px 0 0;
+  padding: 24px 0 24px 28px;
+  border-left: 3px solid var(--hrc-gold);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 22px;
+  font-style: italic;
+  color: var(--hrc-navy);
+  line-height: 1.5;
+  animation: hrc-fade-up 0.9s ease 0.15s both;
+  transition: border-color 0.3s ease, padding-left 0.3s ease;
+}
+
+.about-page .quote:hover {
+  border-color: var(--hrc-gold-bright);
+  padding-left: 36px;
+}
+
+.about-page .quote span {
+  display: inline-block;
+  margin-top: 10px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--hrc-gold);
+}
+
+/* =========================================================
+   PHOTO
+========================================================= */
+
+.about-page .photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 380px;
+  border-radius: 20px;
+  object-fit: cover;
+  box-shadow: 0 20px 45px rgba(7, 63, 85, 0.16);
+  animation: hrc-fade-scale 1s ease both;
+  transition: transform 0.5s ease, box-shadow 0.5s ease;
+}
+
+.about-page .photo:hover {
+  transform: scale(1.025);
+  box-shadow: 0 26px 55px rgba(7, 63, 85, 0.24);
+}
+
+/* =========================================================
+   CARDS GRID
+========================================================= */
+
+.about-page .cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
+}
+
+.about-page .card {
+  position: relative;
+  border: 1px solid var(--hrc-border);
+  border-radius: 20px;
+  background: var(--hrc-white);
+  box-shadow: 0 12px 32px rgba(7, 63, 85, 0.05);
+  overflow: hidden;
+  animation: hrc-fade-up 0.7s ease both;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.about-page .cards-grid .card:nth-child(1) { animation-delay: 0.05s; }
+.about-page .cards-grid .card:nth-child(2) { animation-delay: 0.12s; }
+.about-page .cards-grid .card:nth-child(3) { animation-delay: 0.19s; }
+.about-page .cards-grid .card:nth-child(4) { animation-delay: 0.26s; }
+.about-page .cards-grid .card:nth-child(5) { animation-delay: 0.33s; }
+.about-page .cards-grid .card:nth-child(6) { animation-delay: 0.4s; }
+.about-page .cards-grid .card:nth-child(n + 7) { animation-delay: 0.46s; }
+
+.about-page .card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--hrc-gold), var(--hrc-gold-bright));
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.35s ease;
+}
+
+.about-page .card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 44px rgba(7, 63, 85, 0.14);
+  border-color: rgba(7, 63, 85, 0.18);
+}
+
+.about-page .card:hover::before {
+  transform: scaleX(1);
+}
+
+.about-page .card:hover .card-body h3 {
+  color: var(--hrc-blue-dark);
+  transform: translateX(2px);
+}
+
+.about-page .card-body {
+  padding: 32px;
+}
+
+.about-page .card-body h3 {
+  margin-bottom: 10px;
+}
+
+.about-page .card-body p:last-child {
+  margin-bottom: 0;
+}
+
+/* Cards inside the blue band get a translucent glass treatment */
+.about-page .wine-band .card {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow: none;
+}
+
+.about-page .wine-band .card::before {
+  background: linear-gradient(90deg, var(--hrc-gold-bright), #ffd876);
+}
+
+.about-page .wine-band .card:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.32);
+  transform: translateY(-6px);
+}
+
+.about-page .wine-band .card-body h3 {
+  color: var(--hrc-gold-bright);
+}
+
+.about-page .wine-band .card:hover .card-body h3 {
+  color: #ffffff;
+}
+
+.about-page .wine-band .card-body p {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+/* =========================================================
+   HISTORY / TIMELINE LIST
+   (used for both the year-by-year history and priest list)
+========================================================= */
+
+.about-page .history-list {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-top: 12px;
+}
+
+.about-page .history-item {
+  display: grid;
+  grid-template-columns: 130px minmax(0, 1fr);
+  align-items: center;
+  gap: 40px;
+  min-height: 110px;
+  padding: 26px 0;
+  border-top: 1px solid var(--hrc-border);
+  animation: hrc-fade-up 0.6s ease both;
+  transition: padding-left 0.3s ease, background 0.3s ease;
+}
+
+.about-page .history-list .history-item:nth-child(1) { animation-delay: 0.04s; }
+.about-page .history-list .history-item:nth-child(2) { animation-delay: 0.1s; }
+.about-page .history-list .history-item:nth-child(3) { animation-delay: 0.16s; }
+.about-page .history-list .history-item:nth-child(4) { animation-delay: 0.22s; }
+.about-page .history-list .history-item:nth-child(5) { animation-delay: 0.28s; }
+.about-page .history-list .history-item:nth-child(n + 6) { animation-delay: 0.34s; }
+
+.about-page .history-item:hover {
+  padding-left: 12px;
+}
+
+.about-page .history-item:last-child {
+  border-bottom: 1px solid var(--hrc-border);
+}
+
+.about-page .history-item strong {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 34px;
+  font-weight: 400;
+  color: var(--hrc-gold);
+  line-height: 1;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.about-page .history-item:hover strong {
+  color: var(--hrc-gold-bright);
+  animation: hrc-pulse 0.6s ease;
+}
+
+.about-page .history-item p {
+  margin-bottom: 0;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.about-page .wine-band .history-item strong {
+  color: var(--hrc-gold-bright);
+}
+
+.about-page .wine-band .history-item p {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+/* =========================================================
+   SUCCESSION OF PARISH PRIESTS
+   .history-list sits on a wine-band section only here (the
+   dated timeline above lives on a light section), so this
+   selector safely re-lays out just the leadership list as a
+   card grid instead of stacked rows.
+========================================================= */
+
+.about-page .wine-band .history-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 18px;
+  margin-top: 12px;
+}
+
+.about-page .wine-band .history-item {
+  grid-template-columns: none;
+  align-items: flex-start;
+  gap: 10px;
+  min-height: auto;
+  padding: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.07);
+  transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease;
+}
+
+.about-page .wine-band .history-item:hover {
+  padding-left: 26px;
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.32);
+}
+
+.about-page .wine-band .history-item:last-child {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.about-page .wine-band .history-item strong {
+  font-size: 28px;
+}
+
+.about-page .wine-band .history-item p {
+  margin-bottom: 0;
+}
+
+/* =========================================================
+   CONTACT GRID
+========================================================= */
+
+.about-page .contact-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 34px 40px;
+  margin-top: 8px;
+}
+
+.about-page .contact-grid > div {
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--hrc-border);
+  animation: hrc-fade-up 0.7s ease both;
+  transition: transform 0.3s ease;
+}
+
+.about-page .contact-grid > div:hover {
+  transform: translateX(4px);
+}
+
+.about-page .contact-grid h3 {
+  margin-bottom: 10px;
+  color: var(--hrc-gold);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.about-page .contact-grid .body-copy {
+  margin-bottom: 0;
+  font-size: 16px;
+}
+
+/* =========================================================
+   NATIVE SCROLL-DRIVEN REVEAL (Chrome / Edge)
+   Progressive enhancement: where supported, motion is tied
+   to actual scroll position instead of firing once on load.
+========================================================= */
+
+@supports (animation-timeline: view()) {
+  .about-page .card,
+  .about-page .history-item,
+  .about-page .section-heading,
+  .about-page .quote,
+  .about-page .photo,
+  .about-page .contact-grid > div {
+    animation-name: hrc-fade-up;
+    animation-timing-function: ease;
+    animation-fill-mode: both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 32%;
+    animation-delay: 0s;
+  }
+
+  .about-page .photo {
+    animation-name: hrc-fade-scale;
+  }
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1000px) {
+  .about-page .container {
+    width: min(100% - 72px, 800px);
+  }
+
+  .about-page .section {
+    padding: 100px 0;
+  }
+
+  .about-page .two-col {
+    grid-template-columns: 1fr;
+    gap: 35px;
+  }
+
+  .about-page .cards-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .about-page .history-item {
+    grid-template-columns: 90px minmax(0, 1fr);
+    gap: 28px;
+  }
+
+  .about-page .section-heading {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+}
+
+/* =========================================================
+   MOBILE — HORIZONTAL SCROLL LAYOUT
+   Cards, timeline entries, leadership cards and contact
+   details all become swipeable horizontal strips with
+   snap-to-center, instead of stacking vertically.
+========================================================= */
+
+@media (max-width: 600px) {
+  .about-page .container {
+    width: calc(100% - 36px);
+  }
+
+  .about-page .section {
+    padding: 75px 0;
+  }
+
+  .about-page h1 {
+    font-size: clamp(42px, 12vw, 62px);
+  }
+
+  .about-page .section-title {
+    font-size: clamp(30px, 9vw, 44px);
+  }
+
+  .about-page h3 {
+    font-size: 21px;
+  }
+
+  .about-page .eyebrow {
+    font-size: 12px;
+    letter-spacing: 0.16em;
+  }
+
+  /* ---- shared horizontal-scroll strip behaviour ---- */
+  .about-page .cards-grid,
+  .about-page .history-list,
+  .about-page .wine-band .history-list,
+  .about-page .contact-grid {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: visible;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 14px;
+    padding: 6px 24px 22px 6px;
+    margin: 0 -6px;
+  }
+
+  .about-page .cards-grid::-webkit-scrollbar,
+  .about-page .history-list::-webkit-scrollbar,
+  .about-page .contact-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .about-page .card {
+    flex: 0 0 78%;
+    scroll-snap-align: center;
+  }
+
+  .about-page .card-body {
+    padding: 24px;
+  }
+
+  /* timeline items become vertical mini-cards inside the strip */
+  .about-page .history-item,
+  .about-page .wine-band .history-item {
+    flex: 0 0 72%;
+    scroll-snap-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    grid-template-columns: none;
+    min-height: 150px;
+    padding: 22px;
+    border: 1px solid var(--hrc-border);
+    border-top: 1px solid var(--hrc-border);
+    border-radius: 16px;
+  }
+
+  .about-page .history-item:hover,
+  .about-page .wine-band .history-item:hover {
+    padding: 22px;
+    transform: translateY(-4px);
+  }
+
+  .about-page .history-item:last-child {
+    border-bottom: 1px solid var(--hrc-border);
+  }
+
+  .about-page .wine-band .history-item {
+    border: 1px solid rgba(255, 255, 255, 0.18);
+  }
+
+  .about-page .history-item strong {
+    font-size: 27px;
+  }
+
+  .about-page .history-item p {
+    font-size: 15px;
+  }
+
+  .about-page .contact-grid > div {
+    flex: 0 0 82%;
+    scroll-snap-align: center;
+    border-bottom: none;
+    border: 1px solid var(--hrc-border);
+    border-radius: 16px;
+    padding: 20px;
+  }
+
+  .about-page .photo {
+    min-height: 260px;
+  }
+}
+
+/* =========================================================
+   MASS TIMINGS PAGE
+========================================================= */
+
+.mass-timings-section {
+  padding-top: 96px;
+  padding-bottom: 120px;
+  background: #f8f7f3;
+}
+
+.mass-timings-section .section-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 48px;
+}
+
+.mass-timings-section .eyebrow {
+  margin-bottom: 16px;
+  color: #c49327;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+
+.mass-timings-section .section-title {
+  max-width: 850px;
+  margin: 0;
+  color: #07546b;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(38px, 5vw, 72px);
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+}
+
+/* Main schedule layout */
+.mass-timings-section .schedule {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  width: 100%;
+}
+
+/* Individual day card */
+.mass-timings-section .schedule-card {
+  min-width: 0;
+  padding: 34px 36px;
+  border: 1px solid #dce5e8;
+  border-radius: 2px;
+  background: #ffffff;
+  box-shadow: 0 12px 30px rgba(7, 84, 107, 0.04);
+}
+
+/* Make Saturday full width if needed */
+.mass-timings-section .schedule-card:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+
+/* Card heading */
+.mass-timings-section .schedule-card-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid #e4eaec;
+}
+
+.mass-timings-section .schedule-card h3 {
+  margin: 0;
+  color: #07546b;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(26px, 3vw, 38px);
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.mass-timings-section .schedule-note {
+  flex: 0 0 auto;
+  color: #c49327;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* Timings inside card */
+.mass-timings-section .schedule-items {
+  display: flex;
+  flex-direction: column;
+}
+
+.mass-timings-section .schedule-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 22px 0;
+  border-bottom: 1px solid #edf0f1;
+}
+
+.mass-timings-section .schedule-row:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.mass-timings-section .schedule-row:first-child {
+  padding-top: 24px;
+}
+
+.mass-timings-section .schedule-row-title {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.mass-timings-section .schedule-item-title {
+  color: #263f49;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.mass-timings-section .schedule-item-label {
+  color: #7a898f;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.mass-timings-section .schedule-item-time {
+  flex: 0 0 auto;
+  color: #07546b;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.6;
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* Novena rows */
+.mass-timings-section .schedule-row-novena {
+  background: #fbfaf6;
+  margin: 0 -14px;
+  padding-left: 14px;
+  padding-right: 14px;
+}
+
+.mass-timings-section .schedule-row-novena + .schedule-row-novena {
+  margin-top: 8px;
+}
+
+/* Empty state */
+.mass-timings-section .empty-schedule {
+  max-width: 650px;
+}
+
+.mass-timings-section .empty-schedule h3 {
+  margin: 0 0 12px;
+  color: #07546b;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 30px;
+  font-weight: 400;
+}
+
+.mass-timings-section .empty-schedule p {
+  margin: 0;
+  color: #65747a;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+/* =========================================================
+   TAMIL FONT AND SPACING
+========================================================= */
+
+.mass-timings-section:lang(ta),
+.mass-timings-section .tamil,
+.mass-timings-section [lang="ta"] {
+  font-family: "Noto Sans Tamil", "Latha", Arial, sans-serif;
+}
+
+/*
+ * Tamil text needs slightly more line-height.
+ * This also helps if the language provider adds
+ * a Tamil class to the body or page.
+ */
+html[lang="ta"] .mass-timings-section,
+body.tamil .mass-timings-section,
+body.lang-ta .mass-timings-section {
+  font-family: "Noto Sans Tamil", "Latha", Arial, sans-serif;
+}
+
+html[lang="ta"] .mass-timings-section .section-title,
+body.tamil .mass-timings-section .section-title,
+body.lang-ta .mass-timings-section .section-title {
+  line-height: 1.35;
+  letter-spacing: 0;
+}
+
+html[lang="ta"] .mass-timings-section .schedule-card h3,
+body.tamil .mass-timings-section .schedule-card h3,
+body.lang-ta .mass-timings-section .schedule-card h3 {
+  line-height: 1.55;
+  letter-spacing: 0;
+}
+
+html[lang="ta"] .mass-timings-section .schedule-item-title,
+html[lang="ta"] .mass-timings-section .schedule-item-time,
+body.tamil .mass-timings-section .schedule-item-title,
+body.tamil .mass-timings-section .schedule-item-time,
+body.lang-ta .mass-timings-section .schedule-item-title,
+body.lang-ta .mass-timings-section .schedule-item-time {
+  line-height: 1.9;
+}
+
+/* =========================================================
+   RESPONSIVE DESIGN
+========================================================= */
+
+@media (max-width: 900px) {
+  .mass-timings-section {
+    padding-top: 72px;
+    padding-bottom: 88px;
+  }
+
+  .mass-timings-section .schedule {
+    grid-template-columns: 1fr;
+  }
+
+  .mass-timings-section .schedule-card:last-child:nth-child(odd) {
+    grid-column: auto;
+  }
+
+  .mass-timings-section .schedule-card {
+    padding: 28px;
+  }
+}
+
+@media (max-width: 600px) {
+  .mass-timings-section {
+    padding-top: 56px;
+    padding-bottom: 72px;
+  }
+
+  .mass-timings-section .section-heading {
+    margin-bottom: 32px;
+  }
+
+  .mass-timings-section .section-title {
+    font-size: 40px;
+  }
+
+  .mass-timings-section .schedule-card {
+    padding: 24px 20px;
+  }
+
+  .mass-timings-section .schedule-card-heading {
+    display: block;
+  }
+
+  .mass-timings-section .schedule-card h3 {
+    font-size: 30px;
+  }
+
+  .mass-timings-section .schedule-note {
+    display: block;
+    margin-top: 10px;
+  }
+
+  .mass-timings-section .schedule-row {
+    display: block;
+    padding: 18px 0;
+  }
+
+  .mass-timings-section .schedule-item-time {
+    display: block;
+    margin-top: 8px;
+    text-align: left;
+    white-space: normal;
+  }
+
+  .mass-timings-section .schedule-row-novena {
+    margin: 0 -8px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}
+
+/* =========================================================
+   MASS TIMINGS PAGE
+   ========================================================= */
+
+.mass-timings-section {
+  position: relative;
+  overflow: hidden;
+  background: #f8f7f3;
+}
+
+/* Subtle background decoration */
+.mass-timings-section::before {
+  content: "";
+  position: absolute;
+  top: 80px;
+  right: -180px;
+  width: 420px;
+  height: 420px;
+  border: 1px solid rgba(197, 146, 35, 0.12);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.mass-timings-section::after {
+  content: "";
+  position: absolute;
+  bottom: 80px;
+  left: -220px;
+  width: 460px;
+  height: 460px;
+  border: 1px solid rgba(9, 82, 105, 0.08);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.mass-timings-section .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* Section heading */
+.mass-timings-section .section-heading {
+  margin-bottom: 48px;
+}
+
+.mass-timings-section .eyebrow {
+  color: #c59628;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+
+.mass-timings-section .section-title {
+  max-width: 850px;
+  margin-top: 12px;
+  color: #07566d;
+  font-size: clamp(2.5rem, 5vw, 5rem);
+  line-height: 1.05;
+  letter-spacing: -0.045em;
+}
+
+/* Main schedule grid */
+.mass-timings-section .schedule {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+/* Schedule card */
+.mass-timings-section .schedule-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 230px;
+  padding: 30px;
+  overflow: hidden;
+  border: 1px solid rgba(7, 86, 109, 0.14);
+  border-radius: 4px;
+  background: #ffffff;
+  box-shadow: 0 8px 30px rgba(7, 86, 109, 0.035);
+
+  /* Entry animation */
+  opacity: 0;
+  transform: translateY(24px);
+  animation: massCardReveal 0.7s ease forwards;
+
+  transition:
+    transform 0.35s ease,
+    border-color 0.35s ease,
+    box-shadow 0.35s ease,
+    background-color 0.35s ease;
+}
+
+/* Staggered card animation */
+.mass-timings-section .schedule-card:nth-child(1) {
+  animation-delay: 0.08s;
+}
+
+.mass-timings-section .schedule-card:nth-child(2) {
+  animation-delay: 0.16s;
+}
+
+.mass-timings-section .schedule-card:nth-child(3) {
+  animation-delay: 0.24s;
+}
+
+.mass-timings-section .schedule-card:nth-child(4) {
+  animation-delay: 0.32s;
+}
+
+.mass-timings-section .schedule-card:nth-child(5) {
+  animation-delay: 0.4s;
+}
+
+.mass-timings-section .schedule-card:nth-child(6) {
+  animation-delay: 0.48s;
+}
+
+@keyframes massCardReveal {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Top gold line on every card */
+.mass-timings-section .schedule-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 3px;
+  background: #c59628;
+  transition: width 0.4s ease;
+}
+
+/* Hover effect */
+@media (hover: hover) and (pointer: fine) {
+  .mass-timings-section .schedule-card:hover {
+    transform: translateY(-7px);
+    border-color: rgba(197, 150, 40, 0.45);
+    background: #fffefa;
+    box-shadow: 0 18px 45px rgba(7, 86, 109, 0.11);
+  }
+
+  .mass-timings-section .schedule-card:hover::before {
+    width: 100%;
+  }
+
+  .mass-timings-section .schedule-card:hover .schedule-card-heading h3 {
+    color: #c59628;
+  }
+}
+
+/* Card heading */
+.mass-timings-section .schedule-card-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid rgba(7, 86, 109, 0.12);
+}
+
+.mass-timings-section .schedule-card-heading h3 {
+  margin: 0;
+  color: #07566d;
+  font-family: inherit;
+  font-size: clamp(1.35rem, 2vw, 1.8rem);
+  font-weight: 500;
+  line-height: 1.2;
+  transition: color 0.3s ease;
+}
+
+.mass-timings-section .schedule-note {
+  flex-shrink: 0;
+  padding-top: 5px;
+  color: #9b9b94;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.4;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+/* Schedule items wrapper */
+.mass-timings-section .schedule-items {
+  display: flex;
+  flex-direction: column;
+  margin-top: 4px;
+}
+
+/* Individual timing row */
+.mass-timings-section .schedule-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  min-width: 0;
+  padding: 18px 0;
+  border-bottom: 1px solid rgba(7, 86, 109, 0.08);
+  transition:
+    padding 0.3s ease,
+    background-color 0.3s ease;
+}
+
+.mass-timings-section .schedule-row:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.mass-timings-section .schedule-row:first-child {
+  padding-top: 20px;
+}
+
+/* Row hover */
+@media (hover: hover) and (pointer: fine) {
+  .mass-timings-section .schedule-row:hover {
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 3px;
+    background: rgba(197, 150, 40, 0.06);
+  }
+}
+
+/* Title area */
+.mass-timings-section .schedule-row-title {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.mass-timings-section .schedule-item-title {
+  color: #365b66;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+/* Special devotion label */
+.mass-timings-section .schedule-item-label {
+  color: #a18a52;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+}
+
+/* Time */
+.mass-timings-section .schedule-item-time {
+  flex-shrink: 0;
+  color: #07566d;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.5;
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* Novena rows */
+.mass-timings-section .schedule-row-novena {
+  background: rgba(197, 150, 40, 0.025);
+}
+
+.mass-timings-section .schedule-row-novena .schedule-item-title {
+  color: #8c6a1d;
+}
+
+/* Empty state */
+.mass-timings-section .empty-schedule {
+  min-height: auto;
+  padding: 40px;
+  opacity: 1;
+  transform: none;
+  animation: none;
+}
+
+.mass-timings-section .empty-schedule h3 {
+  margin: 0 0 12px;
+  color: #07566d;
+  font-size: 1.5rem;
+}
+
+.mass-timings-section .empty-schedule p {
+  margin: 0;
+  color: #687b80;
+  line-height: 1.7;
+}
+
+/* Tamil typography */
+.mass-timings-section:lang(ta),
+.mass-timings-section .tamil-text {
+  font-family:
+    "Noto Sans Tamil",
+    "Latha",
+    "Tamil Sangam MN",
+    sans-serif;
+}
+
+.mass-timings-section:lang(ta) .section-title {
+  letter-spacing: 0;
+  line-height: 1.35;
+}
+
+.mass-timings-section:lang(ta) .schedule-card-heading h3 {
+  line-height: 1.45;
+}
+
+.mass-timings-section:lang(ta) .schedule-item-title,
+.mass-timings-section:lang(ta) .schedule-item-time {
+  line-height: 1.7;
+}
+
+/* Tablet */
+@media (max-width: 900px) {
+  .mass-timings-section .schedule {
+    grid-template-columns: 1fr;
+  }
+
+  .mass-timings-section .schedule-card {
+    min-height: auto;
+  }
+
+  .mass-timings-section .section-heading {
+    margin-bottom: 36px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .mass-timings-section .section-title {
+    font-size: clamp(2.2rem, 11vw, 3.5rem);
+  }
+
+  .mass-timings-section .schedule {
+    gap: 16px;
+  }
+
+  .mass-timings-section .schedule-card {
+    padding: 22px 18px;
+  }
+
+  .mass-timings-section .schedule-card-heading {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .mass-timings-section .schedule-note {
+    padding-top: 0;
+    text-align: left;
+  }
+
+  .mass-timings-section .schedule-row {
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px 0;
+  }
+
+  .mass-timings-section .schedule-item-title,
+  .mass-timings-section .schedule-item-time {
+    font-size: 0.95rem;
+  }
+
+  .mass-timings-section .schedule-item-time {
+    white-space: normal;
+  }
+}
+
+/* Accessibility: reduce animation if requested by the user/device */
+@media (prefers-reduced-motion: reduce) {
+  .mass-timings-section .schedule-card {
+    opacity: 1;
+    transform: none;
+    animation: none;
+    transition: none;
+  }
+
+  .mass-timings-section .schedule-card,
+  .mass-timings-section .schedule-card::before,
+  .mass-timings-section .schedule-card-heading h3,
+  .mass-timings-section .schedule-row {
+    transition: none;
+  }
+}
+
+/* =========================================================
+   HEADER HIDE ON SCROLL DOWN / SHOW ON SCROLL UP
+   ========================================================= */
+
+.header-scroll-wrapper {
+  position: relative;
+  z-index: 1000;
+  width: 100%;
+  transform: translateY(0);
+  opacity: 1;
+  transition:
+    transform 0.35s ease,
+    opacity 0.25s ease;
+}
+
+.header-scroll-visible {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.header-scroll-hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* The header should not be fixed or sticky */
+.header {
+  position: relative;
+  z-index: 1000;
+}
+
+.topbar {
+  position: relative;
+  z-index: 1001;
+}
+
+/* Reduced motion accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .header-scroll-wrapper {
+    transition: none;
+  }
+}
+
+/* =========================================================
+   CONTACT PAGE
+   ========================================================= */
+
+.contact-page {
+  background: #f8f6f1;
+  color: #123f52;
+  overflow: hidden;
+}
+
+/* Main contact section */
+
+.contact-section {
+  padding-top: 92px;
+  padding-bottom: 110px;
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 80px;
+  align-items: start;
+}
+
+/* =========================================================
+   CONTACT INFORMATION
+   ========================================================= */
+
+.contact-information {
+  min-width: 0;
+  padding-top: 12px;
+}
+
+.contact-information .eyebrow,
+.contact-panel-heading .eyebrow {
+  margin-bottom: 18px;
+}
+
+.contact-information .section-title {
+  margin: 0;
+  color: #084b63;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(42px, 4.2vw, 68px);
+  font-weight: 400;
+  line-height: 1.04;
+  letter-spacing: -1.8px;
+}
+
+.contact-intro {
+  max-width: 510px;
+  margin-top: 28px;
+  color: #66727a;
+  font-size: 17px;
+  line-height: 1.9;
+}
+
+.contact-details {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  margin-top: 44px;
+}
+
+.detail {
+  display: flex;
+  align-items: flex-start;
+  gap: 17px;
+  min-width: 0;
+}
+
+.detail-icon {
+  display: flex;
+  flex: 0 0 42px;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(8, 75, 99, 0.2);
+  border-radius: 50%;
+  color: #0a6f8c;
+  background: rgba(255, 255, 255, 0.65);
+}
+
+.detail-content {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+}
+
+.detail-content strong {
+  color: #084b63;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.detail-content span {
+  color: #66727a;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+/* =========================================================
+   CONTACT FORM PANEL
+   ========================================================= */
+
+.contact-panel {
+  min-width: 0;
+  padding: 38px;
+  border: 1px solid rgba(8, 75, 99, 0.13);
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 18px 55px rgba(8, 75, 99, 0.08);
+}
+
+.contact-panel-heading h2 {
+  margin: 0;
+  color: #084b63;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(30px, 3vw, 44px);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.8px;
+}
+
+.contact-panel-heading p {
+  max-width: 540px;
+  margin: 16px 0 0;
+  color: #727b80;
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.contact-form {
+  margin-top: 32px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px 18px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 9px;
+}
+
+.form-field-full {
+  grid-column: 1 / -1;
+}
+
+.form-field label {
+  color: #084b63;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.form-field label span {
+  color: #b48a22;
+}
+
+.field {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  border: 1px solid #d8dfe0;
+  border-radius: 3px;
+  outline: none;
+  background: #fbfcfb;
+  color: #183f4e;
+  font-family: inherit;
+  font-size: 15px;
+  line-height: 1.5;
+  padding: 14px 15px;
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+.field::placeholder {
+  color: #9aa4a7;
+}
+
+.field:hover {
+  border-color: #a8bdc4;
+  background: #ffffff;
+}
+
+.field:focus {
+  border-color: #0b7694;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(11, 118, 148, 0.11);
+}
+
+select.field {
+  min-height: 50px;
+  cursor: pointer;
+}
+
+.textarea {
+  min-height: 145px;
+  resize: vertical;
+}
+
+/* =========================================================
+   SUBMIT BUTTON
+   ========================================================= */
+
+.contact-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  min-height: 52px;
+  padding: 14px 25px;
+  border: 1px solid #086b87;
+  border-radius: 2px;
+  background: #086b87;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.contact-submit span {
+  font-size: 21px;
+  font-weight: 400;
+  line-height: 1;
+  transition: transform 180ms ease;
+}
+
+.contact-submit:hover {
+  border-color: #064f66;
+  background: #064f66;
+  box-shadow: 0 10px 25px rgba(8, 75, 99, 0.18);
+  transform: translateY(-2px);
+}
+
+.contact-submit:hover span {
+  transform: translateX(4px);
+}
+
+.contact-submit:active {
+  transform: translateY(0);
+}
+
+.contact-submit:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* =========================================================
+   FORM MESSAGE
+   ========================================================= */
+
+.form-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 22px;
+  padding: 14px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.form-message-success {
+  border: 1px solid #b9dfc6;
+  background: #effaf2;
+  color: #22643a;
+}
+
+.form-message-error {
+  border: 1px solid #edc3c3;
+  background: #fff3f3;
+  color: #a33434;
+}
+
+/* =========================================================
+   RESPONSIVE DESIGN
+   ========================================================= */
+
+@media (max-width: 1100px) {
+  .contact-grid {
+    gap: 45px;
+  }
+
+  .contact-panel {
+    padding: 30px;
+  }
+}
+
+@media (max-width: 850px) {
+  .contact-section {
+    padding-top: 65px;
+    padding-bottom: 75px;
+  }
+
+  .contact-grid {
+    grid-template-columns: 1fr;
+    gap: 55px;
+  }
+
+  .contact-information .section-title {
+    font-size: clamp(42px, 10vw, 62px);
+  }
+
+  .contact-intro {
+    max-width: 680px;
+  }
+
+  .contact-details {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+  }
+
+  .detail {
+    flex-direction: column;
+    gap: 13px;
+  }
+}
+
+@media (max-width: 620px) {
+  .contact-section {
+    padding-top: 48px;
+    padding-bottom: 60px;
+  }
+
+  .contact-grid {
+    gap: 42px;
+  }
+
+  .contact-information .section-title {
+    font-size: 43px;
+    letter-spacing: -1px;
+  }
+
+  .contact-intro {
+    margin-top: 20px;
+    font-size: 15px;
+    line-height: 1.8;
+  }
+
+  .contact-details {
+    display: flex;
+    gap: 24px;
+    margin-top: 32px;
+  }
+
+  .detail {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .detail-icon {
+    flex-basis: 38px;
+    width: 38px;
+    height: 38px;
+  }
+
+  .detail-content span {
+    font-size: 15px;
+  }
+
+  .contact-panel {
+    padding: 23px 18px;
+    border-radius: 6px;
+  }
+
+  .contact-panel-heading h2 {
+    font-size: 32px;
+  }
+
+  .contact-panel-heading p {
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .contact-form {
+    margin-top: 26px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .form-field-full {
+    grid-column: auto;
+  }
+
+  .field {
+    font-size: 14px;
+    padding: 13px 13px;
+  }
+
+  .textarea {
+    min-height: 125px;
+  }
+
+  .contact-submit {
+    width: 100%;
+  }
+}
+
+/* =========================================================
+   DONATION PAGE
+   ========================================================= */
+
+.donation-page {
+  background: #f8f7f3;
+  color: #123b4a;
+}
+
+/* Donation section spacing */
+.donation-page .section {
+  padding-top: 90px;
+  padding-bottom: 100px;
+}
+
+/* Donation card */
+.donation-page .donation-card,
+.donation-page .donation-panel,
+.donation-page .donation-form {
+  background: #fffdfa;
+  border: 1px solid rgba(12, 91, 116, 0.12);
+  border-radius: 24px;
+  box-shadow: 0 18px 45px rgba(12, 59, 74, 0.07);
+}
+
+/* Donation headings */
+.donation-page h1,
+.donation-page h2,
+.donation-page h3 {
+  color: #084f68;
+}
+
+.donation-page p,
+.donation-page label {
+  color: #5f6d72;
+}
+
+/* Heart/icon heading color */
+.donation-page .donation-heading svg,
+.donation-page .donation-card svg {
+  color: #0b718c;
+  stroke: #0b718c;
+}
+
+/* Form fields */
+.donation-page input,
+.donation-page select,
+.donation-page textarea {
+  width: 100%;
+  border: 1px solid #d7e1e4;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #123b4a;
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    background 0.25s ease;
+}
+
+.donation-page input:focus,
+.donation-page select:focus,
+.donation-page textarea:focus {
+  outline: none;
+  border-color: #0b7898;
+  box-shadow: 0 0 0 3px rgba(11, 120, 152, 0.12);
+  background: #ffffff;
+}
+
+/* Placeholder color */
+.donation-page input::placeholder,
+.donation-page textarea::placeholder {
+  color: #91a2a8;
+}
+
+/* =========================================================
+   QUICK AMOUNT BUTTONS
+   ========================================================= */
+
+.donation-amounts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 14px;
+  margin-bottom: 20px;
+}
+
+.donation-amount-button {
+  min-width: 86px;
+  padding: 11px 18px;
+  border: 1.5px solid #0b718c;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #0b5f78;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+/* Hover effect */
+.donation-amount-button:hover {
+  border-color: #0b718c;
+  background: #0b718c;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(11, 113, 140, 0.18);
+}
+
+/* Selected amount */
+.donation-amount-button.active,
+.donation-amount-button.selected,
+.donation-amount-button[aria-pressed="true"] {
+  border-color: #0b718c;
+  background: #0b718c;
+  color: #ffffff;
+  box-shadow: 0 7px 16px rgba(11, 113, 140, 0.2);
+}
+
+/* =========================================================
+   DONATION BUTTON
+   ========================================================= */
+
+.donation-page .button,
+.donation-page button[type="submit"] {
+  border: 1px solid #0b718c;
+  border-radius: 0;
+  background: #0b718c;
+  color: #ffffff;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.donation-page .button:hover,
+.donation-page button[type="submit"]:hover {
+  border-color: #084f68;
+  background: #084f68;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(8, 79, 104, 0.2);
+}
+
+.donation-page button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+  transform: none;
+}
+
+/* =========================================================
+   GOLD ACCENT
+   ========================================================= */
+
+.donation-page .eyebrow,
+.donation-page .donation-eyebrow {
+  color: #c79825;
+}
+
+/* =========================================================
+   MOBILE RESPONSIVENESS
+   ========================================================= */
+
+@media (max-width: 768px) {
+  .donation-page .section {
+    padding-top: 60px;
+    padding-bottom: 70px;
+  }
+
+  .donation-amounts {
+    gap: 9px;
+  }
+
+  .donation-amount-button {
+    min-width: 74px;
+    padding: 10px 14px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .donation-amounts {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .donation-amount-button {
+    width: 100%;
+    min-width: 0;
   }
 }

@@ -58,11 +58,62 @@ const parishLife = [
   ],
 ];
 
+const parishPriests = [
+  "Rev. Fr. Sengole",
+  "Rev. Fr. Arul Joseph V. (1982–1985)",
+  "Rev. Fr. Xavier Raj A. (1985–1992)",
+  "Rev. Fr. David Kulandai S.J. (1992–1993)",
+  "Rev. Fr. Lawrence Xavier (1993–1997)",
+  "Rev. Fr. Jeganivasagar (1997–2004)",
+  "Rev. Fr. Benedict Barnabas (2004–2009)",
+  "Rev. Fr. Angel (2009–Present)",
+];
+
+const associations = [
+  "Vincent de Paul Society",
+  "Legion of Mary",
+  "Dialogue Commission",
+  "Christian Life Commission",
+  "Choir",
+  "Youth Association",
+  "Altar Boys Society",
+  "Sunday Catechism",
+  "SIPPO Gents Self-Help Group",
+  "SIPPO Ladies Self-Help Group",
+  "Kolping Group",
+];
+
+const religiousCommunities = [
+  {
+    name: "Congregation of Immaculate Conception",
+    number: "Number: 3",
+    phone: "0452-2341362",
+  },
+  {
+    name: "Congregation of St. Anne of Chennai",
+    number: "Number: 8",
+    phone: "0452-2690745",
+  },
+];
+
+const parishInstitutions = [
+  {
+    name: "R. C. Primary School",
+    phone: "0452-2343490",
+    details: "Students: 420 (112), Staff: 11",
+  },
+  {
+    name: "R. C. Middle School",
+    phone: "0452-2343490",
+    details: "Students: 960 (253), Staff: 28",
+  },
+];
+
 export default async function About() {
   const siteSettings = await getSiteSettings();
 
   return (
-    <main>
+    <main className="about-page">
       <PageHero title="About Us" crumb="About" />
 
       {/* INTRODUCTION */}
@@ -154,6 +205,22 @@ export default async function About() {
                 </p>
               </div>
             </div>
+
+            <div className="card">
+              <div className="card-body">
+                <h3>Patron Saint</h3>
+
+                <p>Our Lady of Holy Rosary</p>
+              </div>
+            </div>
+
+            <div className="card">
+              <div className="card-body">
+                <h3>Telephone</h3>
+
+                <p>{siteSettings?.phone ?? "0452-2343490"}</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -207,6 +274,43 @@ export default async function About() {
               </div>
             ))}
           </div>
+
+          <div className="about-extra-content">
+            <p className="body-copy">
+              The parish has 16 Anbiyams and a Parish Council that encourage
+              active participation, fellowship and shared responsibility among
+              parishioners.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ASSOCIATIONS */}
+      <section className="section">
+        <div className="container">
+          <div className="section-heading">
+            <div>
+              <div className="eyebrow">Community participation</div>
+
+              <h2 className="section-title">
+                Parish Associations
+              </h2>
+            </div>
+          </div>
+
+          <div className="cards-grid">
+            {associations.map((association) => (
+              <div className="card" key={association}>
+                <div className="card-body">
+                  <h3>{association}</h3>
+                  <p>
+                    An important part of parish fellowship, service and
+                    spiritual growth.
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -231,6 +335,13 @@ export default async function About() {
                 Madurai Mission in 1592, generations of missionaries and
                 parishioners have contributed to the life and growth of the
                 community.
+              </p>
+
+              <p className="body-copy">
+                The parish territory includes important places such as Shri
+                Meenakshi Amman Temple, Periyar Bus Stand and Madurai Railway
+                Junction. Its southern boundary extends from the Vaigai River
+                towards Madurai Airport.
               </p>
 
               <p className="body-copy">
@@ -264,8 +375,31 @@ export default async function About() {
             {historyEntries.map(([year, text]) => (
               <div className="history-item" key={year}>
                 <strong>{year}</strong>
-
                 <p>{text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* SUCCESSION OF PARISH PRIESTS */}
+      <section className="wine-band">
+        <div className="container">
+          <div className="section-heading">
+            <div>
+              <div className="eyebrow">Leadership through the years</div>
+
+              <h2 className="section-title">
+                Succession of Parish Priests
+              </h2>
+            </div>
+          </div>
+
+          <div className="history-list">
+            {parishPriests.map((priest, index) => (
+              <div className="history-item" key={priest}>
+                <strong>{String(index + 1).padStart(2, "0")}</strong>
+                <p>{priest}</p>
               </div>
             ))}
           </div>
@@ -313,9 +447,131 @@ export default async function About() {
                 <h3>Community</h3>
 
                 <p>
-                  The parish continues to serve its community through its
-                  worship, associations and four substations.
+                  The parish continues to serve its community through worship,
+                  associations and four substations.
                 </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* RELIGIOUS COMMUNITIES */}
+      <section className="section">
+        <div className="container">
+          <div className="section-heading">
+            <div>
+              <div className="eyebrow">Religious presence</div>
+
+              <h2 className="section-title">
+                Religious Communities in the Parish
+              </h2>
+            </div>
+          </div>
+
+          <div className="cards-grid">
+            {religiousCommunities.map((community) => (
+              <div className="card" key={community.name}>
+                <div className="card-body">
+                  <h3>{community.name}</h3>
+                  <p>{community.number}</p>
+                  <p>{community.phone}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* SECULAR INSTITUTE */}
+      <section className="wine-band">
+        <div className="container">
+          <div className="section-heading">
+            <div>
+              <div className="eyebrow">Parish information</div>
+
+              <h2 className="section-title">
+                Secular Institute
+              </h2>
+            </div>
+          </div>
+
+          <p className="body-copy">
+            Nil
+          </p>
+        </div>
+      </section>
+
+      {/* INSTITUTIONS UNDER PARISH PRIEST */}
+      <section className="section">
+        <div className="container">
+          <div className="section-heading">
+            <div>
+              <div className="eyebrow">Educational institutions</div>
+
+              <h2 className="section-title">
+                Institutions Under the Parish Priest
+              </h2>
+            </div>
+          </div>
+
+          <div className="cards-grid">
+            {parishInstitutions.map((institution) => (
+              <div className="card" key={institution.name}>
+                <div className="card-body">
+                  <h3>{institution.name}</h3>
+                  <p>{institution.phone}</p>
+                  <p>{institution.details}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* INSTITUTIONS UNDER RELIGIOUS */}
+      <section className="wine-band">
+        <div className="container">
+          <div className="section-heading">
+            <div>
+              <div className="eyebrow">Religious institutions</div>
+
+              <h2 className="section-title">
+                Institutions Under the Religious
+              </h2>
+            </div>
+          </div>
+
+          <div className="cards-grid">
+            <div className="card">
+              <div className="card-body">
+                <h3>St. Anne’s Hr. Sec. School</h3>
+                <p>0452-2690101, 9976483801</p>
+                <p>Students: 899 (35), Staff: 26 (10)</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* KURUSADIS AND GROTTOS */}
+      <section className="section">
+        <div className="container">
+          <div className="section-heading">
+            <div>
+              <div className="eyebrow">Places of devotion</div>
+
+              <h2 className="section-title">
+                Kurusadis & Grottos in the Parish
+              </h2>
+            </div>
+          </div>
+
+          <div className="cards-grid">
+            <div className="card">
+              <div className="card-body">
+                <h3>Sahayamatha Grotto</h3>
+                <p>Holy Rosary Church</p>
               </div>
             </div>
           </div>

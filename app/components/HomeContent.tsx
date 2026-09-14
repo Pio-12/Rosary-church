@@ -6,11 +6,12 @@ import {
   Clock,
   ChevronDown,
 } from "lucide-react";
-
+import { useState } from "react";
 import { useLanguage } from "./LanguageProvider";
 import { translations } from "@/lib/supabase/translations";
 import ScrollReveal from "@/app/ScrollReveal";
 import AnimatedGallery from "./AnimatedGallery";
+import LegacyPersonCard from "./LegacyPersonCard";
 
 type SiteSettings = {
   hero_image_url?: string | null;
@@ -85,62 +86,67 @@ export default function HomeContent({
       {/* =====================================================
           HERO
          ===================================================== */}
-      <section
-        className="hero"
-        style={
-          siteSettings?.hero_image_url
-            ? {
-                backgroundImage: `url(${siteSettings.hero_image_url})`,
-              }
-            : undefined
+<section
+  className="hero"
+  style={
+    siteSettings?.hero_image_url
+      ? {
+          backgroundImage: `url(${siteSettings.hero_image_url})`,
         }
-      >
-        <div className="hero-glow" />
+      : undefined
+  }
+>
+  <div className="hero-glow" />
 
-        <span className="hero-sparkle" aria-hidden="true" />
-        <span className="hero-sparkle" aria-hidden="true" />
-        <span className="hero-sparkle" aria-hidden="true" />
+  <span className="hero-sparkle" aria-hidden="true" />
+  <span className="hero-sparkle" aria-hidden="true" />
+  <span className="hero-sparkle" aria-hidden="true" />
 
-        <div className="container">
-          <div className="hero-inner">
-            <div className="eyebrow hero-eyebrow">
-              {t.heroEyebrow} {establishedYear}
-            </div>
+  <div className="container">
+    <div className="hero-inner">
+      <div className="eyebrow hero-eyebrow">
+        {t.heroEyebrow} {establishedYear}
+      </div>
 
-            <h1 className="serif hero-title">
-              {churchName}
-            </h1>
+      <h1 className="serif hero-title">
+        {churchName}
+      </h1>
 
-            <div className="hero-divider" />
+      <div className="hero-divider" />
 
-            <p className="hero-description">
-              {churchTagline}
-            </p>
+      <p className="hero-description">
+        {churchTagline}
+      </p>
 
-            <div className="hero-actions">
-              <Link
-                className="button hero-button"
-                href="/about"
-              >
-                {t.heroExplore}
-                <ArrowRight size={14} />
-              </Link>
+      <div className="hero-actions">
+        {/* Explore Our Church */}
+        <Link
+          className="button hero-button"
+          href="/about"
+        >
+          {t.heroExplore}
+          <ArrowRight size={14} />
+        </Link>
 
-              <Link
-                className="button outline hero-button"
-                href="/mass-timings"
-              >
-                {t.massTimingsButton}
-              </Link>
-            </div>
-          </div>
-        </div>
+        {/* Prayer Request */}
+        <Link
+          className="button outline hero-button"
+          href="/prayer-request"
+        >
+          {t.prayerRequestButton}
+        </Link>
+      </div>
+    </div>
+  </div>
 
-        <a href="#welcome" className="scroll-indicator">
-          <span>{t.scrollExplore}</span>
-          <ChevronDown size={18} />
-        </a>
-      </section>
+  <a
+    href="#welcome"
+    className="scroll-indicator"
+  >
+    <span>{t.scrollExplore}</span>
+    <ChevronDown size={18} />
+  </a>
+</section>
 
       {/* =====================================================
           INTRO
@@ -254,53 +260,34 @@ export default function HomeContent({
         </div>
       </section>
 
-      {/* =====================================================
-          LEGACY
-         ===================================================== */}
-      <section className="wine-band legacy-section">
-        <div className="container">
-          <div className="legacy-heading reveal-up">
-            <div className="eyebrow">
-              {t.legacyEyebrow}
-            </div>
+{/* =====================================================
+    LEGACY
+   ===================================================== */}
+<section className="legacy-v2-section">
+  <div className="container">
+    <div className="legacy-v2-heading">
+      <div className="eyebrow">
+        {t.legacyEyebrow}
+      </div>
 
-            <h2 className="section-title">
-              {t.legacyTitle}
-            </h2>
+      <h2 className="section-title">
+        {t.legacyTitle}
+      </h2>
 
-            <p>{t.legacyDescription}</p>
-          </div>
+      <p>{t.legacyDescription}</p>
+    </div>
 
-          <div className="people-grid">
-            {t.people.map((person, index) => (
-              <div
-                className="person person-card"
-                key={person.name}
-                style={{
-                  animationDelay: `${index * 150}ms`,
-                }}
-              >
-                <div className="person-image">
-                  <img
-                    src={`https://images.unsplash.com/${person.photo}?auto=format&fit=crop&w=600&q=80`}
-                    alt={person.name}
-                  />
-
-                  <div className="person-overlay">
-                    <ArrowRight size={18} />
-                  </div>
-                </div>
-
-                <h3>{person.name}</h3>
-
-                <p>
-                  {person.role} {t.personDescription}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+    <div className="legacy-v2-grid">
+      {t.people.map((person, index) => (
+        <LegacyPersonCard
+          key={person.name}
+          person={person}
+          index={index}
+        />
+      ))}
+    </div>
+  </div>
+</section>
 
       {/* =====================================================
           MASS
