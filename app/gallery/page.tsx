@@ -44,21 +44,31 @@ export default function Gallery() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [loading, setLoading] = useState(true);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [selectedPhoto, setSelectedPhoto] = useState<GalleryItem | null>(null);
+  const [selectedPhoto, setSelectedPhoto] =
+    useState<GalleryItem | null>(null);
 
+  /*
+   * Load gallery images from Supabase
+   */
   useEffect(() => {
     async function loadGallery() {
-      const data = await getGalleryItems();
+      try {
+        const data = await getGalleryItems();
 
-      setPhotos(data || []);
-      setLoading(false);
+        setPhotos(data || []);
+      } catch (error) {
+        console.error("Gallery loading error:", error);
+        setPhotos([]);
+      } finally {
+        setLoading(false);
+      }
     }
 
     loadGallery();
   }, []);
 
   /*
-   * Automatically change the top gallery image.
+   * Automatically change the top showcase image
    */
   useEffect(() => {
     if (photos.length <= 1) return;
@@ -70,8 +80,28 @@ export default function Gallery() {
     return () => clearInterval(timer);
   }, [photos.length]);
 
+  /*
+   * Close lightbox when Escape is pressed
+   */
+  useEffect(() => {
+    function handleEscape(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setSelectedPhoto(null);
+      }
+    }
+
+    window.addEventListener("keydown", handleEscape);
+
+    return () => {
+      window.removeEventListener("keydown", handleEscape);
+    };
+  }, []);
+
   const activePhoto = photos[activeIndex];
 
+  /*
+   * Filter gallery images
+   */
   const filteredPhotos = useMemo(() => {
     if (selectedCategory === "All") {
       return photos;
@@ -88,6 +118,9 @@ export default function Gallery() {
     });
   }, [photos, selectedCategory]);
 
+  /*
+   * Top showcase controls
+   */
   const previousSlide = () => {
     if (!photos.length) return;
 
@@ -102,11 +135,19 @@ export default function Gallery() {
     setActiveIndex((previous) => (previous + 1) % photos.length);
   };
 
+  /*
+   * Reset active image when category changes
+   */
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
+  };
+
   return (
     <main className="gallery-page">
       {/* =====================================================
           1. TOP ANIMATED GALLERY SHOWCASE
       ====================================================== */}
+
       <section className="gallery-showcase">
         <div className="gallery-showcase-background">
           {activePhoto ? (
@@ -139,7 +180,10 @@ export default function Gallery() {
               moments from Our Lady of Holy Rosary Church.
             </p>
 
-            <a href="#church-pictures" className="button gallery-showcase-button">
+            <a
+              href="#church-pictures"
+              className="button gallery-showcase-button"
+            >
               Explore the gallery
               <ArrowRight size={16} />
             </a>
@@ -168,7 +212,7 @@ export default function Gallery() {
             <button
               type="button"
               onClick={previousSlide}
-              aria-label="Previous image"
+              aria-label="Previous gallery image"
             >
               <ChevronLeft size={20} />
             </button>
@@ -180,7 +224,8 @@ export default function Gallery() {
                   type="button"
                   className={activeIndex === index ? "active" : ""}
                   onClick={() => setActiveIndex(index)}
-                  aria-label={`Show image ${index + 1}`}
+                  aria-label={`Show gallery image ${index + 1}`}
+                  aria-current={activeIndex === index ? "true" : undefined}
                 />
               ))}
             </div>
@@ -188,7 +233,7 @@ export default function Gallery() {
             <button
               type="button"
               onClick={nextSlide}
-              aria-label="Next image"
+              aria-label="Next gallery image"
             >
               <ChevronRight size={20} />
             </button>
@@ -199,7 +244,11 @@ export default function Gallery() {
       {/* =====================================================
           2. MOVING TEXT STRIP
       ====================================================== */}
-      <section className="gallery-marquee" aria-label="Parish values">
+
+      <section
+        className="gallery-marquee"
+        aria-label="Parish values"
+      >
         <div className="gallery-marquee-track">
           {[...stripWords, ...stripWords].map((word, index) => (
             <span key={`${word}-${index}`}>
@@ -213,6 +262,7 @@ export default function Gallery() {
       {/* =====================================================
           3. EVERY MOMENT TELLS A STORY
       ====================================================== */}
+
       <section className="section gallery-story-section">
         <div className="container gallery-story-grid">
           <div className="gallery-story-visual">
@@ -225,6 +275,7 @@ export default function Gallery() {
                       photos[0].image_url
                     }
                     alt="Parish moment"
+                    loading="lazy"
                   />
                 </div>
 
@@ -235,6 +286,7 @@ export default function Gallery() {
                       photos[0].image_url
                     }
                     alt="Church celebration"
+                    loading="lazy"
                   />
                 </div>
               </>
@@ -288,7 +340,11 @@ export default function Gallery() {
       {/* =====================================================
           4. OUR CHURCH IN PICTURES
       ====================================================== */}
-      <section className="section gallery-pictures-section" id="church-pictures">
+
+      <section
+        className="section gallery-pictures-section"
+        id="church-pictures"
+      >
         <div className="container">
           <div className="gallery-heading-row">
             <div>
@@ -308,15 +364,22 @@ export default function Gallery() {
           {/* =================================================
               5. FILTER BUTTONS
           ================================================== */}
-          <div className="gallery-filter-row">
+
+          <div
+            className="gallery-filter-row"
+            role="tablist"
+            aria-label="Gallery categories"
+          >
             {categories.map((category) => (
               <button
                 key={category}
                 type="button"
+                role="tab"
+                aria-selected={selectedCategory === category}
                 className={`gallery-filter ${
                   selectedCategory === category ? "active" : ""
                 }`}
-                onClick={() => setSelectedCategory(category)}
+                onClick={() => handleCategoryChange(category)}
               >
                 {category}
               </button>
@@ -324,8 +387,9 @@ export default function Gallery() {
           </div>
 
           {/* =================================================
-              6. ANIMATED IMAGE GRID
+              6. ANIMATED IMAGE GRID / MOBILE SWIPE GALLERY
           ================================================== */}
+
           {loading ? (
             <div className="gallery-loading">
               <div className="gallery-loader" />
@@ -336,60 +400,82 @@ export default function Gallery() {
               <p>No gallery images available for this category.</p>
             </div>
           ) : (
-            <div className="animated-gallery-grid">
-              {filteredPhotos.map((photo, index) => (
-                <button
-                  type="button"
-                  className={`animated-gallery-card gallery-card-${index % 6}`}
-                  key={photo.id}
-                  onClick={() => setSelectedPhoto(photo)}
-                >
-                  <div className="animated-gallery-image">
-                    <img
-                      src={photo.image_url}
-                      alt={
-                        photo.title ||
-                        "Our Lady of Holy Rosary Church, Madurai"
-                      }
-                    />
+            <>
+              <div className="animated-gallery-grid">
+                {filteredPhotos.map((photo, index) => (
+                  <button
+                    type="button"
+                    className={`animated-gallery-card gallery-card-${
+                      index % 6
+                    }`}
+                    key={photo.id}
+                    onClick={() => setSelectedPhoto(photo)}
+                    aria-label={`View ${
+                      photo.title || "gallery image"
+                    }`}
+                  >
+                    <div className="animated-gallery-image">
+                      <img
+                        src={photo.image_url}
+                        alt={
+                          photo.title ||
+                          "Our Lady of Holy Rosary Church, Madurai"
+                        }
+                        loading={index < 3 ? "eager" : "lazy"}
+                      />
 
-                    <div className="animated-gallery-overlay">
-                      <span>View memory</span>
-                      <ArrowRight size={17} />
+                      <div className="animated-gallery-overlay">
+                        <span>View memory</span>
+                        <ArrowRight size={17} />
+                      </div>
+
+                      <div className="gallery-card-number">
+                        {String(index + 1).padStart(2, "0")}
+                      </div>
                     </div>
 
-                    <div className="gallery-card-number">
-                      {String(index + 1).padStart(2, "0")}
-                    </div>
-                  </div>
+                    {(photo.title || photo.description) && (
+                      <div className="animated-gallery-caption">
+                        {photo.title && <h3>{photo.title}</h3>}
 
-                  {(photo.title || photo.description) && (
-                    <div className="animated-gallery-caption">
-                      {photo.title && <h3>{photo.title}</h3>}
+                        {photo.description && (
+                          <p>{photo.description}</p>
+                        )}
+                      </div>
+                    )}
+                  </button>
+                ))}
+              </div>
 
-                      {photo.description && (
-                        <p>{photo.description}</p>
-                      )}
-                    </div>
-                  )}
-                </button>
-              ))}
-            </div>
+              {/* Mobile swipe instruction */}
+              <div className="gallery-swipe-hint">
+                <span>Swipe to explore more moments</span>
+                <span className="gallery-swipe-arrow">→</span>
+              </div>
+            </>
           )}
         </div>
       </section>
 
       {/* =====================================================
-          MOVING IMAGE STRIP
+          7. MOVING IMAGE STRIP
       ====================================================== */}
+
       {!loading && photos.length > 0 && (
-        <section className="moving-image-strip" aria-label="Gallery highlights">
+        <section
+          className="moving-image-strip"
+          aria-label="Gallery highlights"
+        >
           <div className="moving-image-track">
             {[...photos, ...photos].map((photo, index) => (
-              <div className="moving-strip-image" key={`${photo.id}-${index}`}>
+              <div
+                className="moving-strip-image"
+                key={`${photo.id}-${index}`}
+              >
                 <img
                   src={photo.image_url}
                   alt={photo.title || "Parish gallery"}
+                  loading="lazy"
                 />
               </div>
             ))}
@@ -398,8 +484,9 @@ export default function Gallery() {
       )}
 
       {/* =====================================================
-          7. VIRTUAL TOUR
+          8. VIRTUAL TOUR
       ====================================================== */}
+
       <section className="section virtual-tour-section">
         <div className="container">
           <div className="virtual-tour-grid">
@@ -445,18 +532,22 @@ export default function Gallery() {
       </section>
 
       {/* =====================================================
-          IMAGE LIGHTBOX
+          9. IMAGE LIGHTBOX
       ====================================================== */}
+
       {selectedPhoto && (
         <div
           className="gallery-lightbox"
           onClick={() => setSelectedPhoto(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Gallery image preview"
         >
           <button
             type="button"
             className="gallery-lightbox-close"
             onClick={() => setSelectedPhoto(null)}
-            aria-label="Close image"
+            aria-label="Close image preview"
           >
             ×
           </button>
@@ -472,7 +563,9 @@ export default function Gallery() {
 
             {(selectedPhoto.title || selectedPhoto.description) && (
               <div className="gallery-lightbox-caption">
-                {selectedPhoto.title && <h3>{selectedPhoto.title}</h3>}
+                {selectedPhoto.title && (
+                  <h3>{selectedPhoto.title}</h3>
+                )}
 
                 {selectedPhoto.description && (
                   <p>{selectedPhoto.description}</p>

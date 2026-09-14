@@ -10035,3 +10035,103 @@ select.field {
     aspect-ratio: 4 / 5;
   }
 }
+
+/* =========================================================
+   MOBILE SWIPEABLE GALLERY
+========================================================= */
+
+.gallery-swipe-hint {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .animated-gallery-grid {
+    display: flex !important;
+    gap: 16px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 8px 0 22px;
+    margin-top: 28px;
+
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    overscroll-behavior-x: contain;
+
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .animated-gallery-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .animated-gallery-card {
+    flex: 0 0 84%;
+    width: 84%;
+    min-width: 84%;
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+  }
+
+  .animated-gallery-image {
+    aspect-ratio: 4 / 5;
+  }
+
+  .animated-gallery-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .gallery-swipe-hint {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 2px;
+    color: #758185;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  .gallery-swipe-arrow {
+    color: #c99a2e;
+    font-size: 1.25rem;
+    animation: gallerySwipeArrow 1.5s ease-in-out infinite;
+  }
+
+  .animated-gallery-overlay {
+    opacity: 1;
+    background: linear-gradient(
+      to top,
+      rgba(4, 39, 52, 0.65),
+      transparent 60%
+    );
+  }
+
+  .animated-gallery-overlay span {
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 420px) {
+  .animated-gallery-card {
+    flex-basis: 88%;
+    width: 88%;
+    min-width: 88%;
+  }
+}
+
+@keyframes gallerySwipeArrow {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  50% {
+    transform: translateX(7px);
+  }
+}
