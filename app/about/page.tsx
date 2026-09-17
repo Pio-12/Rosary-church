@@ -72,15 +72,12 @@ const parishPriests = [
 const associations = [
   "Vincent de Paul Society",
   "Legion of Mary",
-  "Dialogue Commission",
-  "Christian Life Commission",
   "Choir",
   "Youth Association",
   "Altar Boys Society",
   "Sunday Catechism",
-  "SIPPO Gents Self-Help Group",
-  "SIPPO Ladies Self-Help Group",
-  "Kolping Group",
+  "Rosary Adults"
+  
 ];
 
 const religiousCommunities = [

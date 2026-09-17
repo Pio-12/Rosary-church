@@ -1,8 +1,53 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Language = "en" | "ta";
+
+/**
+ * Reveals any [data-reveal] element inside `rootRef` the first time it
+ * scrolls into view, then leaves it alone. Works on every mobile browser
+ * (Safari included) since it doesn't depend on CSS scroll-timelines.
+ * Respects prefers-reduced-motion by revealing everything immediately.
+ */
+function useScrollReveal(rootRef: React.RefObject<HTMLElement | null>) {
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+
+    const items = root.querySelectorAll<HTMLElement>("[data-reveal]");
+    if (!items.length) return;
+
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    if (prefersReducedMotion || typeof IntersectionObserver === "undefined") {
+      items.forEach((el) => el.classList.add("is-visible"));
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15, rootMargin: "0px 0px -10% 0px" }
+    );
+
+    items.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, [rootRef]);
+}
+
+/** Inline style helper for staggering a group of revealed siblings. */
+function stagger(index: number): React.CSSProperties {
+  return { "--i": index } as React.CSSProperties;
+}
 
 const translations = {
   en: {
@@ -214,13 +259,24 @@ export default function AboutPageContent() {
    * global LanguageProvider.
    */
   const [language, setLanguage] = useState<Language>("en");
+  const mainRef = useRef<HTMLElement>(null);
+
+  useScrollReveal(mainRef);
 
   const content = translations[language];
 
   return (
-    <main className={`about-page ${language === "ta" ? "is-tamil" : "is-english"}`}>
+    <main
+      ref={mainRef}
+      className={`about-page ${language === "ta" ? "is-tamil" : "is-english"}`}
+    >
       {/* Language selector */}
       <div className="about-language-switcher" aria-label="Language selector">
+        <span
+          className="about-language-indicator"
+          data-position={language === "en" ? "en" : "ta"}
+          aria-hidden="true"
+        />
         <button
           type="button"
           className={language === "en" ? "active" : ""}
@@ -240,12 +296,21 @@ export default function AboutPageContent() {
 
       {/* Hero section */}
       <section className="about-hero">
+        <span className="about-hero-glow" aria-hidden="true" />
+        <span className="about-hero-particles" aria-hidden="true">
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+        </span>
+
         <div className="about-container">
-          <p className="about-eyebrow">{content.heroEyebrow}</p>
+          <p className="about-eyebrow" data-reveal style={stagger(0)}>
+            {content.heroEyebrow}
+          </p>
 
-          <h1>{content.heroTitle}</h1>
+          <h1 data-reveal style={stagger(1)}>
+            {content.heroTitle}
+          </h1>
 
-          <p className="about-hero-description">
+          <p className="about-hero-description" data-reveal style={stagger(2)}>
             {content.heroDescription}
           </p>
         </div>
@@ -254,12 +319,12 @@ export default function AboutPageContent() {
       {/* History introduction */}
       <section className="about-section about-section-light">
         <div className="about-container about-intro-grid">
-          <div>
+          <div data-reveal style={stagger(0)}>
             <p className="about-eyebrow">{content.historyEyebrow}</p>
             <h2>{content.historyTitle}</h2>
           </div>
 
-          <p className="about-section-description">
+          <p className="about-section-description" data-reveal style={stagger(1)}>
             {content.historyDescription}
           </p>
         </div>
@@ -268,12 +333,19 @@ export default function AboutPageContent() {
       {/* Parish priest history */}
       <section className="about-section about-section-blue">
         <div className="about-container">
-          <p className="about-eyebrow">{content.priestsEyebrow}</p>
-          <h2>{content.priestsTitle}</h2>
+          <p className="about-eyebrow" data-reveal>
+            {content.priestsEyebrow}
+          </p>
+          <h2 data-reveal>{content.priestsTitle}</h2>
 
           <div className="about-history-list">
-            {content.history.map((entry) => (
-              <div className="about-history-item" key={entry.year}>
+            {content.history.map((entry, index) => (
+              <div
+                className="about-history-item"
+                key={entry.year}
+                data-reveal
+                style={stagger(index)}
+              >
                 <div className="about-history-number">{entry.year}</div>
 
                 <div className="about-history-name">{entry.name}</div>
@@ -286,12 +358,19 @@ export default function AboutPageContent() {
       {/* Grottos */}
       <section className="about-section about-section-light">
         <div className="about-container">
-          <p className="about-eyebrow">{content.grottosEyebrow}</p>
-          <h2>{content.grottosTitle}</h2>
+          <p className="about-eyebrow" data-reveal>
+            {content.grottosEyebrow}
+          </p>
+          <h2 data-reveal>{content.grottosTitle}</h2>
 
           <div className="about-card-grid about-grotto-grid">
-            {content.grottos.map((grotto) => (
-              <article className="about-info-card" key={grotto.title}>
+            {content.grottos.map((grotto, index) => (
+              <article
+                className="about-info-card"
+                key={grotto.title}
+                data-reveal
+                style={stagger(index)}
+              >
                 <h3>{grotto.title}</h3>
                 <p>{grotto.location}</p>
               </article>
@@ -303,19 +382,25 @@ export default function AboutPageContent() {
       {/* Parish information */}
       <section className="about-section about-section-blue about-parish-information">
         <div className="about-container">
-          <p className="about-eyebrow">{content.parishInformationEyebrow}</p>
-          <h2>{content.secularInstituteTitle}</h2>
+          <p className="about-eyebrow" data-reveal>
+            {content.parishInformationEyebrow}
+          </p>
+          <h2 data-reveal>{content.secularInstituteTitle}</h2>
 
-          <p className="about-empty-value">{content.nil}</p>
+          <p className="about-empty-value" data-reveal>
+            {content.nil}
+          </p>
         </div>
       </section>
 
       {/* Educational institutions */}
       <section className="about-section about-section-light">
         <div className="about-container">
-          <p className="about-eyebrow">{content.educationalEyebrow}</p>
+          <p className="about-eyebrow" data-reveal>
+            {content.educationalEyebrow}
+          </p>
 
-          <div className="about-empty-card">
+          <div className="about-empty-card" data-reveal>
             <p>{content.nil}</p>
           </div>
         </div>
@@ -324,11 +409,18 @@ export default function AboutPageContent() {
       {/* Parish life */}
       <section className="about-section about-section-light">
         <div className="about-container">
-          <p className="about-eyebrow">{content.parishLifeEyebrow}</p>
+          <p className="about-eyebrow" data-reveal>
+            {content.parishLifeEyebrow}
+          </p>
 
           <div className="about-card-grid about-parish-life-grid">
-            {content.parishLife.map((item) => (
-              <article className="about-info-card" key={item.title}>
+            {content.parishLife.map((item, index) => (
+              <article
+                className="about-info-card"
+                key={item.title}
+                data-reveal
+                style={stagger(index)}
+              >
                 <h3>{item.title}</h3>
                 <p>{item.description}</p>
               </article>
@@ -340,28 +432,28 @@ export default function AboutPageContent() {
       {/* Visit us */}
       <section className="about-section about-section-visit">
         <div className="about-container about-visit-grid">
-          <div>
+          <div data-reveal>
             <p className="about-eyebrow">{content.visitEyebrow}</p>
             <h2>{content.visitTitle}</h2>
           </div>
 
           <div className="about-contact-details">
-            <div className="about-contact-item">
+            <div className="about-contact-item" data-reveal style={stagger(0)}>
               <span>{content.addressLabel}</span>
               <p>{content.nil}</p>
             </div>
 
-            <div className="about-contact-item">
+            <div className="about-contact-item" data-reveal style={stagger(1)}>
               <span>{content.contactLabel}</span>
               <p>{content.nil}</p>
             </div>
 
-            <div className="about-contact-item">
+            <div className="about-contact-item" data-reveal style={stagger(2)}>
               <span>{content.phoneLabel}</span>
               <p>{content.nil}</p>
             </div>
 
-            <div className="about-contact-item">
+            <div className="about-contact-item" data-reveal style={stagger(3)}>
               <span>{content.emailLabel}</span>
               <p>{content.nil}</p>
             </div>
