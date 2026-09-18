@@ -11093,3 +11093,117 @@ select.field {
     animation: none;
   }
 }
+
+/* =========================================================
+   FINAL MOBILE FIX — MOMENTS OF FAITH GALLERY
+========================================================= */
+
+@media (max-width: 600px) {
+  /* Gallery section spacing */
+  .animated-gallery-section {
+    width: 100%;
+    padding: 55px 0 45px;
+    overflow: hidden;
+  }
+
+  /* Heading container */
+  .animated-gallery-section .gallery-heading {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto 30px;
+    padding: 0 20px;
+    text-align: center;
+  }
+
+  /* "Moments of Faith and Community" */
+  .animated-gallery-section .gallery-heading h2 {
+    width: 100%;
+    max-width: 340px;
+    margin: 0 auto;
+
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 2.25rem !important;
+    font-weight: 700;
+    line-height: 1.12 !important;
+    letter-spacing: -0.035em;
+    text-align: center;
+
+    overflow-wrap: normal;
+    word-break: normal;
+    text-wrap: balance;
+  }
+
+  /* Gallery description */
+  .animated-gallery-section .gallery-heading p {
+    width: 100%;
+    max-width: 330px;
+    margin: 16px auto 0;
+    padding: 0;
+
+    font-size: 0.92rem;
+    line-height: 1.65;
+    text-align: center;
+  }
+
+  /* Moving gallery track */
+  .animated-gallery-section .animated-gallery-track {
+    display: flex;
+    width: max-content;
+    gap: 14px;
+    min-width: max-content;
+    padding: 0 12px;
+
+    animation-duration: 32s;
+  }
+
+  /* Gallery cards */
+  .animated-gallery-section .animated-gallery-card {
+    width: 205px;
+    min-width: 205px;
+    max-width: 205px;
+    height: 270px;
+    flex: 0 0 205px;
+
+    border-radius: 18px;
+    overflow: hidden;
+  }
+
+  /* Gallery images */
+  .animated-gallery-section .animated-gallery-card img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Remove desktop vertical offset on alternating cards */
+  .animated-gallery-section .animated-gallery-card:nth-child(even) {
+    transform: translateY(12px);
+  }
+}
+
+/* Extra-small phones */
+@media (max-width: 380px) {
+  .animated-gallery-section {
+    padding-top: 45px;
+  }
+
+  .animated-gallery-section .gallery-heading h2 {
+    max-width: 300px;
+    font-size: 2rem !important;
+    line-height: 1.15 !important;
+  }
+
+  .animated-gallery-section .gallery-heading p {
+    max-width: 290px;
+    font-size: 0.88rem;
+  }
+
+  .animated-gallery-section .animated-gallery-card {
+    width: 180px;
+    min-width: 180px;
+    max-width: 180px;
+    height: 240px;
+    flex-basis: 180px;
+  }
+}
