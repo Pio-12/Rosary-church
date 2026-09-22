@@ -11207,3 +11207,472 @@ select.field {
     flex-basis: 180px;
   }
 }
+
+
+/* =========================================================
+   ABOUT PAGE — MOBILE-ONLY SCROLL/INTERACTION EFFECTS
+   Everything in this block is scoped to .about-page. The
+   layout/typography rules directly below (outside the media
+   query) reproduce the ORIGINAL desktop appearance for the
+   Journey timeline, Priest timeline and Substation cards using
+   their own class names, so desktop is unaffected. All of the
+   pop / flip / left-right / line-by-line / connected-timeline
+   *effects*, plus the card auto-scroll behaviour, only switch
+   on at max-width: 600px (the breakpoint this file already
+   uses for the mobile horizontal-scroll cards/timeline).
+========================================================= */
+
+.about-page [data-reveal] {
+  will-change: opacity, transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-page [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* ---------------------------------------------------------
+   DESKTOP-EQUIVALENT DEFAULTS (always on)
+   Journey timeline and Priest timeline use their own class
+   names (not .history-item), so we reproduce the original
+   plain-row / card-grid look here as the default, unrelated
+   to viewport size. The mobile media query below is the only
+   place that changes it.
+--------------------------------------------------------- */
+
+.about-page .journey-list {
+  display: grid;
+  gap: 0;
+}
+
+.about-page .journey-item {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 30px;
+  border-bottom: 1px solid var(--line);
+  padding: 30px 0;
+}
+
+.about-page .journey-item:first-child {
+  padding-top: 0;
+}
+
+.about-page .journey-item strong {
+  display: block;
+  color: var(--gold);
+  font-family: "Cormorant Garamond", serif;
+  font-size: 30px;
+  font-weight: 500;
+}
+
+.about-page .journey-item p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.about-page .priest-timeline {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 18px;
+  margin-top: 12px;
+}
+
+.about-page .priest-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.07);
+  transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease;
+}
+
+.about-page .priest-item:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.32);
+}
+
+.about-page .priest-number {
+  flex: 0 0 auto;
+  color: var(--hrc-gold-bright, var(--gold-light));
+  font-family: "Cormorant Garamond", serif;
+  font-size: 28px;
+  font-weight: 500;
+}
+
+.about-page .priest-name {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* Belt-and-braces: guarantee these two sections are visible on
+   anything wider than the mobile breakpoint, no matter what. */
+@media (min-width: 601px) {
+  .about-page .journey-item,
+  .about-page .priest-item,
+  .about-page [data-reveal="line"],
+  .about-page [data-reveal="priest"] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* Substation flip cards: back face + tap hint are hidden by
+   default, so desktop just sees the plain front (name +
+   location) exactly like every other card on the page. */
+.about-page .flip-card-back,
+.about-page .flip-card-hint {
+  display: none;
+}
+
+.about-page .flip-card-inner {
+  cursor: default;
+}
+
+/* =========================================================
+   MOBILE ONLY — everything below this line only applies at
+   max-width: 600px, matching the breakpoint this file already
+   uses for turning card grids into swipeable strips.
+========================================================= */
+
+@media (max-width: 600px) {
+
+  /* -------------------------------------------------------
+     1) "A Community of Faith & Service" — pop-in cards
+  ------------------------------------------------------- */
+
+  .about-page [data-reveal="pop"] {
+    opacity: 0;
+    transform: translateY(40px) scale(0.82);
+    transition:
+      opacity 0.6s var(--ease-spring),
+      transform 0.6s var(--ease-spring);
+    transition-delay: calc(var(--i, 0) * 110ms);
+  }
+
+  .about-page [data-reveal="pop"].is-inview {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  /* -------------------------------------------------------
+     2) "Our Substations" — click-or-auto-flip cards
+     Front shows name + location; back shows a sample photo
+     and address. Flips on tap, and also auto-cycles on its
+     own so people who never tap still see both sides.
+  ------------------------------------------------------- */
+
+  .about-page .flip-card {
+    min-height: 240px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    perspective: 1400px;
+  }
+
+  .about-page .flip-card:hover {
+    transform: none;
+    box-shadow: none;
+    border-color: transparent;
+  }
+
+  .about-page .flip-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 240px;
+    cursor: pointer;
+    transform-style: preserve-3d;
+    transition: transform 0.7s var(--ease-spring), box-shadow 0.35s ease;
+    border-radius: inherit;
+    outline-offset: 4px;
+  }
+
+  .about-page .flip-card-inner.is-flipped {
+    transform: rotateY(180deg);
+  }
+
+  .about-page .flip-card-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border: 1px solid var(--line);
+    border-radius: inherit;
+    background: white;
+    overflow: hidden;
+  }
+
+  .about-page .flip-card-front {
+    display: flex;
+    align-items: center;
+  }
+
+  .about-page .flip-card-front .card-body {
+    padding: 24px;
+    width: 100%;
+  }
+
+  .about-page .flip-card-hint {
+    display: inline-block;
+    margin-top: 14px;
+    color: var(--gold);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    animation: hrc-hint-pulse 1.8s ease-in-out infinite;
+  }
+
+  @keyframes hrc-hint-pulse {
+    0%, 100% { opacity: 0.55; }
+    50% { opacity: 1; }
+  }
+
+  .about-page .flip-card-back {
+    display: flex;
+    flex-direction: column;
+    transform: rotateY(180deg);
+  }
+
+  .about-page .flip-card-image {
+    width: 100%;
+    height: 55%;
+    object-fit: cover;
+    display: block;
+    max-width: 100%;
+  }
+
+  .about-page .flip-card-back-body {
+    padding: 16px 20px;
+    flex: 1;
+  }
+
+  .about-page .flip-card-back-body h3 {
+    margin: 0 0 6px;
+    color: var(--blue-deep);
+    font-family: "Cormorant Garamond", serif;
+    font-size: 20px;
+    font-weight: 500;
+  }
+
+  .about-page .flip-card-back-body p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .about-page .wine-band .flip-card-face {
+    background: white;
+  }
+
+  /* -------------------------------------------------------
+     3) "Parish Associations" — reveal left/right on scroll
+  ------------------------------------------------------- */
+
+  .about-page [data-reveal="lr"] {
+    opacity: 0;
+    transition:
+      opacity 0.7s var(--ease-soft),
+      transform 0.7s var(--ease-soft);
+    transition-delay: calc(var(--i, 0) * 130ms);
+  }
+
+  .about-page [data-reveal="lr"].lr-left {
+    transform: translateX(-90px);
+  }
+
+  .about-page [data-reveal="lr"].lr-right {
+    transform: translateX(90px);
+  }
+
+  .about-page [data-reveal="lr"].is-inview {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* -------------------------------------------------------
+     4) "A Journey Through History" — line-by-line reveal
+     Boundary/card feel removed; each row is just a line that
+     fades/slides up on its own, one after another as the
+     page scrolls, with tight spacing instead of card padding.
+  ------------------------------------------------------- */
+
+  .about-page .journey-item {
+    border-bottom: 1px solid var(--hrc-border, var(--line));
+    padding: 16px 0;
+    gap: 20px;
+  }
+
+  .about-page .journey-item:last-child {
+    border-bottom: none;
+  }
+
+  .about-page [data-reveal="line"] {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+      opacity 0.55s var(--ease-soft),
+      transform 0.55s var(--ease-soft);
+    transition-delay: calc(var(--i, 0) * 80ms);
+  }
+
+  .about-page [data-reveal="line"].is-inview {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* -------------------------------------------------------
+     5) "Succession of Parish Priests" — connected timeline
+     A vertical gold line with a glowing dot per entry; rows
+     alternate sliding in from left/right with a spring pop,
+     one after another as they scroll into view.
+  ------------------------------------------------------- */
+
+  .about-page .priest-timeline {
+    display: grid;
+    grid-template-columns: none;
+    position: relative;
+    gap: 18px;
+    margin-top: 16px;
+    padding-left: 32px;
+  }
+
+  .about-page .priest-timeline::before {
+    content: "";
+    position: absolute;
+    left: 7px;
+    top: 4px;
+    bottom: 4px;
+    width: 2px;
+    background: linear-gradient(
+      180deg,
+      var(--hrc-gold-bright, var(--gold-light)),
+      rgba(255, 255, 255, 0.1)
+    );
+  }
+
+  .about-page .priest-item {
+    position: relative;
+    padding: 16px 18px;
+  }
+
+  .about-page .priest-item::before {
+    content: "";
+    position: absolute;
+    left: -29px;
+    top: 50%;
+    width: 12px;
+    height: 12px;
+    transform: translateY(-50%);
+    border-radius: 50%;
+    background: var(--hrc-gold-bright, var(--gold-light));
+    box-shadow: 0 0 0 4px rgba(240, 183, 47, 0.2);
+  }
+
+  .about-page [data-reveal="priest"] {
+    opacity: 0;
+    transform: scale(0.92) translateX(-36px);
+    transition:
+      opacity 0.6s var(--ease-spring),
+      transform 0.6s var(--ease-spring);
+    transition-delay: calc(var(--i, 0) * 110ms);
+  }
+
+  .about-page [data-reveal="priest"].priest-right {
+    transform: scale(0.92) translateX(36px);
+  }
+
+  .about-page [data-reveal="priest"].is-inview {
+    opacity: 1;
+    transform: scale(1) translateX(0);
+  }
+
+  /* -------------------------------------------------------
+     6) Auto-scrolling card strips
+     AutoScrollCards (JS) drives the actual scrolling; this
+     just softens the edge so a sliver of the next card is
+     always visible as a "there's more" cue.
+  ------------------------------------------------------- */
+
+  .about-page .cards-grid {
+    scroll-behavior: smooth;
+  }
+}
+
+/* =========================================
+   HERO SECTION WITH ADMIN LOGIN
+========================================= */
+
+.hero-with-admin {
+  position: relative;
+}
+
+/* Admin Login Button Inside Blue Hero */
+.hero-with-admin .admin-login-button {
+  position: absolute;
+  right: clamp(24px, 5vw, 68px);
+  bottom: 28px;
+  z-index: 10;
+}
+
+.hero-with-admin .admin-login-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 13px 26px;
+  border-radius: 10px;
+
+  background: #ffffff;
+  color: #075f80;
+
+  border: 1px solid rgba(255, 255, 255, 0.8);
+
+  font-family: "DM Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.14);
+
+  transition:
+    background 0.3s ease,
+    color 0.3s ease,
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.hero-with-admin .admin-login-link:hover {
+  background: #c49a3a;
+  color: #ffffff;
+  border-color: #c49a3a;
+
+  transform: translateY(-3px);
+
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.2);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .hero-with-admin .admin-login-button {
+    right: 20px;
+    bottom: 20px;
+  }
+
+  .hero-with-admin .admin-login-link {
+    padding: 10px 17px;
+    font-size: 12px;
+  }
+}

@@ -1,5 +1,8 @@
 import { PageHero } from "../components/site";
 import { getSiteSettings } from "@/lib/supabase/site-settings";
+import { ScrollReveal } from "@/app/components/ScrollReveal";
+import { AutoScrollCards } from "@/app/components/AutoScrollCards";
+import { FlipCard } from "@/app/components/FlipCard";
 
 const historyEntries = [
   [
@@ -36,11 +39,38 @@ const historyEntries = [
   ],
 ];
 
+// NOTE: `image` and `address` below are sample/placeholder values for the
+// flip-card back face — swap each one for the substation's real photo and
+// address whenever they're available.
 const substations = [
-  ["Our Lady of Mercy", "Solaialagupuram"],
-  ["Immaculate Conception Church", "Perungudi"],
-  ["St. Antony's Church", "St. Antony's Street"],
-  ["St. Sebastian's Church", "Simmakkal"],
+  {
+    name: "Our Lady of Mercy",
+    location: "Solaialagupuram",
+    image:
+      "https://images.unsplash.com/photo-1548625149-fc4a29cf7092?auto=format&fit=crop&w=600&q=80",
+    address: "Our Lady of Mercy Church, Solaialagupuram, Madurai",
+  },
+  {
+    name: "Immaculate Conception Church",
+    location: "Perungudi",
+    image:
+      "https://images.unsplash.com/photo-1543968996-ee822b8176ba?auto=format&fit=crop&w=600&q=80",
+    address: "Immaculate Conception Church, Perungudi, Madurai",
+  },
+  {
+    name: "St. Antony's Church",
+    location: "St. Antony's Street",
+    image:
+      "https://images.unsplash.com/photo-1520645521318-f03a712f0e67?auto=format&fit=crop&w=600&q=80",
+    address: "St. Antony's Church, St. Antony's Street, Madurai",
+  },
+  {
+    name: "St. Sebastian's Church",
+    location: "Simmakkal",
+    image:
+      "https://images.unsplash.com/photo-1438032005730-c779502df39b?auto=format&fit=crop&w=600&q=80",
+    address: "St. Sebastian's Church, Simmakkal, Madurai",
+  },
 ];
 
 const parishLife = [
@@ -111,6 +141,13 @@ export default async function About() {
 
   return (
     <main className="about-page">
+      <ScrollReveal />
+      <AutoScrollCards />
+      {/* Keeps content visible if JavaScript is unavailable */}
+      <noscript>
+        <style>{`.about-page [data-reveal] { opacity: 1 !important; transform: none !important; }`}</style>
+      </noscript>
+
       <PageHero title="About Us" crumb="About" />
 
       {/* INTRODUCTION */}
@@ -149,7 +186,7 @@ export default async function About() {
             className="photo"
             src={
               siteSettings?.hero_image_url ||
-              "https://images.unsplash.com/photo-1473177104440-ffee2f376098?auto=format&fit=crop&w=1000&q=85"
+              "https://ncedxbcsrcwuoailxsph.supabase.co/storage/v1/object/public/church-images/home/gallery-2.jpg"
             }
             alt="Interior of Holy Rosary Church"
           />
@@ -169,8 +206,8 @@ export default async function About() {
             </div>
           </div>
 
-          <div className="cards-grid">
-            <div className="card">
+          <div className="cards-grid pop-grid">
+            <div className="card pop-card" data-reveal="pop" style={{ "--i": 0 } as React.CSSProperties}>
               <div className="card-body">
                 <h3>Our Location</h3>
 
@@ -181,7 +218,7 @@ export default async function About() {
               </div>
             </div>
 
-            <div className="card">
+            <div className="card pop-card" data-reveal="pop" style={{ "--i": 1 } as React.CSSProperties}>
               <div className="card-body">
                 <h3>Our Community</h3>
 
@@ -192,7 +229,7 @@ export default async function About() {
               </div>
             </div>
 
-            <div className="card">
+            <div className="card pop-card" data-reveal="pop" style={{ "--i": 2 } as React.CSSProperties}>
               <div className="card-body">
                 <h3>Mission Chapels</h3>
 
@@ -203,7 +240,7 @@ export default async function About() {
               </div>
             </div>
 
-            <div className="card">
+            <div className="card pop-card" data-reveal="pop" style={{ "--i": 3 } as React.CSSProperties}>
               <div className="card-body">
                 <h3>Patron Saint</h3>
 
@@ -211,7 +248,7 @@ export default async function About() {
               </div>
             </div>
 
-            <div className="card">
+            <div className="card pop-card" data-reveal="pop" style={{ "--i": 4 } as React.CSSProperties}>
               <div className="card-body">
                 <h3>Telephone</h3>
 
@@ -235,14 +272,16 @@ export default async function About() {
             </div>
           </div>
 
-          <div className="cards-grid">
-            {substations.map(([name, location]) => (
-              <div className="card" key={name}>
-                <div className="card-body">
-                  <h3>{name}</h3>
-                  <p>{location}</p>
-                </div>
-              </div>
+          <div className="cards-grid substations-grid">
+            {substations.map((station, index) => (
+              <FlipCard
+                key={station.name}
+                name={station.name}
+                location={station.location}
+                image={station.image}
+                address={station.address}
+                index={index}
+              />
             ))}
           </div>
         </div>
@@ -295,9 +334,14 @@ export default async function About() {
             </div>
           </div>
 
-          <div className="cards-grid">
-            {associations.map((association) => (
-              <div className="card" key={association}>
+          <div className="cards-grid lr-grid">
+            {associations.map((association, index) => (
+              <div
+                className={`card lr-card ${index % 2 === 0 ? "lr-left" : "lr-right"}`}
+                key={association}
+                data-reveal="lr"
+                style={{ "--i": Math.floor(index / 2) } as React.CSSProperties}
+              >
                 <div className="card-body">
                   <h3>{association}</h3>
                   <p>
@@ -350,7 +394,7 @@ export default async function About() {
 
             <img
               className="photo"
-              src="https://images.unsplash.com/photo-1519491050282-cf00c82424b4?auto=format&fit=crop&w=900&q=85"
+              src="https://ncedxbcsrcwuoailxsph.supabase.co/storage/v1/object/public/church-images/home/gallery-2.jpg"
               alt="Church architecture and light"
             />
           </div>
@@ -368,9 +412,14 @@ export default async function About() {
             </div>
           </div>
 
-          <div className="history-list">
-            {historyEntries.map(([year, text]) => (
-              <div className="history-item" key={year}>
+          <div className="journey-list">
+            {historyEntries.map(([year, text], index) => (
+              <div
+                className="journey-item"
+                key={year}
+                data-reveal="line"
+                style={{ "--i": index % 5 } as React.CSSProperties}
+              >
                 <strong>{year}</strong>
                 <p>{text}</p>
               </div>
@@ -392,11 +441,18 @@ export default async function About() {
             </div>
           </div>
 
-          <div className="history-list">
+          <div className="priest-timeline">
             {parishPriests.map((priest, index) => (
-              <div className="history-item" key={priest}>
-                <strong>{String(index + 1).padStart(2, "0")}</strong>
-                <p>{priest}</p>
+              <div
+                className={`priest-item ${index % 2 === 0 ? "priest-left" : "priest-right"}`}
+                key={priest}
+                data-reveal="priest"
+                style={{ "--i": index % 4 } as React.CSSProperties}
+              >
+                <span className="priest-number">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <p className="priest-name">{priest}</p>
               </div>
             ))}
           </div>

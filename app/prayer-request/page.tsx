@@ -4,15 +4,15 @@ import { useState, useId } from "react";
 import Link from "next/link";
 import {
   CheckCircle,
-  QrCode,
   ExternalLink,
   Heart,
   Calendar,
   AlertCircle,
   FileText,
   Sparkles,
+  ArrowRight,
 } from "lucide-react";
-import { PageHero } from "../components/site";
+import { QRCodeSVG } from "qrcode.react";
 
 /* ==========================================================================
    CONFIGURATION CONSTANTS
@@ -23,7 +23,7 @@ import { PageHero } from "../components/site";
  * Replace this with your actual UPI deep link, payment page, or gateway URL:
  * e.g. "upi://pay?pa=arokiyanelsonpio@okaxis&pn=Our+Lady+of+Holy+Rosary+Church&am=150&cu=INR&tn=Mass+Intention"
  */
-export const PAYMENT_LINK = "YOUR_PAYMENT_LINK_HERE";
+export const PAYMENT_LINK = "upi://pay?pa=arokiyanelsonpio@okaxis&pn=Our+Lady+of+Holy+Rosary+Church&am=200&cu=INR&tn=Mass+Intention";
 
 /**
  * Place your QR code image inside the `public/images/` directory:
@@ -31,10 +31,10 @@ export const PAYMENT_LINK = "YOUR_PAYMENT_LINK_HERE";
  * The component will automatically display this image, or an elegant
  * placeholder if the file has not been uploaded yet.
  */
-export const QR_IMAGE_PATH = "/images/mass-intention-qr.png";
+// QR code is generated dynamically from PAYMENT_LINK below.
 
 /** Fixed offering amount per Mass intention */
-export const MASS_OFFERING_AMOUNT = 150;
+export const MASS_OFFERING_AMOUNT = 200;
 
 /** Maximum words allowed in the intention text */
 export const MAX_WORDS = 50;
@@ -56,9 +56,11 @@ export default function PrayerRequestPage() {
   const [intentionType, setIntentionType] = useState("General Prayer / பொதுவான கருத்து");
   const [intention, setIntention] = useState("");
   const [paymentRef, setPaymentRef] = useState("");
+  const [prayerDate, setPrayerDate] = useState("");
+  const [prayerTime, setPrayerTime] = useState("");
+  const [receipt, setReceipt] = useState<File | null>(null);
 
   // UI State
-  const [qrImageError, setQrImageError] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -99,16 +101,70 @@ export default function PrayerRequestPage() {
       return;
     }
 
+    // 5. Validate prayer date and time
+    if (!prayerDate || !prayerTime) {
+      setErrorMsg(
+        "Please select your prayer date and time / உங்கள் பிரார்த்தனை தேதியையும் நேரத்தையும் தேர்ந்தெடுக்கவும்."
+      );
+      return;
+    }
+
+    const selectedPrayerDateTime = new Date(`${prayerDate}T${prayerTime}`);
+    const minimumAdvanceTime = new Date(Date.now() + 45 * 60 * 1000);
+
+    if (
+      Number.isNaN(selectedPrayerDateTime.getTime()) ||
+      selectedPrayerDateTime.getTime() < minimumAdvanceTime.getTime()
+    ) {
+      setErrorMsg(
+        "Prayer requests must be submitted at least 45 minutes before the selected prayer time. / தேர்ந்தெடுக்கப்பட்ட பிரார்த்தனை நேரத்திற்கு குறைந்தது 45 நிமிடங்களுக்கு முன்பாக கோரிக்கையைச் சமர்ப்பிக்க வேண்டும்."
+      );
+      return;
+    }
+
+    if (!receipt) {
+      setErrorMsg(
+        "Please upload your payment receipt / உங்கள் பணம் செலுத்திய ரசீதை பதிவேற்றவும்."
+      );
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
-      // Simulate submission processing
-      await new Promise((resolve) => setTimeout(resolve, 600));
+      const formData = new FormData();
+      formData.append("name", name.trim());
+      formData.append("email", email.trim());
+      formData.append("phone", phone.trim());
+      formData.append("intentionType", intentionType);
+      formData.append("intention", intention.trim());
+      formData.append("paymentRef", paymentRef.trim());
+      formData.append("prayerDateTime", selectedPrayerDateTime.toISOString());
+      formData.append("amount", String(MASS_OFFERING_AMOUNT));
+      formData.append("receipt", receipt);
+
+      const response = await fetch("/api/prayer-request", {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          result?.error ||
+            "Something went wrong. Please try again / ஏதேனும் தவறு ஏற்பட்டது. மீண்டும் முயற்சிக்கவும்."
+        );
+      }
 
       setIsSubmitted(true);
       window.scrollTo({ top: 120, behavior: "smooth" });
-    } catch {
-      setErrorMsg("Something went wrong. Please try again / ஏதேனும் தவறு ஏற்பட்டது. மீண்டும் முயற்சிக்கவும்.");
+    } catch (error) {
+      setErrorMsg(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong. Please try again / ஏதேனும் தவறு ஏற்பட்டது. மீண்டும் முயற்சிக்கவும்."
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -128,8 +184,50 @@ export default function PrayerRequestPage() {
 
   return (
     <main>
-      {/* PAGE HERO BANNER */}
-      <PageHero title="Mass Intentions" crumb="Prayer Request" />
+      {/* PAGE HERO WITH ADMIN LOGIN INSIDE THE BLUE SECTION */}
+      <section className="page-hero">
+        <div className="container">
+          <div className="eyebrow">Our Lady of Holy Rosary Church</div>
+
+          <h1 className="serif">Mass Intentions</h1>
+
+          <div className="breadcrumbs">
+            Home <ArrowRight size={12} style={{ verticalAlign: "middle" }} /> Prayer Request
+          </div>
+
+          {/* ADMIN LOGIN BUTTON */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              marginTop: "30px",
+            }}
+          >
+            <Link
+              href="/admin/login"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "13px 26px",
+                borderRadius: "10px",
+                background: "#ffffff",
+                color: "#075f80",
+                border: "1px solid rgba(255, 255, 255, 0.85)",
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: "14px",
+                fontWeight: 700,
+                letterSpacing: "0.02em",
+                textDecoration: "none",
+                boxShadow: "0 6px 18px rgba(0, 0, 0, 0.14)",
+                transition: "all 0.3s ease",
+              }}
+            >
+              Admin Login
+            </Link>
+          </div>
+        </div>
+      </section>
 
       <section className="section" style={{ paddingTop: "60px", paddingBottom: "100px" }}>
         <div className="container">
@@ -144,7 +242,9 @@ export default function PrayerRequestPage() {
           >
             <div className="eyebrow" style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
               <Sparkles size={14} /> Sacred Offering &middot; புனித காணிக்கை
+              
             </div>
+            
 
             <h1
               className="serif"
@@ -157,6 +257,7 @@ export default function PrayerRequestPage() {
             >
               Mass Intentions
             </h1>
+            
 
             <div
               style={{
@@ -179,6 +280,7 @@ export default function PrayerRequestPage() {
                 உங்கள் அன்புக்குரியவர்களுக்காகவும் தனிப்பட்ட கருத்துக்களுக்காகவும் திருப்பலி நிறைவேற்றக் கீழே உள்ள விவரங்களை நிரப்பி காணிக்கையைச் செலுத்தவும்.
               </span>
             </p>
+            
           </div>
 
           {/* ══════════════════════════════════════════════════════
@@ -308,6 +410,14 @@ export default function PrayerRequestPage() {
                       &ldquo;{intention}&rdquo;
                     </p>
                   </div>
+                  <div>
+                    <span style={{ color: "var(--muted)" }}>Prayer Date / பிரார்த்தனை தேதி: </span>
+                    <strong style={{ color: "var(--ink)" }}>{prayerDate}</strong>
+                  </div>
+                  <div>
+                    <span style={{ color: "var(--muted)" }}>Prayer Time / பிரார்த்தனை நேரம்: </span>
+                    <strong style={{ color: "var(--ink)" }}>{prayerTime}</strong>
+                  </div>
                   {paymentRef && (
                     <div style={{ borderTop: "1px dashed var(--line)", paddingTop: "10px" }}>
                       <span style={{ color: "var(--muted)" }}>Payment Reference / UTR: </span>
@@ -427,7 +537,7 @@ export default function PrayerRequestPage() {
                     </div>
 
                     <p style={{ margin: 0, fontSize: "14px", color: "var(--muted)", lineHeight: 1.7 }}>
-                      One Mass intention offering is ₹150. Your sacred contribution supports
+                      One Mass intention offering is ₹200. Your sacred contribution supports
                       the sanctuary, celebrant clergy, and parish mission.
                     </p>
                   </div>
@@ -458,7 +568,90 @@ export default function PrayerRequestPage() {
 
                     <div style={{ display: "grid", gap: "20px" }}>
 
-                      {/* FIELD 1: NAME */}
+                      {/* FIELD 1: PRAYER DATE */}
+                      <div className="form-group">
+                        <label
+                          htmlFor={`${formId}-prayer-date`}
+                          style={{
+                            display: "block",
+                            color: "var(--blue-deep)",
+                            fontSize: "12px",
+                            fontWeight: 600,
+                            letterSpacing: "0.06em",
+                            textTransform: "uppercase",
+                            marginBottom: "6px",
+                          }}
+                        >
+                          Prayer Date / பிரார்த்தனை தேதி *
+                        </label>
+                        <input
+                          id={`${formId}-prayer-date`}
+                          type="date"
+                          value={prayerDate}
+                          min={new Date().toLocaleDateString("en-CA")}
+                          onChange={(e) => setPrayerDate(e.target.value)}
+                          required
+                          style={{
+                            border: "1px solid var(--line)",
+                            borderRadius: "8px",
+                            padding: "14px 16px",
+                            fontSize: "15px",
+                            outline: "none",
+                            width: "100%",
+                            background: "white",
+                          }}
+                        />
+                      </div>
+
+                      {/* FIELD 2: PRAYER TIME */}
+                      <div className="form-group">
+                        <label
+                          htmlFor={`${formId}-prayer-time`}
+                          style={{
+                            display: "block",
+                            color: "var(--blue-deep)",
+                            fontSize: "12px",
+                            fontWeight: 600,
+                            letterSpacing: "0.06em",
+                            textTransform: "uppercase",
+                            marginBottom: "6px",
+                          }}
+                        >
+                          Prayer Time / பிரார்த்தனை நேரம் *
+                        </label>
+                        <input
+                          id={`${formId}-prayer-time`}
+                          type="time"
+                          value={prayerTime}
+                          onChange={(e) => setPrayerTime(e.target.value)}
+                          required
+                          style={{
+                            border: "1px solid var(--line)",
+                            borderRadius: "8px",
+                            padding: "14px 16px",
+                            fontSize: "15px",
+                            outline: "none",
+                            width: "100%",
+                            background: "white",
+                          }}
+                        />
+                        <p
+                          style={{
+                            fontSize: "12px",
+                            color: "var(--muted)",
+                            lineHeight: 1.6,
+                            marginTop: "7px",
+                            marginBottom: 0,
+                          }}
+                        >
+                          Submit at least 45 minutes before the selected prayer time.
+                          <br />
+                          தேர்ந்தெடுக்கப்பட்ட பிரார்த்தனை நேரத்திற்கு குறைந்தது 45 நிமிடங்களுக்கு முன்பாக கோரிக்கையைச் சமர்ப்பிக்க வேண்டும்.
+                        </p>
+                      </div>
+
+                      {/* FIELD 3: NAME */}
+
                       <div className="form-group">
                         <label
                           htmlFor={`${formId}-name`}
@@ -794,54 +987,13 @@ export default function PrayerRequestPage() {
                         overflow: "hidden",
                       }}
                     >
-                      {!qrImageError ? (
-                        /* Standard image with graceful error fallback */
-                        /* eslint-disable-next-line @next/next/no-img-element */
-                        <img
-                          src={QR_IMAGE_PATH}
-                          alt="Mass Intention Offering QR Code"
-                          onError={() => setQrImageError(true)}
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "contain",
-                            borderRadius: "8px",
-                          }}
-                        />
-                      ) : (
-                        /* Sophisticated Fallback Placeholder if image is not placed yet */
-                        <div
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            gap: "8px",
-                            textAlign: "center",
-                            color: "var(--blue-deep)",
-                          }}
-                        >
-                          <div
-                            style={{
-                              width: "52px",
-                              height: "52px",
-                              borderRadius: "50%",
-                              background: "rgba(7, 137, 181, 0.1)",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                            }}
-                          >
-                            <QrCode size={30} color="var(--blue-deep)" />
-                          </div>
-                          <span style={{ fontSize: "12px", fontWeight: 600, color: "var(--blue-dark)" }}>
-                            UPI QR Code
-                          </span>
-                          <span style={{ fontSize: "10.5px", color: "var(--muted)", maxWidth: "160px", lineHeight: 1.4 }}>
-                            Place <code>{QR_IMAGE_PATH}</code> in the public folder
-                          </span>
-                        </div>
-                      )}
+                      <QRCodeSVG
+                        value={PAYMENT_LINK}
+                        size={188}
+                        bgColor="#ffffff"
+                        fgColor="#000000"
+                        level="H"
+                      />
                     </div>
 
                     {/* TEXT UNDER QR */}
@@ -858,7 +1010,7 @@ export default function PrayerRequestPage() {
 
                     {/* OPTIONAL DIRECT PAYMENT LINK BUTTON */}
                     <div style={{ marginBottom: "24px" }}>
-                      {PAYMENT_LINK && PAYMENT_LINK !== "YOUR_PAYMENT_LINK_HERE" ? (
+                      {PAYMENT_LINK  ? (
                         <a
                           href={PAYMENT_LINK}
                           target="_blank"
@@ -895,6 +1047,60 @@ export default function PrayerRequestPage() {
                           Pay ₹{MASS_OFFERING_AMOUNT}
                         </button>
                       )}
+                    </div>
+
+                    {/* PAYMENT RECEIPT UPLOAD */}
+                    <div
+                      style={{
+                        borderTop: "1px solid var(--line)",
+                        paddingTop: "20px",
+                        marginTop: "20px",
+                        textAlign: "left",
+                      }}
+                    >
+                      <label
+                        htmlFor={`${formId}-receipt`}
+                        style={{
+                          display: "block",
+                          color: "var(--blue-deep)",
+                          fontSize: "11.5px",
+                          fontWeight: 700,
+                          letterSpacing: "0.06em",
+                          textTransform: "uppercase",
+                          marginBottom: "6px",
+                        }}
+                      >
+                        Payment Receipt / பணம் செலுத்திய ரசீது *
+                      </label>
+                      <input
+                        id={`${formId}-receipt`}
+                        type="file"
+                        accept="image/*,.pdf,application/pdf"
+                        required
+                        onChange={(e) => setReceipt(e.target.files?.[0] ?? null)}
+                        style={{
+                          border: "1px solid var(--line)",
+                          borderRadius: "8px",
+                          padding: "12px 14px",
+                          fontSize: "14px",
+                          outline: "none",
+                          width: "100%",
+                          background: "white",
+                        }}
+                      />
+                      <span
+                        style={{
+                          display: "block",
+                          fontSize: "11.5px",
+                          color: "var(--muted)",
+                          marginTop: "6px",
+                          lineHeight: 1.4,
+                        }}
+                      >
+                        Upload the receipt after paying ₹200. Accepted: JPG, PNG, WEBP, or PDF.
+                        <br />
+                        ₹200 செலுத்திய பிறகு ரசீதைப் பதிவேற்றவும். JPG, PNG, WEBP அல்லது PDF கோப்புகள் ஏற்கப்படும்.
+                      </span>
                     </div>
 
                     {/* PAYMENT CONFIRMATION SECTION */}

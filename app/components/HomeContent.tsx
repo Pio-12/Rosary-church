@@ -296,7 +296,7 @@ export default function HomeContent({
         <div className="container mass-strip">
           <div className="mass-image-wrap reveal-image">
             <img
-              src="https://images.unsplash.com/photo-1543168256-418811576931?auto=format&fit=crop&w=900&q=85"
+              src="https://ncedxbcsrcwuoailxsph.supabase.co/storage/v1/object/public/church-images/home/gallery-1.jpg"
               alt={
                 language === "ta"
                   ? "புனித திருப்பலிக்காக தயாரிக்கப்பட்ட பாத்திரமும் மெழுகுவர்த்திகளும்"
