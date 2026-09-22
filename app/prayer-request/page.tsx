@@ -23,8 +23,8 @@ import { QRCodeSVG } from "qrcode.react";
  * Replace this with your actual UPI deep link, payment page, or gateway URL:
  * e.g. "upi://pay?pa=arokiyanelsonpio@okaxis&pn=Our+Lady+of+Holy+Rosary+Church&am=150&cu=INR&tn=Mass+Intention"
  */
-export const PAYMENT_LINK = "upi://pay?pa=arokiyanelsonpio@okaxis&pn=Our+Lady+of+Holy+Rosary+Church&am=200&cu=INR&tn=Mass+Intention";
-
+export const PAYMENT_LINK =
+  "upi://pay?pa=arokiyanelsonpio@okaxis&pn=Our%20Lady%20of%20Holy%20Rosary%20Church&cu=INR&tn=Mass%20Intention";
 /**
  * Place your QR code image inside the `public/images/` directory:
  * e.g. `public/images/mass-intention-qr.png`
