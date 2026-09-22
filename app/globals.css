@@ -556,6 +556,8 @@ body::before {
   font-size: 260px;
   transform: translateY(-50%);
   animation: candleFlicker 7s ease-in-out infinite;
+    pointer-events: none;
+
 }
 
 .page-hero h1 {

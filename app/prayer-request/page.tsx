@@ -195,37 +195,43 @@ export default function PrayerRequestPage() {
             Home <ArrowRight size={12} style={{ verticalAlign: "middle" }} /> Prayer Request
           </div>
 
-          {/* ADMIN LOGIN BUTTON */}
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "flex-end",
-              marginTop: "30px",
-            }}
-          >
-            <Link
-              href="/admin/login"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: "13px 26px",
-                borderRadius: "10px",
-                background: "#ffffff",
-                color: "#075f80",
-                border: "1px solid rgba(255, 255, 255, 0.85)",
-                fontFamily: "'DM Sans', sans-serif",
-                fontSize: "14px",
-                fontWeight: 700,
-                letterSpacing: "0.02em",
-                textDecoration: "none",
-                boxShadow: "0 6px 18px rgba(0, 0, 0, 0.14)",
-                transition: "all 0.3s ease",
-              }}
-            >
-              Admin Login
-            </Link>
-          </div>
+       {/* ADMIN LOGIN BUTTON */}
+<div
+  style={{
+    display: "flex",
+    justifyContent: "flex-end",
+    marginTop: "30px",
+    position: "relative",
+    zIndex: 10,
+  }}
+>
+  <Link
+    href="/admin/login"
+    style={{
+      position: "relative",
+      zIndex: 11,
+      display: "inline-flex",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: "13px 26px",
+      borderRadius: "10px",
+      background: "#ffffff",
+      color: "#075f80",
+      border: "1px solid rgba(255, 255, 255, 0.85)",
+      fontFamily: "'DM Sans', sans-serif",
+      fontSize: "14px",
+      fontWeight: 700,
+      letterSpacing: "0.02em",
+      textDecoration: "none",
+      boxShadow: "0 6px 18px rgba(0, 0, 0, 0.14)",
+      transition: "all 0.3s ease",
+      cursor: "pointer",
+      pointerEvents: "auto",
+    }}
+  >
+    Admin Login
+  </Link>
+</div>
         </div>
       </section>
 
