@@ -3,51 +3,80 @@
 import { useEffect } from "react";
 
 /**
- * Mount this once anywhere inside <main className="about-page">.
- * It renders nothing — it just finds every [data-reveal] element on
- * the page and adds `.is-inview` the first time it scrolls into
- * view, then stops watching it. All the actual visual effect (pop,
- * slide left/right, line reveal, priest timeline, etc.) lives in
- * CSS, keyed off the element's own class + `.is-inview`.
+ * Mount once inside <main className="about-page">.
+ * Observes all [data-reveal] elements and progressively applies
+ * `.is-inview` as they enter the viewport.
  *
- * Because each element is observed independently, items naturally
- * reveal "one after another" as the user scrolls down past them —
- * no manual sequencing needed. A small nth-child transition-delay
- * in CSS adds extra cascade polish when several items enter the
- * viewport at once (fast scroll, or already visible on load).
+ * Supports animation variants:
+ * - data-reveal="fade-up" (soft blur dissolve + translation)
+ * - data-reveal="fade-down"
+ * - data-reveal="slide-left" / "slide-right" (alternating timeline & cards)
+ * - data-reveal="pop" (scale + spring entrance)
+ * - data-reveal="line" (staggered timeline entries)
+ * - data-reveal="priest" (priest succession lineage items)
+ *
+ * Also dynamically tracks the central timeline and illuminates
+ * nodes as the user journeys down the page.
  */
 export function ScrollReveal() {
   useEffect(() => {
     const root = document.querySelector(".about-page");
     if (!root) return;
 
-    const items = root.querySelectorAll<HTMLElement>("[data-reveal]");
-    if (!items.length) return;
-
     const prefersReducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
+
+    const items = Array.from(
+      root.querySelectorAll<HTMLElement>("[data-reveal]")
+    );
 
     if (prefersReducedMotion || typeof IntersectionObserver === "undefined") {
       items.forEach((el) => el.classList.add("is-inview"));
       return;
     }
 
-    const observer = new IntersectionObserver(
+    // Reveal observer for entry animations
+    const revealObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add("is-inview");
-            observer.unobserve(entry.target);
+            revealObserver.unobserve(entry.target);
           }
         });
       },
-      { threshold: 0.15, rootMargin: "0px 0px -10% 0px" }
+      { threshold: 0.12, rootMargin: "0px 0px -6% 0px" }
     );
 
-    items.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
+    items.forEach((el) => revealObserver.observe(el));
+
+    // Timeline node activation tracker for the historical journey
+    const timelineItems = Array.from(
+      root.querySelectorAll<HTMLElement>(".history-milestone, .priest-item")
+    );
+
+    let activeObserver: IntersectionObserver | null = null;
+    if (timelineItems.length) {
+      activeObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-active");
+            }
+          });
+        },
+        { threshold: 0.35, rootMargin: "-10% 0px -25% 0px" }
+      );
+
+      timelineItems.forEach((el) => activeObserver?.observe(el));
+    }
+
+    return () => {
+      revealObserver.disconnect();
+      activeObserver?.disconnect();
+    };
   }, []);
 
   return null;
-}
+}
