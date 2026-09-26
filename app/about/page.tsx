@@ -4,18 +4,27 @@ import { ScrollReveal } from "@/app/components/ScrollReveal";
 import { AutoScrollCards } from "@/app/components/AutoScrollCards";
 import { FlipCard } from "@/app/components/FlipCard";
 
+/* =========================================================
+   HISTORICAL TIMELINE
+   Based on the parish directory information supplied.
+========================================================= */
+
 const historyEntries = [
   [
     "1592",
-    "The Jesuits began the Madurai Mission with a small chapel dedicated to Our Lady. The chapel was ministered by Fr. Fernandez, and missionaries including Robert de Nobili and Joseph Beschi later served in the mission.",
+    "The Madurai Mission began with a small chapel dedicated to Our Lady. Jesuit missionaries served the people of the region, laying the foundation for the Catholic mission in Madurai.",
+  ],
+  [
+    "1627",
+    "Fr. Robert de Nobili was appointed as the Parish Priest of the Madurai mission. He learned the language and culture of the local people and served the mission through his distinctive approach to evangelisation.",
+  ],
+  [
+    "1680",
+    "Fr. Joseph Beschi S.J., known as Veeramamunivar, continued the mission. His contribution to Tamil literature and culture became an important part of the history of the mission.",
   ],
   [
     "1763",
-    "A letter from 1763 records that Yousuf Khan, who opposed the English, had around 400 French soldiers, who were Catholics, and refers to a beautiful church built near the West Gate of Madurai.",
-  ],
-  [
-    "1770",
-    "From around 1770 onwards, Jesuit missionaries continued serving the people living around Rosary Church.",
+    "A church was built to serve the Catholic community. The directory records the connection of the church with the period of Yusuff Khan and the Catholic soldiers who served in his army.",
   ],
   [
     "1773",
@@ -23,25 +32,42 @@ const historyEntries = [
   ],
   [
     "1939",
-    "Fr. Yuvenat started the parish school, adding education to the parish's service to the local community.",
+    "Fr. Yuvenat started a school to educate the people. The parish continued to develop its educational mission alongside its spiritual ministry.",
   ],
   [
-    "1966",
-    "Fr. De Cruz took charge of the parish and built a new church according to the liturgical renewal associated with the Second Vatican Council.",
+    "1969–1970",
+    "Fr. De Cruz renovated and rebuilt the church. The new church was built according to the recommendations of the Second Vatican Council and was blessed in 1970 by Nuncio Knox.",
   ],
   [
-    "1967",
-    "The Novena to Our Lady of Perpetual Help was started and became part of the devotional life of the parish.",
+    "1982–1985",
+    "Fr. Arul Valan opened the Rosary Book Centre and built the presbytery in Palanganatham. These developments helped prepare the way for Palanganatham to become a separate parish.",
   ],
   [
-    "Later Years",
-    "A new presbytery was built by Fr. Joseph Xavier. The parish also developed four substations serving communities in Solaialagupuram, Perungudi, St. Antony's Street and Simmakkal.",
+    "1985",
+    "Palanganatham became a new parish. The parish continued to serve surrounding communities through its growing pastoral mission.",
+  ],
+  [
+    "1988",
+    "A new church was built at Solaialagupuram through the efforts of Fr. Xavier Raj. The area subsequently developed as one of the important substations of the parish.",
+  ],
+  [
+    "1986",
+    "The Novena to Our Lady of Perpetual Help was renovated and celebrated as an important devotional tradition of the church. The church is known in the city particularly for this Novena.",
+  ],
+  [
+    "2020",
+    "The Golden Jubilee of the new church built in 1970 was celebrated. Fr. John Britto Packia Raj carried out extensive renovation and restructuring, including the second tower, electrified Rosary, stone images of the first parish priests, a new Eucharistic altar, Stations of the Cross, Gospel images and other improvements.",
+  ],
+  [
+    "8 March 2020",
+    "The renovated Golden Jubilee Church was solemnly blessed by Archbishop Antony Pappusamy during the Golden Jubilee celebration.",
   ],
 ];
 
-// NOTE: `image` and `address` below are sample/placeholder values for the
-// flip-card back face — swap each one for the substation's real photo and
-// address whenever they're available.
+/* =========================================================
+   SUBSTATIONS
+========================================================= */
+
 const substations = [
   {
     name: "Our Lady of Mercy",
@@ -73,68 +99,150 @@ const substations = [
   },
 ];
 
+/* =========================================================
+   PARISH LIFE
+========================================================= */
+
 const parishLife = [
   [
     "Worship",
-    "A parish community centered on prayer, worship and the celebration of faith.",
+    "The parish community is centered on prayer, worship and the celebration of the Holy Eucharist.",
   ],
   [
     "Community",
-    "The parish brings families together through participatory structures including Anbiyams and the Parish Council.",
+    "The parish brings families together through Anbiyams, the Parish Council and the Parish Finance Council.",
   ],
   [
     "Service",
-    "Parish associations and commissions provide opportunities for service, fellowship and community participation.",
+    "Parish associations, commissions and community groups provide opportunities for service, fellowship and participation.",
+  ],
+  [
+    "Education",
+    "The parish has a long-standing connection with education through institutions serving children and young people.",
   ],
 ];
 
-const parishPriests = [
-  "Rev. Fr. Sengole",
-  "Rev. Fr. Arul Joseph V. (1982–1985)",
-  "Rev. Fr. Xavier Raj A. (1985–1992)",
-  "Rev. Fr. David Kulandai S.J. (1992–1993)",
-  "Rev. Fr. Lawrence Xavier (1993–1997)",
-  "Rev. Fr. Jeganivasagar (1997–2004)",
-  "Rev. Fr. Benedict Barnabas (2004–2009)",
-  "Rev. Fr. Angel (2009–Present)",
-];
+/* =========================================================
+   ASSOCIATIONS
+========================================================= */
 
 const associations = [
-  "Vincent de Paul Society",
+  "Vincent De Paul Society",
   "Legion of Mary",
+  "Dialogue Commission",
+  "Christian Life Commission",
   "Choir",
-  "Youth Association",
+  "Youth",
   "Altar Boys Society",
   "Sunday Catechism",
-  "Rosary Adults"
-  
 ];
+
+/* =========================================================
+   SUCCESSION OF PARISH PRIESTS
+   Source: Directory 2021, page 270
+========================================================= */
+
+const parishPriests = [
+  ["1627", "Fr. Robert De Nobili S.J."],
+  ["1680", "Fr. Joseph Beshi S.J."],
+  ["1939–1940", "Fr. C. Yuvenat S.J."],
+  ["1941–1944", "Fr. M. D. Amalraj S.J."],
+  ["1944–1947", "Fr. Consalves S.J."],
+  ["1947–1949", "Fr. Planchart S.J."],
+  ["1950–1957", "Fr. J. Britto S.J."],
+  ["1957", "Fr. Claiton S.J."],
+  ["1958", "Fr. Benjamin Nattar S.J."],
+  ["1959–1960", "Fr. Maria Michael S.J."],
+  ["1960–1966", "Fr. T. Kurian S.J."],
+  ["1966–1972", "Fr. De Cruz S.J."],
+  ["1972–1976", "Fr. Zacharias"],
+  ["1976–1981", "Fr. J. Joseph Xavier"],
+  ["1981–1982", "Fr. Sengole"],
+  ["1982–1985", "Fr. Arul Valan"],
+  ["1985–1992", "Fr. Xavier Raj"],
+  ["1992–1993", "Fr. David Kulandai S.J."],
+  ["1993–1997", "Fr. Lawrence Xavier"],
+  ["1997–2004", "Fr. Jeganivasagar"],
+  ["2004–2009", "Fr. Benedict Barnabas"],
+  ["2009–2015", "Fr. Angel Raj"],
+  ["2015–2020", "Fr. John Britto Packia Raj"],
+  ["2020–", "Fr. Anandam"],
+];
+
+/* =========================================================
+   RELIGIOUS COMMUNITIES
+========================================================= */
 
 const religiousCommunities = [
   {
     name: "Congregation of Immaculate Conception",
-    number: "Number: 3",
+    number: "Nos. 5",
     phone: "0452-2341362",
   },
   {
     name: "Congregation of St. Anne of Chennai",
-    number: "Number: 8",
+    number: "Nos. 6",
     phone: "0452-2690745",
   },
 ];
+
+/* =========================================================
+   INSTITUTIONS UNDER PARISH PRIEST
+========================================================= */
 
 const parishInstitutions = [
   {
     name: "R. C. Primary School",
     phone: "0452-2343490",
-    details: "Students: 420 (112), Staff: 11",
+    details: "Students: 112 | Staff: 6",
   },
   {
     name: "R. C. Middle School",
     phone: "0452-2343490",
-    details: "Students: 960 (253), Staff: 28",
+    details: "Students: 250 | Staff: 12",
   },
 ];
+
+/* =========================================================
+   INSTITUTIONS UNDER RELIGIOUS
+========================================================= */
+
+const religiousInstitutions = [
+  {
+    name: "St. Anne's Hr. Sec. School",
+    phone: "0452-2690101, 7402404500",
+    details: "Students: 900 (35) | Staff: 26 (3)",
+  },
+];
+
+/* =========================================================
+   KURUSADIS / GROTTOS
+========================================================= */
+
+const kurusadis = [
+  {
+    name: "Sahayamatha Grotto",
+    location: "Holy Rosary Church",
+  },
+  {
+    name: "Bell Statues Tower",
+    location: "Perungudi",
+  },
+];
+
+/* =========================================================
+   PARTICIPATORY STRUCTURES
+========================================================= */
+
+const participatoryStructures = [
+  "19 Anbiyams",
+  "Parish Council",
+  "Parish Finance Council",
+];
+
+/* =========================================================
+   MAIN PAGE
+========================================================= */
 
 export default async function About() {
   const siteSettings = await getSiteSettings();
@@ -143,42 +251,59 @@ export default async function About() {
     <main className="about-page">
       <ScrollReveal />
       <AutoScrollCards />
-      {/* Keeps content visible if JavaScript is unavailable */}
+
       <noscript>
-        <style>{`.about-page [data-reveal] { opacity: 1 !important; transform: none !important; }`}</style>
+        <style>{`
+          .about-page [data-reveal] {
+            opacity: 1 !important;
+            transform: none !important;
+          }
+        `}</style>
       </noscript>
+
+      {/* =====================================================
+          HERO
+      ===================================================== */}
 
       <PageHero title="About Us" crumb="About" />
 
-      {/* INTRODUCTION */}
+      {/* =====================================================
+          INTRODUCTION
+      ===================================================== */}
+
       <section className="section">
         <div className="container two-col">
           <div>
-            <div className="eyebrow">Our parish</div>
+            <div className="eyebrow">Our Parish</div>
 
             <h2 className="section-title">
               A Living Heritage of Faith
             </h2>
 
             <p className="body-copy">
-              {siteSettings?.church_name ?? "Holy Rosary Church"} is a historic
-              Catholic parish in the heart of Madurai. The parish traces its
-              roots to the beginning of the Madurai Mission in 1592, when the
-              Jesuits began their mission with a small chapel dedicated to Our
+              {siteSettings?.church_name ?? "Our Lady of Holy Rosary Church"}{" "}
+              is a historic Catholic parish in the heart of Madurai. Its story
+              is closely connected with the history of the Catholic mission in
+              Madurai, which began in 1592 with a small chapel dedicated to Our
               Lady.
             </p>
 
             <p className="body-copy">
-              Across generations, the parish has continued its mission of
-              worship, community and service. Today, Holy Rosary Church remains
-              a place where people gather in prayer and participate in the
-              life of the parish.
+              Through generations of missionaries, parish priests, religious
+              communities and parishioners, the church has grown as a centre of
+              prayer, education, devotion and service.
+            </p>
+
+            <p className="body-copy">
+              Today, Holy Rosary Church continues to serve the faithful through
+              its worship, schools, associations, prayer traditions and
+              communities.
             </p>
 
             <blockquote className="quote">
               “Our Lady of Holy Rosary”
               <br />
-              <span>Patron Saint</span>
+              <span>Patroness of the Parish</span>
             </blockquote>
           </div>
 
@@ -188,17 +313,20 @@ export default async function About() {
               siteSettings?.hero_image_url ||
               "https://ncedxbcsrcwuoailxsph.supabase.co/storage/v1/object/public/church-images/home/gallery-2.jpg"
             }
-            alt="Interior of Holy Rosary Church"
+            alt="Interior of Our Lady of Holy Rosary Church"
           />
         </div>
       </section>
 
-      {/* PARISH DETAILS */}
+      {/* =====================================================
+          PARISH TODAY
+      ===================================================== */}
+
       <section className="wine-band">
         <div className="container">
           <div className="section-heading">
             <div>
-              <div className="eyebrow">Our parish today</div>
+              <div className="eyebrow">Our Parish Today</div>
 
               <h2 className="section-title">
                 A Community of Faith & Service
@@ -207,48 +335,68 @@ export default async function About() {
           </div>
 
           <div className="cards-grid pop-grid">
-            <div className="card pop-card" data-reveal="pop" style={{ "--i": 0 } as React.CSSProperties}>
+            <div
+              className="card pop-card"
+              data-reveal="pop"
+              style={{ "--i": 0 } as React.CSSProperties}
+            >
               <div className="card-body">
                 <h3>Our Location</h3>
 
                 <p>
                   {siteSettings?.address ??
-                    "Town Hall Road, Madurai – 625 001"}
+                    "Madurai, Tamil Nadu, India"}
                 </p>
               </div>
             </div>
 
-            <div className="card pop-card" data-reveal="pop" style={{ "--i": 1 } as React.CSSProperties}>
+            <div
+              className="card pop-card"
+              data-reveal="pop"
+              style={{ "--i": 1 } as React.CSSProperties}
+            >
               <div className="card-body">
                 <h3>Our Community</h3>
 
                 <p>
-                  The parish serves about 380 Catholic families and continues
-                  to foster a vibrant community of faith.
+                  A parish community brought together through prayer,
+                  worship, service, Anbiyams and parish participation.
                 </p>
               </div>
             </div>
 
-            <div className="card pop-card" data-reveal="pop" style={{ "--i": 2 } as React.CSSProperties}>
+            <div
+              className="card pop-card"
+              data-reveal="pop"
+              style={{ "--i": 2 } as React.CSSProperties}
+            >
               <div className="card-body">
                 <h3>Mission Chapels</h3>
 
                 <p>
-                  The parish has four substations serving communities around
-                  Madurai.
+                  Four substations serve Catholic communities connected with
+                  the parish.
                 </p>
               </div>
             </div>
 
-            <div className="card pop-card" data-reveal="pop" style={{ "--i": 3 } as React.CSSProperties}>
+            <div
+              className="card pop-card"
+              data-reveal="pop"
+              style={{ "--i": 3 } as React.CSSProperties}
+            >
               <div className="card-body">
-                <h3>Patron Saint</h3>
+                <h3>Patroness</h3>
 
                 <p>Our Lady of Holy Rosary</p>
               </div>
             </div>
 
-            <div className="card pop-card" data-reveal="pop" style={{ "--i": 4 } as React.CSSProperties}>
+            <div
+              className="card pop-card"
+              data-reveal="pop"
+              style={{ "--i": 4 } as React.CSSProperties}
+            >
               <div className="card-body">
                 <h3>Telephone</h3>
 
@@ -259,12 +407,15 @@ export default async function About() {
         </div>
       </section>
 
-      {/* SUBSTATIONS */}
+      {/* =====================================================
+          SUBSTATIONS
+      ===================================================== */}
+
       <section className="section">
         <div className="container">
           <div className="section-heading">
             <div>
-              <div className="eyebrow">Serving our communities</div>
+              <div className="eyebrow">Serving Our Communities</div>
 
               <h2 className="section-title">
                 Our Substations
@@ -287,12 +438,15 @@ export default async function About() {
         </div>
       </section>
 
-      {/* PARISH LIFE */}
+      {/* =====================================================
+          PARISH LIFE
+      ===================================================== */}
+
       <section className="wine-band">
         <div className="container">
           <div className="section-heading">
             <div>
-              <div className="eyebrow">Parish life</div>
+              <div className="eyebrow">Parish Life</div>
 
               <h2 className="section-title">
                 Faith in Action
@@ -313,20 +467,25 @@ export default async function About() {
 
           <div className="about-extra-content">
             <p className="body-copy">
-              The parish has 16 Anbiyams and a Parish Council that encourage
-              active participation, fellowship and shared responsibility among
-              parishioners.
+              The parish has 19 Anbiyams, a Parish Council and a Parish Finance
+              Council which encourage participation, fellowship and shared
+              responsibility among parishioners.
             </p>
           </div>
         </div>
       </section>
 
-      {/* ASSOCIATIONS */}
+      {/* =====================================================
+          ASSOCIATIONS
+      ===================================================== */}
+
       <section className="section">
         <div className="container">
           <div className="section-heading">
             <div>
-              <div className="eyebrow">Community participation</div>
+              <div className="eyebrow">
+                Community Participation
+              </div>
 
               <h2 className="section-title">
                 Parish Associations
@@ -337,16 +496,23 @@ export default async function About() {
           <div className="cards-grid lr-grid">
             {associations.map((association, index) => (
               <div
-                className={`card lr-card ${index % 2 === 0 ? "lr-left" : "lr-right"}`}
+                className={`card lr-card ${
+                  index % 2 === 0 ? "lr-left" : "lr-right"
+                }`}
                 key={association}
                 data-reveal="lr"
-                style={{ "--i": Math.floor(index / 2) } as React.CSSProperties}
+                style={
+                  {
+                    "--i": Math.floor(index / 2),
+                  } as React.CSSProperties
+                }
               >
                 <div className="card-body">
                   <h3>{association}</h3>
+
                   <p>
                     An important part of parish fellowship, service and
-                    spiritual growth.
+                    community participation.
                   </p>
                 </div>
               </div>
@@ -355,12 +521,50 @@ export default async function About() {
         </div>
       </section>
 
-      {/* HISTORY */}
+      {/* =====================================================
+          PARTICIPATORY STRUCTURES
+      ===================================================== */}
+
+      <section className="wine-band">
+        <div className="container">
+          <div className="section-heading">
+            <div>
+              <div className="eyebrow">
+                Parish Organisation
+              </div>
+
+              <h2 className="section-title">
+                Participatory Structures
+              </h2>
+            </div>
+          </div>
+
+          <div className="cards-grid">
+            {participatoryStructures.map((item) => (
+              <div className="card" key={item}>
+                <div className="card-body">
+                  <h3>{item}</h3>
+
+                  <p>
+                    A part of the parish's structure for participation,
+                    fellowship and shared responsibility.
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* =====================================================
+          HISTORY
+      ===================================================== */}
+
       <section className="section">
         <div className="container">
           <div className="section-heading">
             <div>
-              <div className="eyebrow">A heritage of faith</div>
+              <div className="eyebrow">A Heritage of Faith</div>
 
               <h2 className="section-title">
                 Our History
@@ -373,29 +577,28 @@ export default async function About() {
               <p className="body-copy">
                 The history of Holy Rosary Church is closely connected with the
                 history of the Catholic mission in Madurai. Beginning with the
-                Madurai Mission in 1592, generations of missionaries and
-                parishioners have contributed to the life and growth of the
+                Madurai Mission, generations of missionaries and parishioners
+                contributed to the spiritual and social development of the
                 community.
               </p>
 
               <p className="body-copy">
-                The parish territory includes important places such as Shri
-                Meenakshi Amman Temple, Periyar Bus Stand and Madurai Railway
-                Junction. Its southern boundary extends from the Vaigai River
-                towards Madurai Airport.
+                The church became an important centre of mission, devotion,
+                education and community life. The Novena to Our Lady of
+                Perpetual Help is particularly associated with the church and
+                remains an important devotional tradition.
               </p>
 
               <p className="body-copy">
-                Through changing times, the parish has continued its mission
-                of worship, education, devotion and service to the people of
-                Madurai.
+                Over the years, the parish expanded through the establishment
+                of schools, substations, chapels and other pastoral structures.
               </p>
             </div>
 
             <img
               className="photo"
               src="https://ncedxbcsrcwuoailxsph.supabase.co/storage/v1/object/public/church-images/home/gallery-2.jpg"
-              alt="Church architecture and light"
+              alt="Our Lady of Holy Rosary Church"
             />
           </div>
 
@@ -404,7 +607,7 @@ export default async function About() {
             style={{ marginTop: 60 }}
           >
             <div>
-              <div className="eyebrow">Through the years</div>
+              <div className="eyebrow">Through the Years</div>
 
               <h2 className="section-title">
                 A Journey Through History
@@ -416,9 +619,13 @@ export default async function About() {
             {historyEntries.map(([year, text], index) => (
               <div
                 className="journey-item"
-                key={year}
+                key={`${year}-${index}`}
                 data-reveal="line"
-                style={{ "--i": index % 5 } as React.CSSProperties}
+                style={
+                  {
+                    "--i": index % 5,
+                  } as React.CSSProperties
+                }
               >
                 <strong>{year}</strong>
                 <p>{text}</p>
@@ -428,12 +635,17 @@ export default async function About() {
         </div>
       </section>
 
-      {/* SUCCESSION OF PARISH PRIESTS */}
+      {/* =====================================================
+          SUCCESSION OF PARISH PRIESTS
+      ===================================================== */}
+
       <section className="wine-band">
         <div className="container">
           <div className="section-heading">
             <div>
-              <div className="eyebrow">Leadership through the years</div>
+              <div className="eyebrow">
+                Leadership Through the Years
+              </div>
 
               <h2 className="section-title">
                 Succession of Parish Priests
@@ -442,29 +654,49 @@ export default async function About() {
           </div>
 
           <div className="priest-timeline">
-            {parishPriests.map((priest, index) => (
+            {parishPriests.map(([year, priest], index) => (
               <div
-                className={`priest-item ${index % 2 === 0 ? "priest-left" : "priest-right"}`}
-                key={priest}
+                className={`priest-item ${
+                  index % 2 === 0
+                    ? "priest-left"
+                    : "priest-right"
+                }`}
+                key={`${year}-${priest}`}
                 data-reveal="priest"
-                style={{ "--i": index % 4 } as React.CSSProperties}
+                style={
+                  {
+                    "--i": index % 4,
+                  } as React.CSSProperties
+                }
               >
                 <span className="priest-number">
                   {String(index + 1).padStart(2, "0")}
                 </span>
-                <p className="priest-name">{priest}</p>
+
+                <div>
+                  <p className="priest-name">{priest}</p>
+
+                  <span className="priest-period">
+                    {year}
+                  </span>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* PARISH LEGACY */}
+      {/* =====================================================
+          PARISH LEGACY
+      ===================================================== */}
+
       <section className="wine-band">
         <div className="container">
           <div className="section-heading">
             <div>
-              <div className="eyebrow">Continuing the mission</div>
+              <div className="eyebrow">
+                Continuing the Mission
+              </div>
 
               <h2 className="section-title">
                 A Living Heritage
@@ -489,8 +721,8 @@ export default async function About() {
                 <h3>Education</h3>
 
                 <p>
-                  The parish has a long connection with education, beginning
-                  with the parish school started in 1939.
+                  The parish has a long-standing educational mission,
+                  beginning with the parish school started in 1939.
                 </p>
               </div>
             </div>
@@ -501,7 +733,7 @@ export default async function About() {
 
                 <p>
                   The parish continues to serve its community through worship,
-                  associations and four substations.
+                  associations, schools and substations.
                 </p>
               </div>
             </div>
@@ -509,12 +741,17 @@ export default async function About() {
         </div>
       </section>
 
-      {/* RELIGIOUS COMMUNITIES */}
+      {/* =====================================================
+          RELIGIOUS COMMUNITIES
+      ===================================================== */}
+
       <section className="section">
         <div className="container">
           <div className="section-heading">
             <div>
-              <div className="eyebrow">Religious presence</div>
+              <div className="eyebrow">
+                Religious Presence
+              </div>
 
               <h2 className="section-title">
                 Religious Communities in the Parish
@@ -527,7 +764,9 @@ export default async function About() {
               <div className="card" key={community.name}>
                 <div className="card-body">
                   <h3>{community.name}</h3>
+
                   <p>{community.number}</p>
+
                   <p>{community.phone}</p>
                 </div>
               </div>
@@ -536,12 +775,17 @@ export default async function About() {
         </div>
       </section>
 
-      {/* SECULAR INSTITUTE */}
+      {/* =====================================================
+          SECULAR INSTITUTE
+      ===================================================== */}
+
       <section className="wine-band">
         <div className="container">
           <div className="section-heading">
             <div>
-              <div className="eyebrow">Parish information</div>
+              <div className="eyebrow">
+                Parish Information
+              </div>
 
               <h2 className="section-title">
                 Secular Institute
@@ -555,12 +799,17 @@ export default async function About() {
         </div>
       </section>
 
-      {/* INSTITUTIONS UNDER PARISH PRIEST */}
+      {/* =====================================================
+          INSTITUTIONS UNDER PARISH PRIEST
+      ===================================================== */}
+
       <section className="section">
         <div className="container">
           <div className="section-heading">
             <div>
-              <div className="eyebrow">Educational institutions</div>
+              <div className="eyebrow">
+                Educational Institutions
+              </div>
 
               <h2 className="section-title">
                 Institutions Under the Parish Priest
@@ -573,7 +822,9 @@ export default async function About() {
               <div className="card" key={institution.name}>
                 <div className="card-body">
                   <h3>{institution.name}</h3>
+
                   <p>{institution.phone}</p>
+
                   <p>{institution.details}</p>
                 </div>
               </div>
@@ -582,12 +833,17 @@ export default async function About() {
         </div>
       </section>
 
-      {/* INSTITUTIONS UNDER RELIGIOUS */}
+      {/* =====================================================
+          INSTITUTIONS UNDER RELIGIOUS
+      ===================================================== */}
+
       <section className="wine-band">
         <div className="container">
           <div className="section-heading">
             <div>
-              <div className="eyebrow">Religious institutions</div>
+              <div className="eyebrow">
+                Religious Institutions
+              </div>
 
               <h2 className="section-title">
                 Institutions Under the Religious
@@ -596,23 +852,32 @@ export default async function About() {
           </div>
 
           <div className="cards-grid">
-            <div className="card">
-              <div className="card-body">
-                <h3>St. Anne’s Hr. Sec. School</h3>
-                <p>0452-2690101, 9976483801</p>
-                <p>Students: 899 (35), Staff: 26 (10)</p>
+            {religiousInstitutions.map((institution) => (
+              <div className="card" key={institution.name}>
+                <div className="card-body">
+                  <h3>{institution.name}</h3>
+
+                  <p>{institution.phone}</p>
+
+                  <p>{institution.details}</p>
+                </div>
               </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* KURUSADIS AND GROTTOS */}
+      {/* =====================================================
+          KURUSADIS & GROTTOS
+      ===================================================== */}
+
       <section className="section">
         <div className="container">
           <div className="section-heading">
             <div>
-              <div className="eyebrow">Places of devotion</div>
+              <div className="eyebrow">
+                Places of Devotion
+              </div>
 
               <h2 className="section-title">
                 Kurusadis & Grottos in the Parish
@@ -621,22 +886,30 @@ export default async function About() {
           </div>
 
           <div className="cards-grid">
-            <div className="card">
-              <div className="card-body">
-                <h3>Sahayamatha Grotto</h3>
-                <p>Holy Rosary Church</p>
+            {kurusadis.map((item) => (
+              <div className="card" key={item.name}>
+                <div className="card-body">
+                  <h3>{item.name}</h3>
+
+                  <p>{item.location}</p>
+                </div>
               </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* CONTACT DETAILS */}
+      {/* =====================================================
+          CONTACT
+      ===================================================== */}
+
       <section className="section">
         <div className="container">
           <div className="section-heading">
             <div>
-              <div className="eyebrow">Visit us</div>
+              <div className="eyebrow">
+                Visit Us
+              </div>
 
               <h2 className="section-title">
                 Holy Rosary Church
@@ -650,7 +923,7 @@ export default async function About() {
 
               <p className="body-copy">
                 {siteSettings?.address ??
-                  "Town Hall Road, Madurai – 625 001"}
+                  "Madurai, Tamil Nadu, India"}
               </p>
             </div>
 

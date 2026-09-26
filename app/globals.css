@@ -250,8 +250,22 @@ body::before {
   display: flex;
   min-height: 78px;
   align-items: center;
-  gap: 25px;
+  gap: 18px;
   transition: min-height 0.35s var(--ease-soft);
+}
+
+.nav a {
+  white-space: nowrap;
+}
+
+.language-switcher {
+  flex-shrink: 0;
+  margin-left: 10px;
+}
+
+.donate-button {
+  flex-shrink: 0;
+  margin-left: 4px;
 }
 
 .header.scrolled .nav {
@@ -260,9 +274,9 @@ body::before {
 
 .brand {
   display: flex;
-  min-width: 250px;
   align-items: center;
   gap: 11px;
+  flex-shrink: 0;
 }
 
 .brand-mark {
@@ -11782,4 +11796,1086 @@ select.field {
   .donor-ticker-track {
     animation: none;
   }
+}
+
+/* =========================================================
+   TODAY'S EVENT POPUP
+========================================================= */
+
+.today-event-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+}
+
+.today-event-backdrop {
+  position: absolute;
+  inset: 0;
+
+  background: rgba(5, 8, 15, 0.78);
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  animation: todayEventBackdropIn 0.35s ease both;
+}
+
+.today-event-modal {
+  position: relative;
+  z-index: 1;
+
+  width: min(520px, 100%);
+  max-height: calc(100vh - 40px);
+
+  overflow: auto;
+
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 26px;
+
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(212, 175, 55, 0.12),
+      transparent 35%
+    ),
+    #11141c;
+
+  box-shadow:
+    0 30px 100px rgba(0, 0, 0, 0.5),
+    0 0 50px rgba(212, 175, 55, 0.08);
+
+  animation:
+    todayEventModalIn
+    0.5s
+    cubic-bezier(0.16, 1, 0.3, 1)
+    both;
+}
+
+.today-event-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+
+  z-index: 5;
+
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+
+  color: white;
+  background: rgba(0, 0, 0, 0.45);
+
+  cursor: pointer;
+
+  transition:
+    transform 0.25s ease,
+    background 0.25s ease;
+}
+
+.today-event-close:hover {
+  transform: rotate(90deg);
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.today-event-badge {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  padding: 18px 22px 14px;
+
+  color: #d4af37;
+
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+}
+
+.today-event-badge span {
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  background: #d4af37;
+
+  box-shadow:
+    0 0 12px rgba(212, 175, 55, 0.8);
+}
+
+.today-event-image {
+  width: 100%;
+  max-height: 300px;
+
+  overflow: hidden;
+
+  background: #0b0d13;
+}
+
+.today-event-image img {
+  display: block;
+
+  width: 100%;
+  height: 300px;
+
+  object-fit: cover;
+}
+
+.today-event-image-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #d4af37;
+}
+
+.today-event-content {
+  padding: 26px;
+}
+
+.today-event-category {
+  margin-bottom: 8px;
+
+  color: #d4af37;
+
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.today-event-content h2 {
+  margin: 0;
+
+  color: #fff;
+
+  font-size: clamp(1.8rem, 5vw, 2.5rem);
+  line-height: 1.1;
+}
+
+.today-event-description {
+  margin: 16px 0 0;
+
+  color: rgba(255, 255, 255, 0.72);
+
+  line-height: 1.7;
+}
+
+.today-event-meta {
+  display: grid;
+  gap: 11px;
+
+  margin-top: 22px;
+  padding: 18px 0;
+
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.today-event-meta div {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+
+  color: rgba(255, 255, 255, 0.78);
+
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.today-event-meta svg {
+  flex: 0 0 auto;
+
+  margin-top: 2px;
+
+  color: #d4af37;
+}
+
+.today-event-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  width: 100%;
+  margin-top: 22px;
+  padding: 14px 20px;
+
+  border: 1px solid #d4af37;
+  border-radius: 12px;
+
+  color: #11141c;
+  background: #d4af37;
+
+  font-weight: 700;
+  text-decoration: none;
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.today-event-button:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 10px 30px rgba(212, 175, 55, 0.2);
+}
+
+@keyframes todayEventBackdropIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes todayEventModalIn {
+  from {
+    opacity: 0;
+    transform: translateY(25px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+
+/* =========================================================
+   EVENTS FILTER
+========================================================= */
+
+.events-filter {
+  width: 100%;
+}
+
+
+/* =========================================================
+   UPCOMING EVENTS + CATEGORY BUTTONS
+========================================================= */
+
+.events-filter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 25px;
+
+  margin-bottom: 32px;
+  padding-bottom: 20px;
+
+  border-bottom: 1px solid #dce7eb;
+}
+
+.upcoming-title {
+  flex-shrink: 0;
+}
+
+.upcoming-title span {
+  color: #0b4f69;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.category-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  flex-wrap: wrap;
+
+  gap: 8px;
+}
+
+.category-button {
+  padding: 8px 17px;
+
+  border: 1px solid #cbdde3;
+  border-radius: 30px;
+
+  background: #ffffff;
+  color: #0b4f69;
+
+  cursor: pointer;
+
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+
+  white-space: nowrap;
+
+  transition:
+    all 0.25s ease;
+}
+
+.category-button:hover {
+  border-color: #0b617f;
+  background: #f2f8fa;
+}
+
+.category-button.active {
+  border-color: #0b617f;
+  background: #0b617f;
+  color: #ffffff;
+}
+
+
+/* =========================================================
+   EVENT GRID
+========================================================= */
+
+.events-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  gap: 26px;
+}
+
+
+/* =========================================================
+   EVENT CARD
+========================================================= */
+
+.event-card {
+  display: block;
+
+  overflow: hidden;
+
+  background: #ffffff;
+
+  border: 1px solid #dce7eb;
+
+  color: inherit;
+
+  text-decoration: none;
+
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.event-card:hover {
+  transform: translateY(-5px);
+
+  border-color: #c4a04d;
+
+  box-shadow:
+    0 18px 40px rgba(0, 70, 95, 0.10);
+}
+
+
+/* =========================================================
+   EVENT IMAGE
+   FIXED 16:9 RATIO
+========================================================= */
+
+.event-card-image {
+  position: relative;
+
+  width: 100%;
+
+  aspect-ratio: 16 / 9;
+
+  overflow: hidden;
+
+  background: #e8f0f3;
+}
+
+.event-card-image img {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+  object-position: center;
+
+  transition:
+    transform 0.5s ease;
+}
+
+.event-card:hover .event-card-image img {
+  transform: scale(1.04);
+}
+
+
+/* =========================================================
+   IMAGE PLACEHOLDER
+========================================================= */
+
+.event-placeholder {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #e7f0f3,
+      #f7fafb
+    );
+
+  color: #0b617f;
+}
+
+.event-placeholder .cross {
+  color: #b58a36;
+
+  font-size: 36px;
+}
+
+.event-placeholder span:last-child {
+  font-size: 9px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.15em;
+}
+
+
+/* =========================================================
+   DATE BADGE
+========================================================= */
+
+.event-date {
+  position: absolute;
+
+  top: 14px;
+  left: 14px;
+
+  width: 52px;
+  height: 58px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: center;
+  align-items: center;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.12);
+}
+
+.event-date strong {
+  color: #0b4f69;
+
+  font-family: Georgia, serif;
+
+  font-size: 22px;
+
+  line-height: 1;
+}
+
+.event-date span {
+  margin-top: 4px;
+
+  color: #b58a36;
+
+  font-size: 8px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.1em;
+
+  text-transform: uppercase;
+}
+
+
+/* =========================================================
+   EVENT CONTENT
+========================================================= */
+
+.event-card-content {
+  padding: 20px 22px 22px;
+}
+
+.event-category {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color: #b58a36;
+
+  font-size: 9px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.08em;
+
+  line-height: 1.4;
+
+  text-transform: uppercase;
+}
+
+.event-card-content h3 {
+  margin: 0 0 9px;
+
+  color: #0b4f69;
+
+  font-family: Georgia, serif;
+
+  font-size: 22px;
+
+  font-weight: 400;
+
+  line-height: 1.25;
+}
+
+.event-card-content p {
+  display: -webkit-box;
+
+  overflow: hidden;
+
+  margin: 0;
+
+  color: #718087;
+
+  font-size: 12px;
+
+  line-height: 1.6;
+
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+
+/* =========================================================
+   EVENT META
+========================================================= */
+
+.event-meta {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 6px;
+
+  margin-top: 15px;
+
+  padding-top: 13px;
+
+  border-top: 1px solid #e5ecef;
+
+  color: #718087;
+
+  font-size: 10px;
+}
+
+.event-meta span {
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   VIEW DETAILS
+========================================================= */
+
+.view-details {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  margin-top: 16px;
+
+  color: #0b617f;
+
+  font-size: 11px;
+
+  font-weight: 700;
+}
+
+.view-details .arrow {
+  font-size: 17px;
+
+  transition:
+    transform 0.2s ease;
+}
+
+.event-card:hover .view-details .arrow {
+  transform: translateX(4px);
+}
+
+
+/* =========================================================
+   NO EVENTS
+========================================================= */
+
+.no-events {
+  padding: 55px 20px;
+
+  text-align: center;
+
+  background: #ffffff;
+
+  border: 1px solid #dce7eb;
+}
+
+.empty-cross {
+  margin-bottom: 10px;
+
+  color: #b58a36;
+
+  font-size: 34px;
+}
+
+.no-events h3 {
+  margin: 0 0 8px;
+
+  color: #0b4f69;
+
+  font-family: Georgia, serif;
+
+  font-size: 24px;
+
+  font-weight: 400;
+}
+
+.no-events p {
+  margin: 0;
+
+  color: #718087;
+
+  font-size: 13px;
+}
+
+
+/* =========================================================
+   FEATURED SECTION
+========================================================= */
+
+.featured-section {
+  padding: 90px 0;
+
+  background: #f7fafb;
+}
+
+.section-heading {
+  max-width: 850px;
+
+  margin-bottom: 42px;
+}
+
+.section-heading .eyebrow {
+  display: block;
+
+  margin-bottom: 12px;
+
+  color: #b58a36;
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.18em;
+
+  text-transform: uppercase;
+}
+
+.section-heading h2 {
+  margin: 0;
+
+  color: #0b4f69;
+
+  font-family: Georgia, serif;
+
+  font-size: clamp(42px, 5vw, 62px);
+
+  font-weight: 400;
+
+  line-height: 1.05;
+
+  letter-spacing: -0.035em;
+}
+
+.section-heading p {
+  max-width: 650px;
+
+  margin: 16px 0 0;
+
+  color: #687780;
+
+  font-size: 15px;
+
+  line-height: 1.7;
+}
+
+
+/* =========================================================
+   HEADER / NAVBAR
+========================================================= */
+
+.header .nav {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  align-items: center;
+
+  column-gap: clamp(14px, 2vw, 28px);
+
+  row-gap: 10px;
+
+  min-height: 78px;
+
+  width: 100%;
+
+  padding-block: 10px;
+}
+
+
+/* Logo + church name */
+
+.header .brand {
+  display: flex;
+
+  align-items: center;
+
+  gap: 11px;
+
+  flex: 0 1 auto;
+
+  min-width: 0;
+
+  order: 1;
+}
+
+.header .brand-logo,
+.header .brand-mark {
+  flex-shrink: 0;
+}
+
+.header .brand-copy {
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  font-size:
+    clamp(
+      16px,
+      1.3vw,
+      20px
+    );
+}
+
+.header .brand-copy span {
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+}
+
+
+/* Language + Donate */
+
+.header .desktop-actions {
+  display: flex;
+
+  align-items: center;
+
+  gap: clamp(8px, 1vw, 14px);
+
+  flex: 0 0 auto;
+
+  white-space: nowrap;
+
+  order: 2;
+
+  margin-left: auto;
+}
+
+.header .language-switcher,
+.header .desktop-donate {
+  flex-shrink: 0;
+
+  white-space: nowrap;
+}
+
+
+/* Navigation */
+
+.header .desktop-nav {
+  order: 3;
+
+  flex: 1 1 100%;
+
+  min-width: 0;
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  align-items: center;
+
+  justify-content: center;
+
+  column-gap:
+    clamp(
+      12px,
+      1.8vw,
+      26px
+    );
+
+  row-gap: 6px;
+
+  padding-top: 10px;
+
+  border-top:
+    1px solid
+    rgba(
+      15,
+      23,
+      42,
+      0.08
+    );
+}
+
+.header .desktop-nav a {
+  display: inline-flex;
+
+  align-items: center;
+
+  white-space: nowrap;
+
+  font-size:
+    clamp(
+      13px,
+      1vw,
+      14px
+    );
+}
+
+.header .mobile-toggle {
+  display: none;
+}
+
+
+/* =========================================================
+   RESPONSIVE — TABLET / MOBILE
+========================================================= */
+
+@media (max-width: 1000px) {
+
+  .events-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+}
+
+
+@media (max-width: 850px) {
+
+  .header .nav {
+    flex-wrap: nowrap;
+
+    justify-content: space-between;
+
+    row-gap: 0;
+
+    min-height: 64px;
+
+    padding-block: 0;
+  }
+
+  .header .brand {
+    order: 1;
+
+    flex: 1 1 auto;
+
+    min-width: 0;
+  }
+
+  .header .desktop-nav,
+  .header .desktop-actions {
+    display: none;
+  }
+
+  .header .mobile-toggle {
+    order: 2;
+
+    display: flex;
+
+    flex: 0 0 auto;
+
+    margin-left: 12px;
+  }
+
+}
+
+
+@media (max-width: 700px) {
+
+  /* Events */
+
+  .featured-section {
+    padding: 65px 0;
+  }
+
+  .events-filter-header {
+    align-items: flex-start;
+
+    flex-direction: column;
+
+    gap: 15px;
+  }
+
+  .category-buttons {
+    width: 100%;
+
+    justify-content: flex-start;
+  }
+
+  .events-grid {
+    grid-template-columns: 1fr;
+
+    gap: 20px;
+  }
+
+  .event-card-image {
+    aspect-ratio: 16 / 9;
+  }
+
+  .event-card-content {
+    padding: 19px 20px 21px;
+  }
+
+  .event-card-content h3 {
+    font-size: 21px;
+  }
+
+  .category-button {
+    padding: 8px 14px;
+
+    font-size: 11px;
+  }
+
+  .section-heading h2 {
+    font-size: 42px;
+  }
+
+
+  /* Today's popup */
+
+  .today-event-overlay {
+    padding: 12px;
+  }
+
+  .today-event-modal {
+    border-radius: 22px;
+
+    max-height:
+      calc(100vh - 24px);
+  }
+
+  .today-event-image img {
+    height: 220px;
+  }
+
+  .today-event-content {
+    padding: 22px 20px 20px;
+  }
+
+  .today-event-badge {
+    padding: 16px 20px 12px;
+  }
+
+  .today-event-close {
+    width: 38px;
+    height: 38px;
+  }
+
+}
+
+
+/* =========================================================
+   SMALL PHONES
+========================================================= */
+
+@media (max-width: 480px) {
+
+  .events-grid {
+    gap: 16px;
+  }
+
+  .event-card-image {
+    aspect-ratio: 16 / 10;
+  }
+
+  .event-date {
+    top: 11px;
+    left: 11px;
+
+    width: 48px;
+    height: 54px;
+  }
+
+  .event-date strong {
+    font-size: 20px;
+  }
+
+  .event-card-content h3 {
+    font-size: 20px;
+  }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .today-event-backdrop,
+  .today-event-modal {
+    animation: none;
+  }
+
+  .today-event-close,
+  .today-event-button,
+  .event-card,
+  .event-card-image img,
+  .view-details .arrow {
+    transition: none;
+  }
+
 }
