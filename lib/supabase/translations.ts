@@ -31,7 +31,7 @@ export const translations = {
       addressLine1: "Town Hall Road",
       addressLine2: "Madurai, Tamil Nadu",
       phone: "0452-2343490",
-      email: "Contact the parish",
+      email: "rosarychurchmadurai@gmail.com",
       copyright:
         "© 2026 Our Lady of Holy Rosary Church, Madurai. All rights reserved.",
     },
@@ -181,7 +181,7 @@ people: [
       addressLine1: "டவுன் ஹால் சாலை",
       addressLine2: "மதுரை, தமிழ்நாடு",
       phone: "0452-2343490",
-      email: "பங்கைத் தொடர்புகொள்ளவும்",
+      email: "rosarychurchmadurai@gmail.com",
       copyright:
         "© 2026 ஜெபமாலை அன்னையின் திருத்தலம், மதுரை. அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை.",
     },
