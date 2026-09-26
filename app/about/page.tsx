@@ -524,15 +524,18 @@ export default async function About() {
             </div>
           </div>
 
-          <div className="cards-grid pop-grid identity-cards-grid">
+          <div className="cards-grid pop-grid identity-cards-grid auto-scroll-rail">
             <div
               className="card pop-card cinematic-card"
               data-reveal="pop"
               style={{ "--i": 0 } as React.CSSProperties}
             >
               <div className="card-body">
-                <div className="card-icon-halo">
-                  <MapPin size={22} />
+                <div className="card-header-row">
+                  <div className="card-icon-halo">
+                    <MapPin size={22} />
+                  </div>
+                  <span className="card-step-badge">01</span>
                 </div>
                 <h3>Our Location</h3>
                 <p>
@@ -548,8 +551,11 @@ export default async function About() {
               style={{ "--i": 1 } as React.CSSProperties}
             >
               <div className="card-body">
-                <div className="card-icon-halo">
-                  <Users size={22} />
+                <div className="card-header-row">
+                  <div className="card-icon-halo">
+                    <Users size={22} />
+                  </div>
+                  <span className="card-step-badge">02</span>
                 </div>
                 <h3>Our Community</h3>
                 <p>
@@ -565,8 +571,11 @@ export default async function About() {
               style={{ "--i": 2 } as React.CSSProperties}
             >
               <div className="card-body">
-                <div className="card-icon-halo">
-                  <Church size={22} />
+                <div className="card-header-row">
+                  <div className="card-icon-halo">
+                    <Church size={22} />
+                  </div>
+                  <span className="card-step-badge">03</span>
                 </div>
                 <h3>Mission Chapels</h3>
                 <p>
@@ -582,8 +591,11 @@ export default async function About() {
               style={{ "--i": 3 } as React.CSSProperties}
             >
               <div className="card-body">
-                <div className="card-icon-halo">
-                  <Sparkles size={22} />
+                <div className="card-header-row">
+                  <div className="card-icon-halo">
+                    <Sparkles size={22} />
+                  </div>
+                  <span className="card-step-badge">04</span>
                 </div>
                 <h3>Patroness</h3>
                 <p>Our Lady of Holy Rosary</p>
@@ -596,8 +608,11 @@ export default async function About() {
               style={{ "--i": 4 } as React.CSSProperties}
             >
               <div className="card-body">
-                <div className="card-icon-halo">
-                  <Phone size={22} />
+                <div className="card-header-row">
+                  <div className="card-icon-halo">
+                    <Phone size={22} />
+                  </div>
+                  <span className="card-step-badge">05</span>
                 </div>
                 <h3>Telephone</h3>
                 <p>{siteSettings?.phone ?? "0452-2343490"}</p>
@@ -635,7 +650,7 @@ export default async function About() {
             </div>
           </div>
 
-          <div className="cards-grid substations-grid">
+          <div className="cards-grid substations-grid auto-scroll-rail">
             {substations.map((station, index) => (
               <FlipCard
                 key={station.name}
@@ -649,7 +664,7 @@ export default async function About() {
           </div>
 
           <div className="mobile-scroll-hint" aria-hidden="true">
-            <span>Tap card to view location details</span>
+            <span>Tap card to view location details · Auto-advances every 2-3s</span>
           </div>
         </div>
       </section>
@@ -681,7 +696,7 @@ export default async function About() {
             </div>
           </div>
 
-          <div className="cards-grid parish-life-grid">
+          <div className="cards-grid parish-life-grid auto-scroll-rail">
             {parishLife.map((item, index) => {
               const IconComp = item.icon;
               return (
@@ -692,8 +707,13 @@ export default async function About() {
                   style={{ "--i": index } as React.CSSProperties}
                 >
                   <div className="card-body">
-                    <div className="card-icon-halo">
-                      <IconComp size={22} />
+                    <div className="card-header-row">
+                      <div className="card-icon-halo">
+                        <IconComp size={22} />
+                      </div>
+                      <span className="card-step-badge">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
                     </div>
                     <h3>{item.title}</h3>
                     <p>{item.text}</p>
@@ -747,7 +767,7 @@ export default async function About() {
             </div>
           </div>
 
-          <div className="cards-grid lr-grid associations-grid">
+          <div className="cards-grid lr-grid associations-grid auto-scroll-rail">
             {associations.map((association, index) => (
               <div
                 className={`card lr-card cinematic-card ${
@@ -795,7 +815,7 @@ export default async function About() {
             </div>
           </div>
 
-          <div className="cards-grid structures-grid">
+          <div className="cards-grid structures-grid mobile-snap-rail">
             {participatoryStructures.map((item, index) => (
               <div
                 className="card cinematic-card structure-card"
@@ -804,8 +824,13 @@ export default async function About() {
                 style={{ "--i": index } as React.CSSProperties}
               >
                 <div className="card-body">
-                  <div className="card-icon-halo">
-                    <Shield size={20} />
+                  <div className="card-header-row">
+                    <div className="card-icon-halo">
+                      <Shield size={20} />
+                    </div>
+                    <span className="card-step-badge">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
                   </div>
                   <h3>{item}</h3>
                   <p>
@@ -939,7 +964,12 @@ export default async function About() {
                     {/* Milestone Card */}
                     <div className="milestone-card">
                       <div className="milestone-header">
-                        <span className="milestone-year">{entry.year}</span>
+                        <div className="milestone-meta-row">
+                          <span className="card-step-badge">
+                            {String(index + 1).padStart(2, "0")}
+                          </span>
+                          <span className="milestone-year">{entry.year}</span>
+                        </div>
                         <h3 className="milestone-title">{entry.title}</h3>
                       </div>
                       <p className="milestone-text">{entry.text}</p>
@@ -1045,7 +1075,7 @@ export default async function About() {
             </div>
           </div>
 
-          <div className="cards-grid communities-grid">
+          <div className="cards-grid communities-grid mobile-snap-rail">
             {religiousCommunities.map((community, index) => (
               <div
                 className="card cinematic-card"
@@ -1054,8 +1084,13 @@ export default async function About() {
                 style={{ "--i": index } as React.CSSProperties}
               >
                 <div className="card-body">
-                  <div className="card-icon-halo">
-                    <Heart size={20} />
+                  <div className="card-header-row">
+                    <div className="card-icon-halo">
+                      <Heart size={20} />
+                    </div>
+                    <span className="card-step-badge">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
                   </div>
                   <h3>{community.name}</h3>
                   <p className="detail-pill">{community.number}</p>
@@ -1099,7 +1134,7 @@ export default async function About() {
             </div>
           </div>
 
-          <div className="cards-grid institutions-grid">
+          <div className="cards-grid institutions-grid mobile-snap-rail">
             {parishInstitutions.map((institution, index) => (
               <div
                 className="card cinematic-card"
@@ -1108,8 +1143,13 @@ export default async function About() {
                 style={{ "--i": index } as React.CSSProperties}
               >
                 <div className="card-body">
-                  <div className="card-icon-halo">
-                    <GraduationCap size={20} />
+                  <div className="card-header-row">
+                    <div className="card-icon-halo">
+                      <GraduationCap size={20} />
+                    </div>
+                    <span className="card-step-badge">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
                   </div>
                   <h3>{institution.name}</h3>
                   <p className="phone-line">
@@ -1137,7 +1177,7 @@ export default async function About() {
             </div>
           </div>
 
-          <div className="cards-grid institutions-grid">
+          <div className="cards-grid institutions-grid mobile-snap-rail">
             {religiousInstitutions.map((institution, index) => (
               <div
                 className="card cinematic-card"
@@ -1146,8 +1186,13 @@ export default async function About() {
                 style={{ "--i": index } as React.CSSProperties}
               >
                 <div className="card-body">
-                  <div className="card-icon-halo">
-                    <Building2 size={20} />
+                  <div className="card-header-row">
+                    <div className="card-icon-halo">
+                      <Building2 size={20} />
+                    </div>
+                    <span className="card-step-badge">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
                   </div>
                   <h3>{institution.name}</h3>
                   <p className="phone-line">
@@ -1175,7 +1220,7 @@ export default async function About() {
             </div>
           </div>
 
-          <div className="cards-grid grottos-grid">
+          <div className="cards-grid grottos-grid mobile-snap-rail">
             {kurusadis.map((item, index) => (
               <div
                 className="card cinematic-card"
@@ -1184,8 +1229,13 @@ export default async function About() {
                 style={{ "--i": index } as React.CSSProperties}
               >
                 <div className="card-body">
-                  <div className="card-icon-halo">
-                    <Cross size={20} />
+                  <div className="card-header-row">
+                    <div className="card-icon-halo">
+                      <Cross size={20} />
+                    </div>
+                    <span className="card-step-badge">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
                   </div>
                   <h3>{item.name}</h3>
                   <p className="location-line">
@@ -1226,15 +1276,18 @@ export default async function About() {
             </div>
           </div>
 
-          <div className="cards-grid legacy-pillars-grid">
+          <div className="cards-grid legacy-pillars-grid mobile-snap-rail">
             <div
               className="card cinematic-card"
               data-reveal="pop"
               style={{ "--i": 0 } as React.CSSProperties}
             >
               <div className="card-body">
-                <div className="card-icon-halo">
-                  <Cross size={22} />
+                <div className="card-header-row">
+                  <div className="card-icon-halo">
+                    <Cross size={22} />
+                  </div>
+                  <span className="card-step-badge">01</span>
                 </div>
                 <h3>Faith</h3>
                 <p>
@@ -1250,8 +1303,11 @@ export default async function About() {
               style={{ "--i": 1 } as React.CSSProperties}
             >
               <div className="card-body">
-                <div className="card-icon-halo">
-                  <BookOpen size={22} />
+                <div className="card-header-row">
+                  <div className="card-icon-halo">
+                    <BookOpen size={22} />
+                  </div>
+                  <span className="card-step-badge">02</span>
                 </div>
                 <h3>Education</h3>
                 <p>
@@ -1267,8 +1323,11 @@ export default async function About() {
               style={{ "--i": 2 } as React.CSSProperties}
             >
               <div className="card-body">
-                <div className="card-icon-halo">
-                  <Users size={22} />
+                <div className="card-header-row">
+                  <div className="card-icon-halo">
+                    <Users size={22} />
+                  </div>
+                  <span className="card-step-badge">03</span>
                 </div>
                 <h3>Community</h3>
                 <p>

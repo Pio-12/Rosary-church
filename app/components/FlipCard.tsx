@@ -5,41 +5,77 @@ import { useEffect, useRef, useState } from "react";
 type FlipCardProps = {
   name: string;
   location: string;
-  /** Sample/placeholder — swap in each substation's real photo. */
   image: string;
-  /** Sample/placeholder — swap in each substation's real address. */
   address: string;
-  /** Stagger index used by the scroll-reveal CSS and the auto-flip timing. */
   index?: number;
 };
 
-export function FlipCard({ name, location, image, address, index = 0 }: FlipCardProps) {
+export function FlipCard({
+  name,
+  location,
+  image,
+  address,
+  index = 0,
+}: FlipCardProps) {
   const [isFlipped, setIsFlipped] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
   const userInteracted = useRef(false);
   const resumeAutoTimeout = useRef<number | undefined>(undefined);
 
-  // Auto-cycle the flip on mobile, so people who never tap still see
-  // the address/photo on the back. Pauses for a while after a manual
-  // tap so it doesn't fight the person using it.
+  // Auto-flip ONLY when this card comes into view, NOT when page opens!
   useEffect(() => {
-    const isMobile = window.matchMedia("(max-width: 600px)").matches;
+    const isMobile = window.matchMedia("(max-width: 850px)").matches;
     if (!isMobile) return;
 
-    const openFor = 2800;
-    const closedFor = 3400;
-    let cycleTimeout: number;
+    const el = cardRef.current;
+    if (!el) return;
+
+    let cycleTimeout: number | undefined;
+    let startTimeout: number | undefined;
+    let isVisible = false;
+
+    const openFor = 3000;
+    const closedFor = 3800;
 
     const cycle = (flipTo: boolean) => {
-      if (!userInteracted.current) {
+      if (!userInteracted.current && isVisible) {
         setIsFlipped(flipTo);
+        cycleTimeout = window.setTimeout(
+          () => cycle(!flipTo),
+          flipTo ? openFor : closedFor
+        );
       }
-      cycleTimeout = window.setTimeout(() => cycle(!flipTo), flipTo ? openFor : closedFor);
     };
 
-    const startDelay = 1200 + index * 650;
-    const startTimeout = window.setTimeout(() => cycle(true), startDelay);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            isVisible = true;
+            // Dwell on the front side (Card face 1) for 3.2s after scrolling into view
+            startTimeout = window.setTimeout(() => {
+              if (isVisible && !userInteracted.current) {
+                cycle(true);
+              }
+            }, 3200 + index * 600);
+          } else {
+            isVisible = false;
+            window.clearTimeout(startTimeout);
+            window.clearTimeout(cycleTimeout);
+            // Ensure card is on the front side when not visible so it always starts from one
+            if (!userInteracted.current) {
+              setIsFlipped(false);
+            }
+          }
+        });
+      },
+      { threshold: 0.25 }
+    );
+
+    observer.observe(el);
 
     return () => {
+      observer.disconnect();
       window.clearTimeout(startTimeout);
       window.clearTimeout(cycleTimeout);
     };
@@ -49,7 +85,6 @@ export function FlipCard({ name, location, image, address, index = 0 }: FlipCard
     userInteracted.current = true;
     setIsFlipped((v) => !v);
 
-    // Let auto-cycling take back over a while after a manual tap.
     window.clearTimeout(resumeAutoTimeout.current);
     resumeAutoTimeout.current = window.setTimeout(() => {
       userInteracted.current = false;
@@ -58,6 +93,7 @@ export function FlipCard({ name, location, image, address, index = 0 }: FlipCard
 
   return (
     <div
+      ref={cardRef}
       className="card flip-card"
       data-reveal="pop"
       style={{ "--i": index } as React.CSSProperties}
@@ -67,7 +103,9 @@ export function FlipCard({ name, location, image, address, index = 0 }: FlipCard
         role="button"
         tabIndex={0}
         aria-pressed={isFlipped}
-        aria-label={`${name}. Press to ${isFlipped ? "hide" : "show"} location details`}
+        aria-label={`${name}. Press to ${
+          isFlipped ? "hide" : "show"
+        } location details`}
         onClick={handleToggle}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
@@ -76,19 +114,29 @@ export function FlipCard({ name, location, image, address, index = 0 }: FlipCard
           }
         }}
       >
-        {/* FRONT */}
+        {/* FRONT (Face 1) */}
         <div className="flip-card-face flip-card-front">
           <div className="card-body">
+            <div className="card-step-badge">
+              <span>{String(index + 1).padStart(2, "0")}</span>
+            </div>
             <h3>{name}</h3>
             <p>{location}</p>
             <span className="flip-card-hint">Tap to view location ↻</span>
           </div>
         </div>
 
-        {/* BACK */}
+        {/* BACK (Face 2) */}
         <div className="flip-card-face flip-card-back">
-          <img className="flip-card-image" src={image} alt={`${name} church`} />
+          <img
+            className="flip-card-image"
+            src={image}
+            alt={`${name} church`}
+          />
           <div className="flip-card-back-body">
+            <div className="card-step-badge badge-gold">
+              <span>{String(index + 1).padStart(2, "0")}</span>
+            </div>
             <h3>{name}</h3>
             <p>{address}</p>
           </div>

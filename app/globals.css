@@ -11922,6 +11922,68 @@ select.field {
   padding: 32px 28px;
 }
 
+.about-page .card-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+.about-page .card-step-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  padding: 0 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(196, 154, 58, 0.45);
+  background: rgba(196, 154, 58, 0.1);
+  color: var(--ap-gold);
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  transition: all 0.3s ease;
+}
+
+.about-page .card-step-badge.badge-gold {
+  border-color: rgba(229, 201, 120, 0.6);
+  background: rgba(196, 154, 58, 0.25);
+  color: var(--ap-gold-light);
+}
+
+.about-page .cinematic-card:hover .card-step-badge {
+  background: var(--ap-gold);
+  color: var(--ap-white);
+  border-color: var(--ap-gold);
+  box-shadow: 0 4px 12px rgba(196, 154, 58, 0.3);
+}
+
+.about-page .wine-band .card-step-badge {
+  border-color: rgba(229, 201, 120, 0.45);
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--ap-gold-light);
+}
+
+.about-page .wine-band .cinematic-card:hover .card-step-badge {
+  background: var(--ap-gold-light);
+  color: var(--ap-navy);
+}
+
+.about-page .milestone-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.about-page .milestone-left .milestone-meta-row {
+  justify-content: flex-end;
+}
+
 .about-page .card-icon-halo {
   display: inline-flex;
   align-items: center;
@@ -11932,7 +11994,7 @@ select.field {
   background: linear-gradient(135deg, rgba(7, 137, 181, 0.12), rgba(196, 154, 58, 0.14));
   border: 1px solid rgba(196, 154, 58, 0.3);
   color: var(--ap-blue-deep);
-  margin-bottom: 18px;
+  margin-bottom: 0;
   transition:
     transform 0.35s var(--ap-spring),
     background 0.35s ease,
@@ -12614,12 +12676,64 @@ select.field {
 }
 
 /* =========================================================
-   MOBILE-FIRST ANIMATIONS & RESPONSIVE POLISH
+   AUTO-SCROLL CARD RAILS (Universal Desktop, Tablet & Mobile)
 ========================================================= */
 
-.about-page .mobile-scroll-hint {
+.about-page .auto-scroll-rail,
+.about-page .mobile-snap-rail {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  gap: 22px !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding: 12px 6px 26px !important;
+  margin: 0 -6px !important;
+}
+
+.about-page .auto-scroll-rail::-webkit-scrollbar,
+.about-page .mobile-snap-rail::-webkit-scrollbar {
   display: none;
 }
+
+.about-page .auto-scroll-rail > *,
+.about-page .mobile-snap-rail > * {
+  flex: 0 0 340px !important;
+  width: 340px !important;
+  min-width: 340px !important;
+  max-width: 340px !important;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+.about-page .priest-timeline-grid.auto-scroll-rail > * {
+  flex: 0 0 290px !important;
+  width: 290px !important;
+  min-width: 290px !important;
+  max-width: 290px !important;
+}
+
+.about-page .mobile-scroll-hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+  margin-top: 14px;
+  color: var(--ap-gold);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* =========================================================
+   MOBILE-FIRST ANIMATIONS & RESPONSIVE POLISH
+========================================================= */
 
 @media (max-width: 900px) {
   .about-page .about-hero {
@@ -12696,48 +12810,20 @@ select.field {
     font-size: 20px;
   }
 
-  /* Mobile Snap Scrolling Rails */
-  .about-page .mobile-snap-rail,
-  .about-page .cards-grid.substations-grid,
-  .about-page .cards-grid.identity-cards-grid,
-  .about-page .cards-grid.parish-life-grid,
-  .about-page .cards-grid.associations-grid {
-    display: flex !important;
-    gap: 16px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    padding: 10px 4px 22px;
-    margin: 0 -4px;
+  /* Mobile Snap Scrolling Card Sizing */
+  .about-page .auto-scroll-rail > *,
+  .about-page .mobile-snap-rail > * {
+    flex: 0 0 min(84vw, 310px) !important;
+    width: min(84vw, 310px) !important;
+    min-width: min(84vw, 310px) !important;
+    max-width: min(84vw, 310px) !important;
   }
 
-  .about-page .mobile-snap-rail::-webkit-scrollbar,
-  .about-page .cards-grid::-webkit-scrollbar {
-    display: none;
-  }
-
-  .about-page .mobile-snap-rail > *,
-  .about-page .cards-grid.substations-grid > *,
-  .about-page .cards-grid.identity-cards-grid > *,
-  .about-page .cards-grid.parish-life-grid > *,
-  .about-page .cards-grid.associations-grid > * {
-    flex: 0 0 min(82vw, 300px) !important;
-    min-width: 0;
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
-  }
-
-  .about-page .mobile-scroll-hint {
-    display: block;
-    text-align: center;
-    margin-top: 10px;
-    color: var(--ap-gold);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+  .about-page .priest-timeline-grid.auto-scroll-rail > * {
+    flex: 0 0 min(84vw, 280px) !important;
+    width: min(84vw, 280px) !important;
+    min-width: min(84vw, 280px) !important;
+    max-width: min(84vw, 280px) !important;
   }
 
   .about-page .closing-reflection-banner {

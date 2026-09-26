@@ -3,86 +3,155 @@
 import { useEffect } from "react";
 
 /**
- * Mount once inside <main className="about-page">. On mobile widths
- * (where .cards-grid becomes a horizontal swipeable strip) this
- * automatically advances every card strip on a timer, so people who
- * never bother to swipe still see every card. A manual touch/drag on
- * a strip pauses its autoplay for a few seconds so it doesn't fight
- * the user, then resumes.
+ * Mount once inside <main className="about-page">.
+ * Automatically advances card rails on a timer ONLY WHEN that specific
+ * section or card rail enters the viewport (via IntersectionObserver).
  *
- * No-op on desktop, where .cards-grid is a normal (non-scrolling)
- * grid.
+ * Requirements addressed:
+ * 1. Every card rail starts strictly at Card 1 (scrollLeft = 0).
+ * 2. Auto-scrolling does NOT run when page opens; it triggers only when the section comes into view.
+ * 3. Dwells on Card 1 for 2 seconds, then advances every 2.5 seconds (2-3s for each card).
+ * 4. Pauses on hover (desktop) or touch/drag (mobile) and resumes gracefully.
+ * 5. Pauses immediately when the section leaves the viewport.
  */
 export function AutoScrollCards() {
   useEffect(() => {
-    const isMobile = window.matchMedia("(max-width: 600px)").matches;
-    if (!isMobile) return;
-
     const root = document.querySelector(".about-page");
     if (!root) return;
 
     const rails = Array.from(
-      root.querySelectorAll<HTMLElement>(".cards-grid, .mobile-snap-rail")
+      root.querySelectorAll<HTMLElement>(
+        ".auto-scroll-rail, .mobile-snap-rail, .identity-cards-grid, .substations-grid, .parish-life-grid, .associations-grid, .structures-grid, .priest-timeline-grid, .communities-grid, .institutions-grid, .grottos-grid, .legacy-pillars-grid"
+      )
     );
     if (!rails.length) return;
 
-    const intervalIds: number[] = [];
     const cleanupFns: Array<() => void> = [];
 
-    rails.forEach((rail, railIndex) => {
-      // The Substations grid auto-flips its own cards — don't also
-      // auto-scroll it, or the two animations fight each other.
-      if (rail.querySelector(".flip-card")) return;
+    rails.forEach((rail) => {
+      // Guarantee starting at Card 1
+      rail.scrollLeft = 0;
 
-      let paused = false;
+      let intervalId: number | undefined;
+      let startTimeout: number | undefined;
       let resumeTimeout: number | undefined;
+      let isPaused = false;
+      let isVisible = false;
 
-      const pause = () => {
-        paused = true;
-        window.clearTimeout(resumeTimeout);
-        resumeTimeout = window.setTimeout(() => {
-          paused = false;
-        }, 4500);
+      const stopScrolling = () => {
+        window.clearTimeout(startTimeout);
+        window.clearInterval(intervalId);
+        intervalId = undefined;
       };
 
-      rail.addEventListener("touchstart", pause, { passive: true });
-      rail.addEventListener("pointerdown", pause);
-
       const tick = () => {
-        if (paused) return;
-        if (rail.scrollWidth <= rail.clientWidth + 6) return;
+        if (isPaused || !isVisible) return;
+        const cards = Array.from(rail.children) as HTMLElement[];
+        if (cards.length <= 1) return;
+        if (rail.scrollWidth <= rail.clientWidth + 8) return;
 
-        const firstCard = rail.querySelector<HTMLElement>(":scope > *");
-        const step =
-          (firstCard?.getBoundingClientRect().width ?? rail.clientWidth * 0.78) +
-          16; // card gap
+        // Find the currently active card index based on scroll offset
+        const currentScroll = rail.scrollLeft;
+        let activeIndex = 0;
+        let minDiff = Infinity;
 
-        const atEnd = rail.scrollLeft + rail.clientWidth >= rail.scrollWidth - 8;
+        cards.forEach((card, i) => {
+          const diff = Math.abs(card.offsetLeft - rail.offsetLeft - currentScroll);
+          if (diff < minDiff) {
+            minDiff = diff;
+            activeIndex = i;
+          }
+        });
 
-        if (atEnd) {
-          rail.scrollTo({ left: 0, behavior: "smooth" });
-        } else {
-          rail.scrollBy({ left: step, behavior: "smooth" });
+        // Determine next card (looping back to 0 when end is reached)
+        const nextIndex = activeIndex + 1 >= cards.length ? 0 : activeIndex + 1;
+        const targetCard = cards[nextIndex];
+        const targetLeft = targetCard.offsetLeft - rail.offsetLeft;
+
+        rail.scrollTo({
+          left: targetLeft,
+          behavior: "smooth",
+        });
+      };
+
+      const startScrolling = () => {
+        stopScrolling();
+        if (isPaused || !isVisible) return;
+        if (rail.scrollWidth <= rail.clientWidth + 8) return;
+
+        // Dwell on the first card for 2.0s when the section enters the viewport
+        startTimeout = window.setTimeout(() => {
+          if (isPaused || !isVisible) return;
+          tick(); // advance to Card 2
+
+          // Then advance every 2.5 seconds (2-3 seconds for each card)
+          intervalId = window.setInterval(() => {
+            tick();
+          }, 2500);
+        }, 2000);
+      };
+
+      // Desktop hover pause & resume
+      const onMouseEnter = () => {
+        isPaused = true;
+        stopScrolling();
+      };
+
+      const onMouseLeave = () => {
+        isPaused = false;
+        if (isVisible) {
+          startScrolling();
         }
       };
 
-      // Stagger each strip's start slightly so multiple carousels don't advance in lockstep
-      const startDelay = 1800 + railIndex * 450;
-      const startTimeout = window.setTimeout(() => {
-        const id = window.setInterval(tick, 3500);
-        intervalIds.push(id);
-      }, startDelay);
+      // Mobile touch / pointer interaction pause
+      const onUserInteraction = () => {
+        isPaused = true;
+        stopScrolling();
+        window.clearTimeout(resumeTimeout);
+        resumeTimeout = window.setTimeout(() => {
+          isPaused = false;
+          if (isVisible) {
+            startScrolling();
+          }
+        }, 3500);
+      };
+
+      rail.addEventListener("mouseenter", onMouseEnter);
+      rail.addEventListener("mouseleave", onMouseLeave);
+      rail.addEventListener("touchstart", onUserInteraction, { passive: true });
+      rail.addEventListener("pointerdown", onUserInteraction);
+
+      // ONLY start auto-scrolling when this section or card rail enters the viewport!
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              isVisible = true;
+              startScrolling();
+            } else {
+              isVisible = false;
+              stopScrolling();
+            }
+          });
+        },
+        { threshold: 0.15, rootMargin: "0px 0px -5% 0px" }
+      );
+
+      observer.observe(rail);
 
       cleanupFns.push(() => {
-        window.clearTimeout(startTimeout);
+        stopScrolling();
         window.clearTimeout(resumeTimeout);
-        rail.removeEventListener("touchstart", pause);
-        rail.removeEventListener("pointerdown", pause);
+        observer.disconnect();
+        rail.removeEventListener("mouseenter", onMouseEnter);
+        rail.removeEventListener("mouseleave", onMouseLeave);
+        rail.removeEventListener("touchstart", onUserInteraction);
+        rail.removeEventListener("pointerdown", onUserInteraction);
       });
     });
 
     return () => {
-      intervalIds.forEach((id) => window.clearInterval(id));
       cleanupFns.forEach((fn) => fn());
     };
   }, []);
