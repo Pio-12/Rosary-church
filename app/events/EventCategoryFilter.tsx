@@ -7,13 +7,17 @@ type EventItem = {
   id: string;
   title: string;
   description?: string | null;
-  event_date: string;
+  event_date: string | null;
   start_time?: string | null;
   end_time?: string | null;
   location?: string | null;
   category?: string | null;
   image_url?: string | null;
   is_featured?: boolean;
+};
+
+type EventWithDate = EventItem & {
+  event_date: string;
 };
 
 interface FeaturedEventFilterProps {
@@ -81,7 +85,12 @@ export default function FeaturedEventFilter({
    * ----------------
    * Only upcoming events.
    */
-  const upcomingEvents = events
+  const eventsWithDate: EventWithDate[] = events.filter(
+    (event): event is EventWithDate =>
+      event.event_date !== null
+  );
+
+  const upcomingEvents: EventWithDate[] = eventsWithDate
     .filter(
       (event) =>
         event.event_date >= today
@@ -98,7 +107,7 @@ export default function FeaturedEventFilter({
    * ----------
    * Includes both past and upcoming events.
    */
-  const allEvents = [...events].sort(
+  const allEvents: EventWithDate[] = [...eventsWithDate].sort(
     (a, b) =>
       b.event_date.localeCompare(
         a.event_date
@@ -140,7 +149,7 @@ export default function FeaturedEventFilter({
   /*
    * Decide what should be displayed.
    */
-  let displayedEvents: EventItem[] = [];
+  let displayedEvents: EventWithDate[] = [];
 
   if (selectedCategory === "featured") {
 
