@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { LatinCross } from "@/app/components/LatinCross";
 
 type EventItem = {
   id: string;
@@ -268,8 +269,8 @@ export default function FeaturedEventFilter({
 
         <div className="no-events">
 
-          <div className="empty-cross">
-            ✝
+          <div className="empty-cross" aria-hidden="true">
+            <LatinCross />
           </div>
 
           <h3>
@@ -317,8 +318,8 @@ export default function FeaturedEventFilter({
 
                     <div className="event-placeholder">
 
-                      <span className="cross">
-                        ✝
+                      <span className="cross" aria-hidden="true">
+                        <LatinCross />
                       </span>
 
                       <span>

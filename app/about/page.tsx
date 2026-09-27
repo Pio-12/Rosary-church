@@ -20,6 +20,7 @@ import { getSiteSettings } from "@/lib/supabase/site-settings";
 import { ScrollReveal } from "@/app/components/ScrollReveal";
 import { AutoScrollCards } from "@/app/components/AutoScrollCards";
 import { FlipCard } from "@/app/components/FlipCard";
+import { LatinCross } from "@/app/components/LatinCross";
 
 /* =========================================================
    HISTORICAL TIMELINE (13 Milestones from 1592 to 2020)
@@ -103,29 +104,27 @@ const substations = [
     name: "Our Lady of Mercy",
     location: "Solaialagupuram",
     image:
-      "https://images.unsplash.com/photo-1548625149-fc4a29cf7092?auto=format&fit=crop&w=600&q=80",
-    address: "Our Lady of Mercy Church, Solaialagupuram, Madurai",
+"https://ncedxbcsrcwuoailxsph.supabase.co/storage/v1/object/public/church-images/sholai%20alagupuram.jpeg" ,
+   address: "Our Lady of Mercy Church, Solaialagupuram, Madurai",
   },
   {
     name: "Immaculate Conception Church",
     location: "Perungudi",
     image:
-      "https://images.unsplash.com/photo-1543968996-ee822b8176ba?auto=format&fit=crop&w=600&q=80",
-    address: "Immaculate Conception Church, Perungudi, Madurai",
+"https://ncedxbcsrcwuoailxsph.supabase.co/storage/v1/object/public/church-images/perungudi.jpeg"   ,
+ address: "Immaculate Conception Church, Perungudi, Madurai",
   },
   {
     name: "St. Antony's Church",
     location: "St. Antony's Street",
     image:
-      "https://images.unsplash.com/photo-1520645521318-f03a712f0e67?auto=format&fit=crop&w=600&q=80",
-    address: "St. Antony's Church, St. Antony's Street, Madurai",
+"https://ncedxbcsrcwuoailxsph.supabase.co/storage/v1/object/public/church-images/antony.jpeg",    address: "St. Antony's Church, St. Antony's Street, Madurai",
   },
   {
     name: "St. Sebastian's Church",
     location: "Simmakkal",
     image:
-      "https://images.unsplash.com/photo-1438032005730-c779502df39b?auto=format&fit=crop&w=600&q=80",
-    address: "St. Sebastian's Church, Simmakkal, Madurai",
+"https://ncedxbcsrcwuoailxsph.supabase.co/storage/v1/object/public/church-images/simmakal.jpeg",    address: "St. Sebastian's Church, Simmakkal, Madurai",
   },
 ];
 
@@ -200,7 +199,7 @@ const parishPriests = [
   { year: "2004–2009", name: "Fr. Benedict Barnabas" },
   { year: "2009–2015", name: "Fr. Angel Raj" },
   { year: "2015–2020", name: "Fr. John Britto Packia Raj" },
-  { year: "2020–", name: "Fr. Anandam" },
+  { year: "2020–Present", name: "Fr. Anandam" },
 ];
 
 /* =========================================================
@@ -295,7 +294,9 @@ function SectionDivider({
       <div className="divider-ambient-glow" />
       <div className="divider-content">
         <span className="divider-line" />
-        <span className="divider-cross">✝</span>
+        <span className="divider-cross">
+          <LatinCross />
+        </span>
         <span className="divider-line" />
       </div>
     </div>
@@ -356,7 +357,7 @@ export default async function About() {
 
         {/* Layer 3: Sacred Latin Cross watermark */}
         <div className="about-hero-watermark" aria-hidden="true">
-          ✝
+          <LatinCross />
         </div>
 
         {/* Hero Content */}
@@ -386,7 +387,9 @@ export default async function About() {
 
           <div className="about-hero-divider" aria-hidden="true">
             <span className="divider-half" />
-            <span className="divider-cross">✝</span>
+            <span className="divider-cross">
+              <LatinCross />
+            </span>
             <span className="divider-half" />
           </div>
 
@@ -1345,7 +1348,7 @@ export default async function About() {
             style={{ "--i": 3 } as React.CSSProperties}
           >
             <div className="reflection-watermark" aria-hidden="true">
-              ✝
+              <LatinCross />
             </div>
             <div className="reflection-content">
               <span className="reflection-eyebrow">

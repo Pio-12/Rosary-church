@@ -33,7 +33,7 @@ const PURPOSES = [
 ];
 
 const QUICK_AMOUNTS = [100, 200, 500, 1000, 2000, 5000];
-const UPI_ID = "arokiyanelsonpio@okaxis";
+const UPI_ID = "martinlikesyou3@oksbi";
 const PAYEE_NAME = "Our Lady of Holy Rosary Church";
 
 type Step = "form" | "pay" | "done";

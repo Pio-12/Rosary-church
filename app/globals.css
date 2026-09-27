@@ -1,6 +1,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@400;500;600;700&family=Noto+Serif+Tamil:wght@400;500;600;700&display=swap");
 :root {
+  --font-tamil-sans: "Noto Sans Tamil", sans-serif;
+  --font-tamil-serif: "Noto Serif Tamil", serif;
   --blue: #0789b5;
   --blue-deep: #045f80;
   --blue-soft: #e8f6fa;
@@ -292,6 +294,13 @@ body::before {
   animation: brandGlow 5s ease-in-out infinite;
 }
 
+.brand-mark svg {
+  width: 1em;
+  height: 1em;
+  display: block;
+  fill: currentColor;
+}
+
 .brand-copy {
   color: var(--blue-dark);
   font-family: "Cormorant Garamond", serif;
@@ -561,17 +570,31 @@ body::before {
 }
 
 .page-hero::before {
-  content: "✝";
+  content: "";
   position: absolute;
   right: 7%;
   top: 50%;
+  width: 1em;
+  height: 1em;
   color: rgba(255, 255, 255, 0.035);
-  font-family: Georgia, serif;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M10.75 2h2.5v4.75h6.25v2.5h-6.25v12.75h-2.5V9.25H4.5v-2.5h6.25V2z'/%3E%3C/svg%3E") no-repeat center / contain;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M10.75 2h2.5v4.75h6.25v2.5h-6.25v12.75h-2.5V9.25H4.5v-2.5h6.25V2z'/%3E%3C/svg%3E") no-repeat center / contain;
   font-size: 260px;
   transform: translateY(-50%);
   animation: candleFlicker 7s ease-in-out infinite;
-    pointer-events: none;
+  pointer-events: none;
+}
 
+.desktop-links::before {
+  content: "";
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M10.75 2h2.5v4.75h6.25v2.5h-6.25v12.75h-2.5V9.25H4.5v-2.5h6.25V2z'/%3E%3C/svg%3E") no-repeat center / contain;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M10.75 2h2.5v4.75h6.25v2.5h-6.25v12.75h-2.5V9.25H4.5v-2.5h6.25V2z'/%3E%3C/svg%3E") no-repeat center / contain;
+  pointer-events: none;
 }
 
 .page-hero h1 {
@@ -824,12 +847,16 @@ body::before {
 }
 
 .legacy-section::before {
-  content: "✝";
+  content: "";
   position: absolute;
   top: 50%;
   right: 6%;
+  width: 1em;
+  height: 1em;
   color: rgba(255, 255, 255, 0.035);
-  font-family: Georgia, serif;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M10.75 2h2.5v4.75h6.25v2.5h-6.25v12.75h-2.5V9.25H4.5v-2.5h6.25V2z'/%3E%3C/svg%3E") no-repeat center / contain;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M10.75 2h2.5v4.75h6.25v2.5h-6.25v12.75h-2.5V9.25H4.5v-2.5h6.25V2z'/%3E%3C/svg%3E") no-repeat center / contain;
   font-size: 300px;
   transform: translateY(-50%);
   pointer-events: none;
@@ -1223,12 +1250,16 @@ body::before {
 }
 
 .home-cta::before {
-  content: "✝";
+  content: "";
   position: absolute;
   top: 50%;
   left: 50%;
+  width: 1em;
+  height: 1em;
   color: rgba(255, 255, 255, 0.035);
-  font-family: Georgia, serif;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M10.75 2h2.5v4.75h6.25v2.5h-6.25v12.75h-2.5V9.25H4.5v-2.5h6.25V2z'/%3E%3C/svg%3E") no-repeat center / contain;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M10.75 2h2.5v4.75h6.25v2.5h-6.25v12.75h-2.5V9.25H4.5v-2.5h6.25V2z'/%3E%3C/svg%3E") no-repeat center / contain;
   font-size: 430px;
   transform: translate(-50%, -50%);
   pointer-events: none;
@@ -2466,7 +2497,15 @@ html.js-anim .mass-card:nth-child(6).in-view {
   font-size: 300px;
   line-height: 1;
   pointer-events: none;
+  z-index: 0;
   animation: drawerCrossFloat 8s ease-in-out infinite;
+}
+
+.drawer-cross svg {
+  display: block;
+  width: 1em;
+  height: 1em;
+  fill: currentColor;
 }
 
 /* =========================================================
@@ -11745,6 +11784,23 @@ select.field {
   text-shadow: 0 0 12px rgba(196, 154, 58, 0.6);
 }
 
+.about-page .divider-cross svg,
+.about-page .about-hero-divider .divider-cross svg {
+  display: inline-block;
+  vertical-align: middle;
+  width: 1em;
+  height: 1em;
+  fill: currentColor;
+}
+
+.about-page .about-hero-watermark svg,
+.about-page .reflection-watermark svg {
+  display: block;
+  width: 1em;
+  height: 1em;
+  fill: currentColor;
+}
+
 /* =========================================================
    2. CINEMATIC INTRODUCTION
 ========================================================= */
@@ -13516,6 +13572,13 @@ select.field {
   font-size: 36px;
 }
 
+.event-placeholder .cross svg {
+  width: 1em;
+  height: 1em;
+  display: block;
+  fill: currentColor;
+}
+
 .event-placeholder span:last-child {
   font-size: 9px;
 
@@ -13717,6 +13780,14 @@ select.field {
   color: #b58a36;
 
   font-size: 34px;
+}
+
+.empty-cross svg {
+  width: 1em;
+  height: 1em;
+  display: inline-block;
+  vertical-align: middle;
+  fill: currentColor;
 }
 
 .no-events h3 {

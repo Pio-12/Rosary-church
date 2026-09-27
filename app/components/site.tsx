@@ -17,6 +17,7 @@ import {
 } from "react";
 import { useLanguage } from "./LanguageProvider";
 import { translations } from "@/lib/supabase/translations";
+import { LatinCross } from "./LatinCross";
 
 /* =========================================================
    NAVIGATION LINKS
@@ -344,7 +345,7 @@ export function Header() {
           className="drawer-cross"
           aria-hidden="true"
         >
-          ✝
+          <LatinCross />
         </div>
       </aside>
     </>
@@ -369,7 +370,9 @@ export function Footer() {
 
           <div>
             <div className="brand">
-              <span className="brand-mark">✝</span>
+              <span className="brand-mark" aria-hidden="true">
+                <LatinCross />
+              </span>
 
               <span
                 className="brand-copy"
@@ -409,8 +412,9 @@ export function Footer() {
           <div>
             <h3>{t.footer.visitUs}</h3>
 
+            {/* ADDRESS */}
             <div className="visit-item">
-              <MapPin size={13} />
+              <MapPin size={13} aria-hidden="true" />
 
               <p>
                 {t.footer.addressLine1}
@@ -419,16 +423,32 @@ export function Footer() {
               </p>
             </div>
 
+            {/* PHONE — CLICK TO CALL */}
             <div className="visit-item">
-              <Phone size={13} />
+              <Phone size={13} aria-hidden="true" />
 
-              <p>{t.footer.phone}</p>
+              <p>
+                <a
+                  href="tel:+914522343490"
+                  aria-label="Call Our Lady of Holy Rosary Church"
+                >
+                  {t.footer.phone}
+                </a>
+              </p>
             </div>
 
+            {/* EMAIL — CLICK TO EMAIL */}
             <div className="visit-item">
-              <Mail size={13} />
+              <Mail size={13} aria-hidden="true" />
 
-              <p>{t.footer.email}</p>
+              <p>
+                <a
+                  href="mailto:rosarychurchmadurai@gmail.com"
+                  aria-label="Email Our Lady of Holy Rosary Church"
+                >
+                  rosarychurchmadurai@gmail.com
+                </a>
+              </p>
             </div>
           </div>
         </div>
