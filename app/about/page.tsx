@@ -199,7 +199,8 @@ const parishPriests = [
   { year: "2004–2009", name: "Fr. Benedict Barnabas" },
   { year: "2009–2015", name: "Fr. Angel Raj" },
   { year: "2015–2020", name: "Fr. John Britto Packia Raj" },
-  { year: "2020–Present", name: "Fr. Anandam" },
+  { year: "2020–2023", name: "Fr. Anandam" },
+  { year: "2023–Present", name: "Fr. Amal Raj" },
 ];
 
 /* =========================================================
