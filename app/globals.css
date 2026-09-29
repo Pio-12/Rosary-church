@@ -1958,10 +1958,14 @@ html.js-anim .mass-card:nth-child(6).in-view {
 
   .brand {
     min-width: 0;
+    flex:1;
   }
 
   .brand-copy {
-    font-size: 16px;
+    font-size: 15px;
+    white-space: normal;
+    overflow: visible;
+
   }
 
   .brand-mark {
@@ -2095,8 +2099,17 @@ html.js-anim .mass-card:nth-child(6).in-view {
     font-size: 11px;
   }
 
+    .brand {
+    flex: 1;
+    min-width: 0;
+  }
+
   .brand-copy {
-    font-size: 15px;
+    min-width: 0;
+    font-size: 14px;
+    line-height: 1.1;
+    white-space: normal;
+    overflow: visible;
   }
 
   .brand-copy span {
@@ -3784,7 +3797,6 @@ select:focus {
     overflow: hidden;
     font-size: 14px;
     line-height: 1.05;
-    text-overflow: ellipsis;
   }
 
   .brand-copy span {
