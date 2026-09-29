@@ -13933,7 +13933,6 @@ select.field {
 
   overflow: hidden;
 
-  text-overflow: ellipsis;
 
   font-size:
     clamp(
@@ -13946,7 +13945,6 @@ select.field {
 .header .brand-copy span {
   overflow: hidden;
 
-  text-overflow: ellipsis;
 }
 
 
@@ -14414,8 +14412,6 @@ select.field {
     font-size: 12.5px;
     max-width: 100px;
     overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
 }
 
