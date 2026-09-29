@@ -19,7 +19,7 @@ export const translations = {
     },
 
     common: {
-      churchName: "Our Lady of Holy Rosary Church",
+      churchName: "Holy Rosary Church",
       city: "Madurai",
       home: "Home",
       specialCelebration: "Special Celebration",
