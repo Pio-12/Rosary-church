@@ -60,6 +60,7 @@ export default function Donations() {
 
   // Keep purpose synchronized if language changes while form has initial default
   useEffect(() => {
+    setForm((prev) => {
       const allDefaults: string[] = [
         translations.en.donations.purposes.general,
         translations.ta.donations.purposes.general,

@@ -4,21 +4,9 @@ import { useLanguage } from "@/app/components/LanguageProvider";
 import { translations } from "@/lib/supabase/translations";
 import EventTodayPopup from "@/app/components/EventTodayPopup";
 import FeaturedEventFilter from "./EventCategoryFilter";
+import type { Event } from "@/lib/supabase/events";
 
-type EventItem = {
-  id: string;
-  title: string;
-  description?: string | null;
-  event_date: string | null;
-  start_time?: string | null;
-  end_time?: string | null;
-  location?: string | null;
-  category?: string | null;
-  image_url?: string | null;
-  is_featured?: boolean;
-};
-
-export default function EventsContent({ events }: { events: EventItem[] }) {
+export default function EventsContent({ events }: { events: Event[] }) {
   const { language } = useLanguage();
   const t = translations[language].events;
 
