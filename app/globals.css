@@ -14334,6 +14334,25 @@ select.field {
     margin-left: 0;
     cursor: pointer;
   }
+
+  .header .brand {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: none;
+  }
+
+  .header .brand-copy {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    max-width: none;
+    font-size: clamp(13px, 3.5vw, 15px);
+    line-height: 1.15;
+  }
+
+  .header .brand-copy span {
+    overflow: visible;
+  }
 }
 
 @media (max-width: 430px) {
@@ -14349,6 +14368,12 @@ select.field {
   .header .mobile-toggle {
     width: 38px;
     height: 38px;
+  }
+
+  .header .brand-copy {
+    font-size: 13px;
+    line-height: 1.15;
+    max-width: none;
   }
 }
 
@@ -14378,8 +14403,14 @@ select.field {
   }
 
   .header .brand-copy {
-    font-size: 14px;
-    max-width: 120px;
+    font-size: 12px;
+    line-height: 1.15;
+    max-width: none;
+  }
+
+  .header .brand-copy span {
+    font-size: 8px;
+    margin-top: 2px;
   }
 }
 
@@ -14409,9 +14440,15 @@ select.field {
   }
 
   .header .brand-copy {
-    font-size: 12.5px;
-    max-width: 100px;
-    overflow: hidden;
+    font-size: 11px;
+    line-height: 1.15;
+    max-width: none;
+    overflow: visible;
+  }
+
+  .header .brand-copy span {
+    font-size: 7.5px;
+    margin-top: 2px;
   }
 }
 
