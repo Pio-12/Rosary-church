@@ -159,10 +159,7 @@ export default function HomeContent({
           <div className="intro-image-wrap reveal-image">
             <img
               className="photo intro-photo"
-              src={
-                siteSettings?.hero_image_url ||
-                "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=1000&q=85"
-              }
+              src="https://ncedxbcsrcwuoailxsph.supabase.co/storage/v1/object/public/gallery-images/IMG_20250412_234115.jpg.jpeg"              
               alt={
                 language === "ta"
                   ? "வரலாற்றுச் சிறப்புமிக்க ஆலயத்தின் வெளிப்புறம்"
