@@ -13,25 +13,15 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
+import { useLanguage } from "../components/LanguageProvider";
+import { translations } from "@/lib/supabase/translations";
 
 /* ==========================================================================
    CONFIGURATION CONSTANTS
-   Replace these values when your payment link or QR code image is ready.
    ========================================================================== */
 
-/**
- * Replace this with your actual UPI deep link, payment page, or gateway URL:
- * e.g. "upi://pay?pa=martinlikesyou3@oksbi&pn=Our+Lady+of+Holy+Rosary+Church&am=150&cu=INR&tn=Mass+Intention"
- */
 export const PAYMENT_LINK =
   "upi://pay?pa=martinlikesyou3@oksbi&pn=Our%20Lady%20of%20Holy%20Rosary%20Church&cu=INR&tn=Mass%20Intention";
-/**
- * Place your QR code image inside the `public/images/` directory:
- * e.g. `public/images/mass-intention-qr.png`
- * The component will automatically display this image, or an elegant
- * placeholder if the file has not been uploaded yet.
- */
-// QR code is generated dynamically from PAYMENT_LINK below.
 
 /** Fixed offering amount per Mass intention */
 export const MASS_OFFERING_AMOUNT = 200;
@@ -48,12 +38,18 @@ function countWords(str: string): number {
 
 export default function PrayerRequestPage() {
   const formId = useId();
+  const { language } = useLanguage();
+  const t = translations[language].prayerRequest;
+  const tCommon = translations[language].common;
+  const tNav = translations[language].nav;
 
   // Form State
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [intentionType, setIntentionType] = useState("General Prayer / பொதுவான கருத்து");
+  const [intentionTypeKey, setIntentionTypeKey] = useState<
+    "general" | "thanksgiving" | "soul" | "healing" | "birthday" | "wedding" | "special"
+  >("general");
   const [intention, setIntention] = useState("");
   const [paymentRef, setPaymentRef] = useState("");
   const [prayerDate, setPrayerDate] = useState("");
@@ -76,36 +72,32 @@ export default function PrayerRequestPage() {
 
     // 1. Validate Name
     if (!name.trim()) {
-      setErrorMsg("Please enter your name / உங்கள் பெயரை உள்ளிடவும்.");
+      setErrorMsg(t.validationName);
       return;
     }
 
     // 2. Validate Email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email.trim() || !emailRegex.test(email.trim())) {
-      setErrorMsg("Please enter a valid email address / சரியான மின்னஞ்சல் முகவரியை உள்ளிடவும்.");
+      setErrorMsg(t.validationEmail);
       return;
     }
 
     // 3. Validate Intention
     if (!intention.trim()) {
-      setErrorMsg("Please enter your Mass intention / உங்கள் பூசைக்கருத்தை உள்ளிடவும்.");
+      setErrorMsg(t.validationIntention);
       return;
     }
 
     // 4. Validate Word Count limit (50 words)
     if (wordCount > MAX_WORDS) {
-      setErrorMsg(
-        `Your intention contains ${wordCount} words. The maximum allowed is ${MAX_WORDS} words / உங்கள் கருத்து ${wordCount} சொற்களைக் கொண்டுள்ளது. அதிகபட்சம் ${MAX_WORDS} சொற்கள் மட்டுமே அனுமதிக்கப்படும்.`
-      );
+      setErrorMsg(t.validationWords.replace("{count}", String(wordCount)));
       return;
     }
 
     // 5. Validate prayer date and time
     if (!prayerDate || !prayerTime) {
-      setErrorMsg(
-        "Please select your prayer date and time / உங்கள் பிரார்த்தனை தேதியையும் நேரத்தையும் தேர்ந்தெடுக்கவும்."
-      );
+      setErrorMsg(t.validationDateTime);
       return;
     }
 
@@ -116,16 +108,12 @@ export default function PrayerRequestPage() {
       Number.isNaN(selectedPrayerDateTime.getTime()) ||
       selectedPrayerDateTime.getTime() < minimumAdvanceTime.getTime()
     ) {
-      setErrorMsg(
-        "Prayer requests must be submitted at least 45 minutes before the selected prayer time. / தேர்ந்தெடுக்கப்பட்ட பிரார்த்தனை நேரத்திற்கு குறைந்தது 45 நிமிடங்களுக்கு முன்பாக கோரிக்கையைச் சமர்ப்பிக்க வேண்டும்."
-      );
+      setErrorMsg(t.validationAdvance);
       return;
     }
 
     if (!receipt) {
-      setErrorMsg(
-        "Please upload your payment receipt / உங்கள் பணம் செலுத்திய ரசீதை பதிவேற்றவும்."
-      );
+      setErrorMsg(t.validationReceipt);
       return;
     }
 
@@ -136,7 +124,7 @@ export default function PrayerRequestPage() {
       formData.append("name", name.trim());
       formData.append("email", email.trim());
       formData.append("phone", phone.trim());
-      formData.append("intentionType", intentionType);
+      formData.append("intentionType", t.types[intentionTypeKey]);
       formData.append("intention", intention.trim());
       formData.append("paymentRef", paymentRef.trim());
       formData.append("prayerDateTime", selectedPrayerDateTime.toISOString());
@@ -151,19 +139,14 @@ export default function PrayerRequestPage() {
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(
-          result?.error ||
-            "Something went wrong. Please try again / ஏதேனும் தவறு ஏற்பட்டது. மீண்டும் முயற்சிக்கவும்."
-        );
+        throw new Error(result?.error || t.validationGeneric);
       }
 
       setIsSubmitted(true);
       window.scrollTo({ top: 120, behavior: "smooth" });
     } catch (error) {
       setErrorMsg(
-        error instanceof Error
-          ? error.message
-          : "Something went wrong. Please try again / ஏதேனும் தவறு ஏற்பட்டது. மீண்டும் முயற்சிக்கவும்."
+        error instanceof Error ? error.message : t.validationGeneric
       );
     } finally {
       setIsSubmitting(false);
@@ -174,9 +157,10 @@ export default function PrayerRequestPage() {
     setName("");
     setEmail("");
     setPhone("");
-    setIntentionType("General Prayer / பொதுவான கருத்து");
+    setIntentionTypeKey("general");
     setIntention("");
     setPaymentRef("");
+    setReceipt(null);
     setErrorMsg("");
     setIsSubmitted(false);
     window.scrollTo({ top: 120, behavior: "smooth" });
@@ -184,54 +168,54 @@ export default function PrayerRequestPage() {
 
   return (
     <main>
-      {/* PAGE HERO WITH ADMIN LOGIN INSIDE THE BLUE SECTION */}
+      {/* PAGE HERO WITH ADMIN LOGIN INSIDE THE HERO SECTION */}
       <section className="page-hero">
         <div className="container">
-          <div className="eyebrow">Our Lady of Holy Rosary Church</div>
+          <div className="eyebrow">{tCommon.churchName}</div>
 
-          <h1 className="serif">Mass Intentions</h1>
+          <h1 className="serif">{t.pageTitle}</h1>
 
           <div className="breadcrumbs">
-            Home <ArrowRight size={12} style={{ verticalAlign: "middle" }} /> Prayer Request
+            {tNav.home} <ArrowRight size={12} style={{ verticalAlign: "middle" }} /> {t.crumb}
           </div>
 
-       {/* ADMIN LOGIN BUTTON */}
-<div
-  style={{
-    display: "flex",
-    justifyContent: "flex-end",
-    marginTop: "30px",
-    position: "relative",
-    zIndex: 10,
-  }}
->
-  <Link
-    href="/admin/login"
-    style={{
-      position: "relative",
-      zIndex: 11,
-      display: "inline-flex",
-      alignItems: "center",
-      justifyContent: "center",
-      padding: "13px 26px",
-      borderRadius: "10px",
-      background: "#ffffff",
-      color: "#075f80",
-      border: "1px solid rgba(255, 255, 255, 0.85)",
-      fontFamily: "'DM Sans', sans-serif",
-      fontSize: "14px",
-      fontWeight: 700,
-      letterSpacing: "0.02em",
-      textDecoration: "none",
-      boxShadow: "0 6px 18px rgba(0, 0, 0, 0.14)",
-      transition: "all 0.3s ease",
-      cursor: "pointer",
-      pointerEvents: "auto",
-    }}
-  >
-    Admin Login
-  </Link>
-</div>
+          {/* ADMIN LOGIN BUTTON */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              marginTop: "30px",
+              position: "relative",
+              zIndex: 10,
+            }}
+          >
+            <Link
+              href="/admin/login"
+              style={{
+                position: "relative",
+                zIndex: 11,
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "13px 26px",
+                borderRadius: "10px",
+                background: "#ffffff",
+                color: "#075f80",
+                border: "1px solid rgba(255, 255, 255, 0.85)",
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: "14px",
+                fontWeight: 700,
+                letterSpacing: "0.02em",
+                textDecoration: "none",
+                boxShadow: "0 6px 18px rgba(0, 0, 0, 0.14)",
+                transition: "all 0.3s ease",
+                cursor: "pointer",
+                pointerEvents: "auto",
+              }}
+            >
+              {t.adminLogin}
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -247,46 +231,24 @@ export default function PrayerRequestPage() {
             }}
           >
             <div className="eyebrow" style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
-              <Sparkles size={14} /> Sacred Offering &middot; புனித காணிக்கை
-              
+              <Sparkles size={14} /> {t.sacredOffering}
             </div>
-            
 
             <h1
               className="serif"
               style={{
                 fontSize: "clamp(36px, 4.8vw, 56px)",
                 color: "var(--blue-dark)",
-                margin: "12px 0 6px",
+                margin: "12px 0 16px",
                 lineHeight: 1.1,
               }}
             >
-              Mass Intentions
+              {t.title}
             </h1>
-            
-
-            <div
-              style={{
-                fontFamily: "'DM Sans', sans-serif",
-                fontSize: "clamp(20px, 2.8vw, 28px)",
-                color: "var(--gold)",
-                fontWeight: 600,
-                marginBottom: "16px",
-                letterSpacing: "0.02em",
-              }}
-            >
-              பூசைக்கருத்து
-            </div>
 
             <p className="body-copy" style={{ fontSize: "16.5px", lineHeight: 1.85, maxWidth: "680px", margin: "0 auto" }}>
-              Offer a Mass intention for your loved ones and special intentions.
-              Please fill in the details below and complete the offering.
-              <br />
-              <span style={{ fontSize: "14.5px", color: "var(--muted)", fontStyle: "normal", display: "inline-block", marginTop: "6px" }}>
-                உங்கள் அன்புக்குரியவர்களுக்காகவும் தனிப்பட்ட கருத்துக்களுக்காகவும் திருப்பலி நிறைவேற்றக் கீழே உள்ள விவரங்களை நிரப்பி காணிக்கையைச் செலுத்தவும்.
-              </span>
+              {t.subtitle} {t.instruction}
             </p>
-            
           </div>
 
           {/* ══════════════════════════════════════════════════════
@@ -328,7 +290,7 @@ export default function PrayerRequestPage() {
                   fontSize: "12px",
                 }}
               >
-                Submitted Successfully
+                {t.successBadge}
               </div>
 
               <h2
@@ -336,22 +298,11 @@ export default function PrayerRequestPage() {
                 style={{
                   fontSize: "clamp(26px, 3.5vw, 34px)",
                   color: "var(--blue-dark)",
-                  marginBottom: "8px",
+                  marginBottom: "16px",
                 }}
               >
-                Your Mass intention has been submitted successfully. Thank you.
+                {t.successTitle}
               </h2>
-
-              <p
-                style={{
-                  fontSize: "18px",
-                  fontWeight: 600,
-                  color: "var(--gold)",
-                  marginBottom: "20px",
-                }}
-              >
-                உங்கள் பூசைக்கருத்து வெற்றிகரமாக சமர்ப்பிக்கப்பட்டது. நன்றி.
-              </p>
 
               {/* SUMMARY RECEIPT */}
               <div
@@ -375,7 +326,7 @@ export default function PrayerRequestPage() {
                   }}
                 >
                   <span style={{ fontSize: "12px", textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--blue-deep)", fontWeight: 700 }}>
-                    Intention Details
+                    {t.summaryTitle}
                   </span>
                   <span
                     style={{
@@ -387,46 +338,46 @@ export default function PrayerRequestPage() {
                       fontWeight: 600,
                     }}
                   >
-                    Offering: ₹{MASS_OFFERING_AMOUNT}
+                    {t.summaryOffering} ₹{MASS_OFFERING_AMOUNT}
                   </span>
                 </div>
 
                 <div style={{ display: "grid", gap: "10px", fontSize: "14.5px" }}>
                   <div>
-                    <span style={{ color: "var(--muted)" }}>Donor Name: </span>
+                    <span style={{ color: "var(--muted)" }}>{t.summaryDonor} </span>
                     <strong style={{ color: "var(--ink)" }}>{name}</strong>
                   </div>
                   <div>
-                    <span style={{ color: "var(--muted)" }}>Email: </span>
+                    <span style={{ color: "var(--muted)" }}>{t.summaryEmail} </span>
                     <span style={{ color: "var(--ink)" }}>{email}</span>
                   </div>
                   {phone && (
                     <div>
-                      <span style={{ color: "var(--muted)" }}>Phone: </span>
+                      <span style={{ color: "var(--muted)" }}>{t.summaryPhone} </span>
                       <span style={{ color: "var(--ink)" }}>{phone}</span>
                     </div>
                   )}
                   <div>
-                    <span style={{ color: "var(--muted)" }}>Intention Type: </span>
-                    <span style={{ color: "var(--blue-deep)", fontWeight: 600 }}>{intentionType}</span>
+                    <span style={{ color: "var(--muted)" }}>{t.summaryType} </span>
+                    <span style={{ color: "var(--blue-deep)", fontWeight: 600 }}>{t.types[intentionTypeKey]}</span>
                   </div>
                   <div style={{ borderTop: "1px dashed var(--line)", paddingTop: "10px" }}>
-                    <span style={{ color: "var(--muted)", display: "block", marginBottom: "4px" }}>Intention / பூசைக்கருத்து:</span>
+                    <span style={{ color: "var(--muted)", display: "block", marginBottom: "4px" }}>{t.summaryIntention}</span>
                     <p style={{ margin: 0, fontStyle: "italic", color: "var(--ink)", lineHeight: 1.6 }}>
                       &ldquo;{intention}&rdquo;
                     </p>
                   </div>
                   <div>
-                    <span style={{ color: "var(--muted)" }}>Prayer Date / பிரார்த்தனை தேதி: </span>
+                    <span style={{ color: "var(--muted)" }}>{t.summaryDate} </span>
                     <strong style={{ color: "var(--ink)" }}>{prayerDate}</strong>
                   </div>
                   <div>
-                    <span style={{ color: "var(--muted)" }}>Prayer Time / பிரார்த்தனை நேரம்: </span>
+                    <span style={{ color: "var(--muted)" }}>{t.summaryTime} </span>
                     <strong style={{ color: "var(--ink)" }}>{prayerTime}</strong>
                   </div>
                   {paymentRef && (
                     <div style={{ borderTop: "1px dashed var(--line)", paddingTop: "10px" }}>
-                      <span style={{ color: "var(--muted)" }}>Payment Reference / UTR: </span>
+                      <span style={{ color: "var(--muted)" }}>{t.summaryRef} </span>
                       <code style={{ background: "white", padding: "2px 6px", borderRadius: "4px", border: "1px solid var(--line)" }}>
                         {paymentRef}
                       </code>
@@ -436,18 +387,15 @@ export default function PrayerRequestPage() {
               </div>
 
               <p style={{ fontSize: "14px", color: "var(--muted)", lineHeight: 1.7, marginBottom: "30px" }}>
-                <em>
-                  Note: Your prayer intention has been noted and will be placed on the altar.
-                  The church will verify the offering reference accordingly.
-                </em>
+                <em>{t.successNote}</em>
               </p>
 
               <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap" }}>
                 <button type="button" className="button" onClick={handleReset}>
-                  Submit Another Intention
+                  {t.submitAnother}
                 </button>
                 <Link href="/mass-timings" className="button outline" style={{ color: "var(--blue-deep)", borderColor: "var(--blue-deep)" }}>
-                  View Mass Timings
+                  {t.viewMassTimings}
                 </Link>
               </div>
             </div>
@@ -507,7 +455,7 @@ export default function PrayerRequestPage() {
                           color: "var(--blue-deep)",
                         }}
                       >
-                        Mass Offering &middot; திருப்பலி காணிக்கை
+                        {t.offeringCalloutBadge}
                       </span>
                     </div>
 
@@ -538,13 +486,12 @@ export default function PrayerRequestPage() {
                           color: "var(--gold)",
                         }}
                       >
-                        per Mass Intention
+                        {t.offeringAmountText}
                       </span>
                     </div>
 
                     <p style={{ margin: 0, fontSize: "14px", color: "var(--muted)", lineHeight: 1.7 }}>
-                      One Mass intention offering is ₹200. Your sacred contribution supports
-                      the sanctuary, celebrant clergy, and parish mission.
+                      {t.offeringDesc}
                     </p>
                   </div>
 
@@ -568,7 +515,7 @@ export default function PrayerRequestPage() {
                           color: "var(--blue-deep)",
                         }}
                       >
-                        Intention Information
+                        {t.formCardTitle}
                       </h2>
                     </div>
 
@@ -588,7 +535,7 @@ export default function PrayerRequestPage() {
                             marginBottom: "6px",
                           }}
                         >
-                          Prayer Date / பிரார்த்தனை தேதி *
+                          {t.prayerDateLabel} *
                         </label>
                         <input
                           id={`${formId}-prayer-date`}
@@ -623,7 +570,7 @@ export default function PrayerRequestPage() {
                             marginBottom: "6px",
                           }}
                         >
-                          Prayer Time / பிரார்த்தனை நேரம் *
+                          {t.prayerTimeLabel} *
                         </label>
                         <input
                           id={`${formId}-prayer-time`}
@@ -650,14 +597,11 @@ export default function PrayerRequestPage() {
                             marginBottom: 0,
                           }}
                         >
-                          Submit at least 45 minutes before the selected prayer time.
-                          <br />
-                          தேர்ந்தெடுக்கப்பட்ட பிரார்த்தனை நேரத்திற்கு குறைந்தது 45 நிமிடங்களுக்கு முன்பாக கோரிக்கையைச் சமர்ப்பிக்க வேண்டும்.
+                          {t.validationAdvance}
                         </p>
                       </div>
 
                       {/* FIELD 3: NAME */}
-
                       <div className="form-group">
                         <label
                           htmlFor={`${formId}-name`}
@@ -671,14 +615,14 @@ export default function PrayerRequestPage() {
                             textTransform: "uppercase",
                           }}
                         >
-                          <span>Name / பெயர் *</span>
+                          <span>{t.fullNameLabel} *</span>
                         </label>
                         <input
                           id={`${formId}-name`}
                           type="text"
                           value={name}
                           onChange={(e) => setName(e.target.value)}
-                          placeholder="Enter your name"
+                          placeholder={t.fullNamePlaceholder}
                           required
                           style={{
                             border: "1px solid var(--line)",
@@ -692,7 +636,7 @@ export default function PrayerRequestPage() {
                         />
                       </div>
 
-                      {/* FIELD 2: EMAIL */}
+                      {/* FIELD 4: EMAIL */}
                       <div className="form-group">
                         <label
                           htmlFor={`${formId}-email`}
@@ -706,14 +650,14 @@ export default function PrayerRequestPage() {
                             textTransform: "uppercase",
                           }}
                         >
-                          <span>Email / மின்னஞ்சல் *</span>
+                          <span>{t.emailLabel} *</span>
                         </label>
                         <input
                           id={`${formId}-email`}
                           type="email"
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
-                          placeholder="Enter your email"
+                          placeholder={t.emailPlaceholder}
                           required
                           style={{
                             border: "1px solid var(--line)",
@@ -727,7 +671,7 @@ export default function PrayerRequestPage() {
                         />
                       </div>
 
-                      {/* FIELD 3: PHONE */}
+                      {/* FIELD 5: PHONE */}
                       <div className="form-group">
                         <label
                           htmlFor={`${formId}-phone`}
@@ -741,14 +685,14 @@ export default function PrayerRequestPage() {
                             textTransform: "uppercase",
                           }}
                         >
-                          <span>Phone / தொலைபேசி எண் (Optional)</span>
+                          <span>{t.phoneLabel}</span>
                         </label>
                         <input
                           id={`${formId}-phone`}
                           type="tel"
                           value={phone}
                           onChange={(e) => setPhone(e.target.value)}
-                          placeholder="Enter your phone number (optional)"
+                          placeholder={t.phonePlaceholder}
                           style={{
                             border: "1px solid var(--line)",
                             borderRadius: "8px",
@@ -773,12 +717,16 @@ export default function PrayerRequestPage() {
                             textTransform: "uppercase",
                           }}
                         >
-                          Intention Type / கருத்து வகை
+                          {t.intentionTypeLabel}
                         </label>
                         <select
                           id={`${formId}-type`}
-                          value={intentionType}
-                          onChange={(e) => setIntentionType(e.target.value)}
+                          value={intentionTypeKey}
+                          onChange={(e) =>
+                            setIntentionTypeKey(
+                              e.target.value as "general" | "thanksgiving" | "soul" | "healing" | "birthday" | "wedding" | "special"
+                            )
+                          }
                           style={{
                             border: "1px solid var(--line)",
                             borderRadius: "8px",
@@ -789,16 +737,17 @@ export default function PrayerRequestPage() {
                             background: "white",
                           }}
                         >
-                          <option value="General Prayer / பொதுவான கருத்து">General Prayer / பொதுவான கருத்து</option>
-                          <option value="Thanksgiving / நன்றி திருப்பலி">Thanksgiving / நன்றி திருப்பலி</option>
-                          <option value="Repose of the Soul / ஆன்ம இளைப்பாற்றி">Repose of the Soul / ஆன்ம இளைப்பாற்றி</option>
-                          <option value="Good Health & Healing / உடல் நலம் & குணமடைதல்">Good Health & Healing / உடல் நலம் & குணமடைதல்</option>
-                          <option value="Birthday / திருமண / பிறந்தநாள் விழா">Birthday / Anniversary / பிறந்தநாள் / திருமண நாள்</option>
-                          <option value="Special Family Intention / குடும்ப சிறப்பு கருத்து">Special Family Intention / குடும்ப சிறப்பு கருத்து</option>
+                          <option value="general">{t.types.general}</option>
+                          <option value="thanksgiving">{t.types.thanksgiving}</option>
+                          <option value="soul">{t.types.soul}</option>
+                          <option value="healing">{t.types.healing}</option>
+                          <option value="birthday">{t.types.birthday}</option>
+                          <option value="wedding">{t.types.wedding}</option>
+                          <option value="special">{t.types.special}</option>
                         </select>
                       </div>
 
-                      {/* FIELD 4: MASS INTENTION TEXTAREA WITH LIVE 50-WORD COUNTER */}
+                      {/* FIELD 6: MASS INTENTION TEXTAREA WITH LIVE 50-WORD COUNTER */}
                       <div className="form-group">
                         <div
                           style={{
@@ -818,7 +767,7 @@ export default function PrayerRequestPage() {
                               textTransform: "uppercase",
                             }}
                           >
-                            Mass Intention / பூசைக்கருத்து *
+                            {t.intentionDetailsLabel} *
                           </label>
 
                           {/* LIVE WORD COUNTER */}
@@ -842,7 +791,7 @@ export default function PrayerRequestPage() {
                               transition: "all 0.2s ease",
                             }}
                           >
-                            {wordCount} / {MAX_WORDS} words
+                            {wordCount} / {MAX_WORDS} {t.wordCount}
                           </span>
                         </div>
 
@@ -851,7 +800,7 @@ export default function PrayerRequestPage() {
                           rows={5}
                           value={intention}
                           onChange={(e) => setIntention(e.target.value)}
-                          placeholder="Write your prayer intention here... (Maximum 50 words) / உங்கள் பூசைக்கருத்தை இங்கு எழுதவும்..."
+                          placeholder={t.intentionPlaceholder}
                           required
                           style={{
                             border: `1.5px solid ${isOverWordLimit ? "#dc2626" : "var(--line)"}`,
@@ -882,12 +831,12 @@ export default function PrayerRequestPage() {
                           >
                             <AlertCircle size={15} />
                             <span>
-                              Word limit exceeded by {wordCount - MAX_WORDS} word(s). Please shorten your intention to 50 words or fewer.
+                              {t.validationWords.replace("{count}", String(wordCount))}
                             </span>
                           </div>
                         ) : (
                           <span style={{ fontSize: "12px", color: "var(--muted)", display: "block", marginTop: "4px" }}>
-                            Please keep your intention concise so it can be reverently read during Mass.
+                            {t.maxWordsNote}
                           </span>
                         )}
                       </div>
@@ -917,32 +866,20 @@ export default function PrayerRequestPage() {
 
                     {/* CARD HEADER */}
                     <div className="eyebrow" style={{ marginBottom: "6px" }}>
-                      Offering Payment
+                      {t.paymentCardTitle}
                     </div>
 
                     <h2
                       className="serif"
                       style={{
-                        margin: "0 0 4px",
+                        margin: "0 0 16px",
                         fontSize: "26px",
                         color: "var(--blue-dark)",
                         lineHeight: 1.15,
                       }}
                     >
-                      Complete Your Offering
+                      {t.completeOffering}
                     </h2>
-
-                    <div
-                      style={{
-                        fontFamily: "'DM Sans', sans-serif",
-                        fontSize: "19px",
-                        fontWeight: 600,
-                        color: "var(--gold)",
-                        marginBottom: "16px",
-                      }}
-                    >
-                      காணிக்கை செலுத்த
-                    </div>
 
                     {/* PROMINENT AMOUNT BADGE */}
                     <div
@@ -974,7 +911,7 @@ export default function PrayerRequestPage() {
                       </span>
                     </div>
 
-                    {/* QR CODE CONTAINER WITH FALLBACK */}
+                    {/* QR CODE CONTAINER */}
                     <div
                       style={{
                         position: "relative",
@@ -1011,48 +948,28 @@ export default function PrayerRequestPage() {
                         margin: "0 0 16px",
                       }}
                     >
-                      Scan the QR code to pay ₹{MASS_OFFERING_AMOUNT}
+                      {t.scanToPay.replace("{amount}", String(MASS_OFFERING_AMOUNT))}
                     </p>
 
-                    {/* OPTIONAL DIRECT PAYMENT LINK BUTTON */}
+                    {/* DIRECT PAYMENT LINK BUTTON */}
                     <div style={{ marginBottom: "24px" }}>
-                      {PAYMENT_LINK  ? (
-                        <a
-                          href={PAYMENT_LINK}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="button"
-                          style={{
-                            width: "100%",
-                            padding: "13px 20px",
-                            fontSize: "13px",
-                            display: "inline-flex",
-                            gap: "8px",
-                          }}
-                        >
-                          Pay ₹{MASS_OFFERING_AMOUNT} <ExternalLink size={15} />
-                        </a>
-                      ) : (
-                        <button
-                          type="button"
-                          className="button outline"
-                          onClick={() =>
-                            alert(
-                              `Please scan the QR code above to make your ₹${MASS_OFFERING_AMOUNT} offering. (Note to administrator: set the PAYMENT_LINK constant in this file to link directly to your UPI app or payment gateway).`
-                            )
-                          }
-                          style={{
-                            width: "100%",
-                            padding: "12px 18px",
-                            fontSize: "13px",
-                            color: "var(--blue-deep)",
-                            borderColor: "var(--blue-deep)",
-                            background: "rgba(4, 95, 128, 0.04)",
-                          }}
-                        >
-                          Pay ₹{MASS_OFFERING_AMOUNT}
-                        </button>
-                      )}
+                      <a
+                        href={PAYMENT_LINK}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="button"
+                        style={{
+                          width: "100%",
+                          padding: "13px 20px",
+                          fontSize: "13px",
+                          display: "inline-flex",
+                          gap: "8px",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        {t.payAmount.replace("{amount}", String(MASS_OFFERING_AMOUNT))} <ExternalLink size={15} />
+                      </a>
                     </div>
 
                     {/* PAYMENT RECEIPT UPLOAD */}
@@ -1076,7 +993,7 @@ export default function PrayerRequestPage() {
                           marginBottom: "6px",
                         }}
                       >
-                        Payment Receipt / பணம் செலுத்திய ரசீது *
+                        {t.receiptUploadLabel} *
                       </label>
                       <input
                         id={`${formId}-receipt`}
@@ -1103,9 +1020,7 @@ export default function PrayerRequestPage() {
                           lineHeight: 1.4,
                         }}
                       >
-                        Upload the receipt after paying ₹200. Accepted: JPG, PNG, WEBP, or PDF.
-                        <br />
-                        ₹200 செலுத்திய பிறகு ரசீதைப் பதிவேற்றவும். JPG, PNG, WEBP அல்லது PDF கோப்புகள் ஏற்கப்படும்.
+                        {t.receiptNote}
                       </span>
                     </div>
 
@@ -1129,14 +1044,14 @@ export default function PrayerRequestPage() {
                           marginBottom: "6px",
                         }}
                       >
-                        Payment Reference / பரிவர்த்தனை எண்
+                        {t.paymentRefLabel}
                       </label>
                       <input
                         id={`${formId}-ref`}
                         type="text"
                         value={paymentRef}
                         onChange={(e) => setPaymentRef(e.target.value)}
-                        placeholder="e.g. UPI Ref / UTR / Transaction No."
+                        placeholder={t.paymentRefPlaceholder}
                         style={{
                           border: "1px solid var(--line)",
                           borderRadius: "8px",
@@ -1156,7 +1071,7 @@ export default function PrayerRequestPage() {
                           lineHeight: 1.4,
                         }}
                       >
-                        This helps the church identify and link your offering with your intention.
+                        {t.paymentRefDesc}
                       </span>
                     </div>
 
@@ -1197,11 +1112,7 @@ export default function PrayerRequestPage() {
                         cursor: isSubmitting || isOverWordLimit ? "not-allowed" : "pointer",
                       }}
                     >
-                      {isSubmitting ? (
-                        "Submitting Intention..."
-                      ) : (
-                        <>Submit Intention / கருத்தை சமர்ப்பிக்க</>
-                      )}
+                      {isSubmitting ? t.submittingButton : t.submitButton}
                     </button>
 
                     <div
@@ -1216,7 +1127,7 @@ export default function PrayerRequestPage() {
                       }}
                     >
                       <Heart size={12} color="var(--gold)" />
-                      <span>Offered with reverence at Holy Mass</span>
+                      <span>{t.reverenceNote}</span>
                     </div>
 
                   </div>
@@ -1261,12 +1172,10 @@ export default function PrayerRequestPage() {
                     color: "var(--blue-deep)",
                   }}
                 >
-                  Offering of the Holy Sacrifice
+                  {t.card1Title}
                 </h3>
                 <p style={{ margin: 0, fontSize: "14px", color: "var(--muted)", lineHeight: 1.7 }}>
-                  In the Catholic tradition, having the Holy Sacrifice of the Mass offered
-                  for someone is the highest form of prayer we can give for the living and
-                  the dead.
+                  {t.card1Desc}
                 </p>
               </div>
 
@@ -1287,11 +1196,10 @@ export default function PrayerRequestPage() {
                     color: "var(--blue-deep)",
                   }}
                 >
-                  Sacred Remembrance
+                  {t.card2Title}
                 </h3>
                 <p style={{ margin: 0, fontSize: "14px", color: "var(--muted)", lineHeight: 1.7 }}>
-                  Your intention will be united with the prayers of the faithful during daily
-                  and Sunday celebrations at Our Lady of Holy Rosary Church.
+                  {t.card2Desc}
                 </p>
               </div>
 
@@ -1312,11 +1220,10 @@ export default function PrayerRequestPage() {
                     color: "var(--blue-deep)",
                   }}
                 >
-                  Parish Office Support
+                  {t.card3Title}
                 </h3>
                 <p style={{ margin: 0, fontSize: "14px", color: "var(--muted)", lineHeight: 1.7 }}>
-                  For special feast date reservations or Gregorian Masses, please visit the parish office
-                  at Town Hall Road or call <strong>0452-2343490</strong>.
+                  {t.card3Desc}
                 </p>
               </div>
             </div>

@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useState } from "react";
 import { LatinCross } from "@/app/components/LatinCross";
+import { useLanguage } from "@/app/components/LanguageProvider";
+import { translations } from "@/lib/supabase/translations";
 
 type EventItem = {
   id: string;
@@ -34,39 +36,56 @@ function getIndiaToday() {
   }).format(new Date());
 }
 
-function formatDate(dateString: string) {
-  const [year, month, day] =
-    dateString.split("-").map(Number);
+const monthNamesEn = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
 
-  const date = new Date(
-    year,
-    month - 1,
-    day
-  );
+const monthNamesTa = [
+  "ஜன",
+  "பிப்",
+  "மார்ச்",
+  "ஏப்",
+  "மே",
+  "ஜூன்",
+  "ஜூலை",
+  "ஆக",
+  "செப்",
+  "அக்",
+  "நவ",
+  "டிச",
+];
+
+function formatDate(dateString: string, isTamil: boolean) {
+  const [year, month, day] = dateString.split("-").map(Number);
+  const monthIndex = month - 1;
 
   return {
     day: String(day).padStart(2, "0"),
-
-    month: new Intl.DateTimeFormat("en-IN", {
-      month: "short",
-    }).format(date),
+    month: isTamil
+      ? monthNamesTa[monthIndex] ?? monthNamesEn[monthIndex]
+      : monthNamesEn[monthIndex] ?? String(month),
   };
 }
 
 function formatTime(time?: string | null) {
   if (!time) return "";
 
-  const [hours, minutes] =
-    time.split(":").map(Number);
+  const [hours, minutes] = time.split(":").map(Number);
 
   const date = new Date();
 
-  date.setHours(
-    hours,
-    minutes,
-    0,
-    0
-  );
+  date.setHours(hours, minutes, 0, 0);
 
   return new Intl.DateTimeFormat("en-IN", {
     hour: "numeric",
@@ -78,6 +97,10 @@ function formatTime(time?: string | null) {
 export default function FeaturedEventFilter({
   events,
 }: FeaturedEventFilterProps) {
+  const { language } = useLanguage();
+  const t = translations[language].events;
+  const common = translations[language].common;
+  const isTamil = language === "ta";
 
   const today = getIndiaToday();
 
@@ -87,55 +110,37 @@ export default function FeaturedEventFilter({
    * Only upcoming events.
    */
   const eventsWithDate: EventWithDate[] = events.filter(
-    (event): event is EventWithDate =>
-      event.event_date !== null
+    (event): event is EventWithDate => event.event_date !== null
   );
 
   const upcomingEvents: EventWithDate[] = eventsWithDate
-    .filter(
-      (event) =>
-        event.event_date >= today
-    )
-    .sort((a, b) =>
-      a.event_date.localeCompare(
-        b.event_date
-      )
-    );
-
+    .filter((event) => event.event_date >= today)
+    .sort((a, b) => a.event_date.localeCompare(b.event_date));
 
   /*
    * All events
    * ----------
    * Includes both past and upcoming events.
    */
-  const allEvents: EventWithDate[] = [...eventsWithDate].sort(
-    (a, b) =>
-      b.event_date.localeCompare(
-        a.event_date
-      )
+  const allEvents: EventWithDate[] = [...eventsWithDate].sort((a, b) =>
+    b.event_date.localeCompare(a.event_date)
   );
-
 
   /*
    * Categories that we want to show.
-   *
-   * These are intentionally predefined.
-   * Even if there are currently no events
-   * under a category, the button remains.
    */
   const categories = [
     {
       id: "feast",
-      label: "Feast Events",
+      label: t.feastEventsTab,
       value: "Feast Events",
     },
     {
       id: "christmas",
-      label: "Christmas",
+      label: t.christmasTab,
       value: "Christmas",
     },
   ];
-
 
   /*
    * featured = upcoming events
@@ -143,9 +148,7 @@ export default function FeaturedEventFilter({
    * feast    = Feast Events
    * christmas = Christmas
    */
-  const [selectedCategory, setSelectedCategory] =
-    useState("featured");
-
+  const [selectedCategory, setSelectedCategory] = useState("featured");
 
   /*
    * Decide what should be displayed.
@@ -153,52 +156,47 @@ export default function FeaturedEventFilter({
   let displayedEvents: EventWithDate[] = [];
 
   if (selectedCategory === "featured") {
-
     displayedEvents = upcomingEvents;
-
   } else if (selectedCategory === "all") {
-
     displayedEvents = allEvents;
-
   } else {
-
     displayedEvents = allEvents.filter(
       (event) =>
-        event.category?.toLowerCase() ===
-        selectedCategory.toLowerCase()
+        event.category?.toLowerCase() === selectedCategory.toLowerCase()
     );
-
   }
 
+  const getCategoryLabel = (category?: string | null) => {
+    if (!category) return null;
+    if (isTamil) {
+      if (category.toLowerCase() === "feast events") return "திருவிழா நிகழ்வுகள்";
+      if (category.toLowerCase() === "christmas") return "கிறிஸ்துமஸ்";
+    }
+    return category;
+  };
 
   return (
     <div className="events-filter">
-
       {/* =========================================
           FILTER HEADER
       ========================================= */}
 
       <div className="events-filter-header">
-
         <div className="upcoming-title">
-
           <span>
             {selectedCategory === "featured"
-              ? "UPCOMING EVENTS"
+              ? t.upcomingEventsHeader
               : selectedCategory === "all"
-              ? "ALL EVENTS"
+              ? t.allEventsHeader
               : selectedCategory === "feast"
-              ? "FEAST EVENTS"
-              : "CHRISTMAS"}
+              ? t.feastEventsHeader
+              : t.christmasHeader}
           </span>
-
         </div>
-
 
         {/* CATEGORY BUTTONS */}
 
         <div className="category-buttons">
-
           {/* FEATURED */}
 
           <button
@@ -208,13 +206,10 @@ export default function FeaturedEventFilter({
                 ? "category-button active"
                 : "category-button"
             }
-            onClick={() =>
-              setSelectedCategory("featured")
-            }
+            onClick={() => setSelectedCategory("featured")}
           >
-            Featured
+            {t.featuredTab}
           </button>
-
 
           {/* ALL */}
 
@@ -225,18 +220,14 @@ export default function FeaturedEventFilter({
                 ? "category-button active"
                 : "category-button"
             }
-            onClick={() =>
-              setSelectedCategory("all")
-            }
+            onClick={() => setSelectedCategory("all")}
           >
-            All Events
+            {t.allEventsTab}
           </button>
-
 
           {/* PREDEFINED CATEGORIES */}
 
           {categories.map((category) => (
-
             <button
               key={category.id}
               type="button"
@@ -245,189 +236,98 @@ export default function FeaturedEventFilter({
                   ? "category-button active"
                   : "category-button"
               }
-              onClick={() =>
-                setSelectedCategory(
-                  category.id
-                )
-              }
+              onClick={() => setSelectedCategory(category.id)}
             >
               {category.label}
             </button>
-
           ))}
-
         </div>
-
       </div>
-
 
       {/* =========================================
           EVENTS
       ========================================= */}
 
       {displayedEvents.length === 0 ? (
-
         <div className="no-events">
-
           <div className="empty-cross" aria-hidden="true">
             <LatinCross />
           </div>
 
-          <h3>
-            No Events Found
-          </h3>
+          <h3>{t.noEventsFound}</h3>
 
-          <p>
-            There are currently no events
-            in this category.
-          </p>
-
+          <p>{t.noEventsDesc}</p>
         </div>
-
       ) : (
-
         <div className="events-grid">
-
           {displayedEvents.map((event) => {
-
-            const date =
-              formatDate(
-                event.event_date
-              );
+            const date = formatDate(event.event_date, isTamil);
+            const categoryLabel = getCategoryLabel(event.category);
 
             return (
-
               <Link
                 key={event.id}
                 href={`/events/${event.id}`}
                 className="event-card"
               >
-
                 {/* IMAGE */}
 
                 <div className="event-card-image">
-
                   {event.image_url ? (
-
-                    <img
-                      src={event.image_url}
-                      alt={event.title}
-                    />
-
+                    <img src={event.image_url} alt={event.title} />
                   ) : (
-
                     <div className="event-placeholder">
-
                       <span className="cross" aria-hidden="true">
                         <LatinCross />
                       </span>
 
-                      <span>
-                        HOLY ROSARY CHURCH
-                      </span>
-
+                      <span>{common.churchName}</span>
                     </div>
-
                   )}
-
 
                   {/* DATE */}
 
                   <div className="event-date">
+                    <strong>{date.day}</strong>
 
-                    <strong>
-                      {date.day}
-                    </strong>
-
-                    <span>
-                      {date.month}
-                    </span>
-
+                    <span>{date.month}</span>
                   </div>
-
                 </div>
-
 
                 {/* CONTENT */}
 
                 <div className="event-card-content">
-
-                  {event.category && (
-
-                    <span className="event-category">
-                      {event.category}
-                    </span>
-
+                  {categoryLabel && (
+                    <span className="event-category">{categoryLabel}</span>
                   )}
 
+                  <h3>{event.title}</h3>
 
-                  <h3>
-                    {event.title}
-                  </h3>
-
-
-                  {event.description && (
-
-                    <p>
-                      {event.description}
-                    </p>
-
-                  )}
-
+                  {event.description && <p>{event.description}</p>}
 
                   {/* DETAILS */}
 
                   <div className="event-meta">
-
                     {event.start_time && (
-
-                      <span>
-                        ◷{" "}
-                        {formatTime(
-                          event.start_time
-                        )}
-                      </span>
-
+                      <span>◷ {formatTime(event.start_time)}</span>
                     )}
 
-                    {event.location && (
-
-                      <span>
-                        ⌖{" "}
-                        {event.location}
-                      </span>
-
-                    )}
-
+                    {event.location && <span>⌖ {event.location}</span>}
                   </div>
-
 
                   {/* VIEW DETAILS */}
 
                   <div className="view-details">
+                    <span>{t.viewDetails}</span>
 
-                    <span>
-                      View Details
-                    </span>
-
-                    <span className="arrow">
-                      →
-                    </span>
-
+                    <span className="arrow">→</span>
                   </div>
-
                 </div>
-
               </Link>
-
             );
-
           })}
-
         </div>
-
       )}
-
 
       {/* =========================================
           CSS

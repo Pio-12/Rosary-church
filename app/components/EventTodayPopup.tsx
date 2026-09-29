@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { X, CalendarDays, MapPin, Clock, ArrowRight } from "lucide-react";
+import { useLanguage } from "./LanguageProvider";
+import { translations } from "@/lib/supabase/translations";
 
 type Event = {
   id: string;
@@ -57,6 +59,8 @@ export default function EventTodayPopup({
 }: Props) {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const { language } = useLanguage();
+  const t = translations[language].events;
 
   useEffect(() => {
     setMounted(true);
@@ -125,14 +129,14 @@ export default function EventTodayPopup({
           type="button"
           className="today-event-close"
           onClick={closePopup}
-          aria-label="Close today's event"
+          aria-label={t.todayClose}
         >
           <X size={20} />
         </button>
 
         <div className="today-event-badge">
           <span />
-          TODAY'S PARISH EVENT
+          {t.todayBadge}
         </div>
 
         {event.image_url ? (
@@ -192,7 +196,7 @@ export default function EventTodayPopup({
             className="today-event-button"
             onClick={closePopup}
           >
-            View Event
+            {t.todayView}
             <ArrowRight size={18} />
           </Link>
         </div>

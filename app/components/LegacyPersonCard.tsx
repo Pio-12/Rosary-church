@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { ArrowRight } from "lucide-react";
+import { useLanguage } from "./LanguageProvider";
+import { translations } from "@/lib/supabase/translations";
 
 type LegacyPerson = {
   name: string;
@@ -21,6 +23,8 @@ export default function LegacyPersonCard({
   index,
 }: LegacyPersonCardProps) {
   const [expanded, setExpanded] = useState(false);
+  const { language } = useLanguage();
+  const t = translations[language].home;
 
   return (
     <article
@@ -71,14 +75,14 @@ export default function LegacyPersonCard({
             <p>{person.description}</p>
 
             <span className="legacy-v2-read-label">
-              Tap to read less
+              {t.tapToReadLess}
             </span>
           </div>
         )}
 
         {!expanded && (
           <span className="legacy-v2-read-label">
-            Tap to read more
+            {t.tapToReadMore}
           </span>
         )}
       </div>

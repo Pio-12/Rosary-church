@@ -3,9 +3,14 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabaseBrowser } from "@/lib/supabase/browser";
+import { useLanguage } from "../../components/LanguageProvider";
+import { translations } from "@/lib/supabase/translations";
 
 export default function AdminLoginPage() {
   const router = useRouter();
+  const { language } = useLanguage();
+  const t = translations[language].admin;
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -40,20 +45,20 @@ export default function AdminLoginPage() {
   return (
     <main style={{ minHeight: "70vh", display: "grid", placeItems: "center", padding: "48px 20px" }}>
       <form onSubmit={handleSubmit} style={{ width: "100%", maxWidth: 420, padding: 32, border: "1px solid var(--line)", borderRadius: 18, background: "var(--white)", boxShadow: "0 20px 60px rgba(0,0,0,.08)" }}>
-        <p className="eyebrow">Parish Administration</p>
-        <h1 className="serif" style={{ color: "var(--blue-dark)", margin: "10px 0 8px" }}>Admin Login</h1>
-        <p style={{ color: "var(--muted)", lineHeight: 1.7 }}>Sign in to view and manage prayer requests.</p>
+        <p className="eyebrow">{t.eyebrow}</p>
+        <h1 className="serif" style={{ color: "var(--blue-dark)", margin: "10px 0 8px" }}>{t.loginTitle}</h1>
+        <p style={{ color: "var(--muted)", lineHeight: 1.7 }}>{t.loginDesc}</p>
 
-        <label style={{ display: "block", marginTop: 24, fontWeight: 600 }}>Email</label>
+        <label style={{ display: "block", marginTop: 24, fontWeight: 600 }}>{t.emailLabel}</label>
         <input required type="email" value={email} onChange={(event) => setEmail(event.target.value)} style={inputStyle} />
 
-        <label style={{ display: "block", marginTop: 16, fontWeight: 600 }}>Password</label>
+        <label style={{ display: "block", marginTop: 16, fontWeight: 600 }}>{t.passwordLabel}</label>
         <input required type="password" value={password} onChange={(event) => setPassword(event.target.value)} style={inputStyle} />
 
         {error && <p role="alert" style={{ color: "#b42318", marginTop: 16 }}>{error}</p>}
 
         <button type="submit" disabled={loading} style={buttonStyle}>
-          {loading ? "Signing in..." : "Sign in"}
+          {loading ? t.signingIn : t.signIn}
         </button>
       </form>
     </main>

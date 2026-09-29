@@ -1,9 +1,11 @@
 "use client";
 
 import { useLanguage } from "./LanguageProvider";
+import { translations } from "@/lib/supabase/translations";
+import { PageHero } from "./site";
 import type { MassTiming } from "@/lib/supabase/mass-timings";
 
-const dayNames: Record<number, string> = {
+const dayNamesEn: Record<number, string> = {
   0: "Sunday",
   1: "Monday",
   2: "Tuesday",
@@ -13,7 +15,7 @@ const dayNames: Record<number, string> = {
   6: "Saturday",
 };
 
-const tamilDayNames: Record<number, string> = {
+const dayNamesTa: Record<number, string> = {
   0: "ஞாயிற்றுக்கிழமை",
   1: "திங்கட்கிழமை",
   2: "செவ்வாய்க்கிழமை",
@@ -65,7 +67,6 @@ function formatNovenaTime(
    * 5:30 PM to 6:20 PM
    * 6:30 PM to 7:20 PM
    */
-
   return item.description
     .replace(" PM to ", " முதல் ")
     .replace(" AM to ", " முதல் ")
@@ -106,119 +107,106 @@ export default function MassTimingsContent({
   massTimings,
 }: MassTimingsContentProps) {
   const { language } = useLanguage();
+  const t = translations[language].massTimings;
+  const nav = translations[language].nav;
+  const common = translations[language].common;
 
-  /*
-   * Adjust this condition if your LanguageProvider uses
-   * "english" / "tamil" instead of "en" / "ta".
-   */
-  const isTamil =
-    language === "ta" 
+  const isTamil = language === "ta";
   const groupedTimings = groupTimingsByDay(massTimings);
 
   return (
-    <section className="section mass-timings-section">
-      <div className="container">
-        <div className="section-heading">
-          <div>
-            <div className="eyebrow">
-              {isTamil
-                ? "ஜெபத்தில் எங்களுடன் இணையுங்கள்"
-                : "Join us in prayer"}
+    <main>
+      <PageHero
+        title={t.pageTitle}
+        crumb={nav.massTimings}
+      />
+
+      <section className="section mass-timings-section">
+        <div className="container">
+          <div className="section-heading">
+            <div>
+              <div className="eyebrow">{t.eyebrow}</div>
+
+              <h2 className="section-title">{t.title}</h2>
             </div>
-
-            <h2 className="section-title">
-              {isTamil
-                ? "திருப்பலி மற்றும் நவநாள் நேரங்கள்"
-                : "Mass Schedule"}
-            </h2>
           </div>
-        </div>
 
-        {massTimings.length === 0 ? (
-          <div className="schedule-card empty-schedule">
-            <h3>
-              {isTamil
-                ? "திருப்பலி நேரங்கள் கிடைக்கவில்லை"
-                : "No Mass timings available"}
-            </h3>
+          {massTimings.length === 0 ? (
+            <div className="schedule-card empty-schedule">
+              <h3>{t.noTimings}</h3>
 
-            <p>
-              {isTamil
-                ? "புதுப்பிக்கப்பட்ட திருப்பலி நேரங்களுக்கு பின்னர் மீண்டும் பார்க்கவும்."
-                : "Please check back later for the updated Mass schedule."}
-            </p>
-          </div>
-        ) : (
-          <div className="schedule">
-            {groupedTimings.map(([dayOfWeek, timings]) => {
-              const dayName = isTamil
-                ? tamilDayNames[dayOfWeek] ?? "சிறப்பு திருவிழா"
-                : dayNames[dayOfWeek] ?? "Special Celebration";
+              <p>{t.noTimingsDesc}</p>
+            </div>
+          ) : (
+            <div className="schedule">
+              {groupedTimings.map(([dayOfWeek, timings]) => {
+                const dayName = isTamil
+                  ? dayNamesTa[dayOfWeek] ?? common.specialCelebration
+                  : dayNamesEn[dayOfWeek] ?? common.specialCelebration;
 
-              return (
-                <div
-                  className="schedule-card"
-                  key={dayOfWeek}
-                >
-                  <div className="schedule-card-heading">
-                    <h3>{dayName}</h3>
+                return (
+                  <div
+                    className="schedule-card"
+                    key={dayOfWeek}
+                  >
+                    <div className="schedule-card-heading">
+                      <h3>{dayName}</h3>
 
-                    <span className="schedule-note">
-                      {isTamil ? "திருப்பலி நேரங்கள்" : "Mass timings"}
-                    </span>
-                  </div>
+                      <span className="schedule-note">
+                        {t.timingsNote}
+                      </span>
+                    </div>
 
-                  <div className="schedule-items">
-                    {timings.map((item) => {
-                      const isNovena =
-                        item.title === "First Novena" ||
-                        item.title === "Second Novena";
+                    <div className="schedule-items">
+                      {timings.map((item) => {
+                        const isNovena =
+                          item.title === "First Novena" ||
+                          item.title === "Second Novena";
 
-                      const title = getTitle(
-                        item.title,
-                        isTamil
-                      );
+                        const title = getTitle(
+                          item.title,
+                          isTamil
+                        );
 
-                      const displayTime = isNovena
-                        ? formatNovenaTime(item, isTamil)
-                        : formatTime(item.time);
+                        const displayTime = isNovena
+                          ? formatNovenaTime(item, isTamil)
+                          : formatTime(item.time);
 
-                      return (
-                        <div
-                          className={`schedule-row ${
-                            isNovena
-                              ? "schedule-row-novena"
-                              : ""
-                          }`}
-                          key={item.id}
-                        >
-                          <div className="schedule-row-title">
-                            <span className="schedule-item-title">
-                              {title}
-                            </span>
-
-                            {isNovena && (
-                              <span className="schedule-item-label">
-                                {isTamil
-                                  ? "சிறப்பு வழிபாடு"
-                                  : "Special devotion"}
+                        return (
+                          <div
+                            className={`schedule-row ${
+                              isNovena
+                                ? "schedule-row-novena"
+                                : ""
+                            }`}
+                            key={item.id}
+                          >
+                            <div className="schedule-row-title">
+                              <span className="schedule-item-title">
+                                {title}
                               </span>
-                            )}
-                          </div>
 
-                          <span className="schedule-item-time">
-                            {displayTime}
-                          </span>
-                        </div>
-                      );
-                    })}
+                              {isNovena && (
+                                <span className="schedule-item-label">
+                                  {t.specialDevotion}
+                                </span>
+                              )}
+                            </div>
+
+                            <span className="schedule-item-time">
+                              {displayTime}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
-    </section>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </section>
+    </main>
   );
 }

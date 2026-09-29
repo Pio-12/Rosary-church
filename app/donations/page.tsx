@@ -4,33 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { PageHero } from "../components/site";
 import { ArrowLeft, CheckCircle, Heart, Upload, ExternalLink } from "lucide-react";
-
-const donationOptions = [
-  {
-    title: "Church Maintenance",
-    text: "Help us preserve and maintain our historic church and its sacred spaces.",
-  },
-  {
-    title: "Charity",
-    text: "Support families, individuals and neighbours in need within our community.",
-  },
-  {
-    title: "Education",
-    text: "Support educational activities and help children grow in knowledge and faith.",
-  },
-  {
-    title: "Feast Celebrations",
-    text: "Help make our parish feasts and community celebrations possible.",
-  },
-];
-
-const PURPOSES = [
-  "General Donation",
-  "Church Maintenance",
-  "Charity",
-  "Education",
-  "Feast Celebrations",
-];
+import { useLanguage } from "../components/LanguageProvider";
+import { translations } from "@/lib/supabase/translations";
 
 const QUICK_AMOUNTS = [100, 200, 500, 1000, 2000, 5000];
 const UPI_ID = "martinlikesyou3@oksbi";
@@ -57,19 +32,44 @@ type Donor = {
 };
 
 export default function Donations() {
+  const { language } = useLanguage();
+  const t = translations[language].donations;
+  const isTamil = language === "ta";
+
+  const donationPurposes = [
+    t.purposes.general,
+    t.purposes.maintenance,
+    t.purposes.charity,
+    t.purposes.education,
+    t.purposes.feasts,
+  ];
+
   const [step, setStep] = useState<Step>("form");
   const [form, setForm] = useState<DonationForm>({
     name: "",
     email: "",
     phone: "",
     amount: "",
-    purpose: "General Donation",
+    purpose: t.purposes.general,
   });
   const [upiRef, setUpiRef] = useState("");
   const [receipt, setReceipt] = useState<File | null>(null);
   const [donors, setDonors] = useState<Donor[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  // Keep purpose synchronized if language changes while form has initial default
+  useEffect(() => {
+      const allDefaults: string[] = [
+        translations.en.donations.purposes.general,
+        translations.ta.donations.purposes.general,
+      ];
+      if (allDefaults.includes(prev.purpose)) {
+        return { ...prev, purpose: t.purposes.general };
+      }
+      return prev;
+    });
+  }, [language, t.purposes.general]);
 
   const upiUrl = useMemo(() => {
     const params = new URLSearchParams({
@@ -135,7 +135,7 @@ export default function Donations() {
       !form.amount ||
       Number(form.amount) < 1
     ) {
-      setError("Please fill in all required fields with a valid amount.");
+      setError(t.validationFields);
       return;
     }
 
@@ -150,7 +150,7 @@ export default function Donations() {
 
   async function handleConfirmPayment() {
     if (!receipt) {
-      setError("Please upload your payment screenshot before submitting.");
+      setError(t.validationReceipt);
       return;
     }
 
@@ -176,7 +176,7 @@ export default function Donations() {
       const result = await response.json().catch(() => ({}));
 
       if (!response.ok) {
-        throw new Error(result.error || "Unable to record your donation.");
+        throw new Error(result.error || t.validationFailed);
       }
 
       setStep("done");
@@ -185,7 +185,7 @@ export default function Donations() {
       setError(
         submitError instanceof Error
           ? submitError.message
-          : "Failed to record donation. Please try again."
+          : t.validationFailed
       );
     } finally {
       setLoading(false);
@@ -199,37 +199,17 @@ export default function Donations() {
       email: "",
       phone: "",
       amount: "",
-      purpose: "General Donation",
+      purpose: t.purposes.general,
     });
     setUpiRef("");
     setReceipt(null);
     setError("");
   }
 
-  // The API already filters records to verified + publicly visible donations.
-  // Do not filter again on the client because the GET response intentionally
-  // returns only donor_name, amount, and created_at.
-  const tickerDonors = donors.filter(
-    (donor) =>
-      Number.isFinite(Number(donor.amount)) && Number(donor.amount) > 0 &&
-      Boolean(donor.donor_name || donor.name)
-  );
-
-  // Do not show a generic fallback. Show the ticker only when the API
-  // returns verified donations with a donor name and valid amount.
-  const tickerItems = tickerDonors.length > 0
-    ? tickerDonors
-    : [{
-        id: "fallback-message",
-        donor_name: "Thank you to everyone who supports our church",
-        amount: 0,
-        created_at: new Date().toISOString(),
-      }];
-
   if (step === "done") {
     return (
       <main className="donation-page">
-        <PageHero title="Thank You" crumb="Donations" />
+        <PageHero title={t.thankYouTitle} crumb={t.crumb} />
         <section className="section">
           <div
             className="container"
@@ -240,18 +220,19 @@ export default function Donations() {
               color="#2d7a2d"
               style={{ margin: "0 auto 24px", display: "block" }}
             />
-            <div className="eyebrow">Donation Submitted</div>
-            <h2 className="section-title">God Bless You, {form.name}!</h2>
+            <div className="eyebrow">{t.doneBadge}</div>
+            <h2 className="section-title">
+              {t.blessDonor.replace("{name}", form.name)}
+            </h2>
             <p className="body-copy">
-              Your donation of{" "}
-              <strong style={{ color: "#2d7a2d", fontSize: "1.15em" }}>
-                ₹{form.amount}
-              </strong>{" "}
-              for <strong>{form.purpose}</strong> has been submitted successfully.
-              <br />Our team will verify your payment and update the donation status.
+              {t.doneDescription
+                .replace("{amount}", form.amount)
+                .replace("{purpose}", form.purpose)}
+              <br />
+              {t.doneNote}
             </p>
             <button className="button" style={{ marginTop: 32 }} onClick={handleReset}>
-              Make Another Donation
+              {t.donateAgain}
             </button>
           </div>
         </section>
@@ -261,56 +242,60 @@ export default function Donations() {
 
   return (
     <main className="donation-page">
-      <PageHero title="Support Our Mission" crumb="Donations" />
-{/* Donor Acknowledgement Ticker */}
-<section
-  className="donor-ticker-section"
-  aria-label="Donor acknowledgements"
->
-  <div className="donor-ticker-wrapper">
-    <div className="donor-ticker-track">
-      {/* First scrolling set */}
-      <div className="donor-ticker-content">
-        <span className="donor-ticker-item thank-you-item">
-          <span className="donor-heart">♥</span>
-          Thank you for your support
-        </span>
+      <PageHero title={t.title} crumb={t.crumb} />
 
-        {donors.map((donor, index) => (
-          <span
-            className="donor-ticker-item"
-            key={`first-${donor.id ?? index}`}
-          >
-            <span className="donor-heart">♥</span>
-            {donor.donor_name} donated ₹
-            {Number(donor.amount).toLocaleString("en-IN")}
-            <span className="donor-separator">|</span>
-          </span>
-        ))}
-      </div>
+      {/* Donor Acknowledgement Ticker */}
+      <section
+        className="donor-ticker-section"
+        aria-label="Donor acknowledgements"
+      >
+        <div className="donor-ticker-wrapper">
+          <div className="donor-ticker-track">
+            {/* First scrolling set */}
+            <div className="donor-ticker-content">
+              <span className="donor-ticker-item thank-you-item">
+                <span className="donor-heart">♥</span>
+                {t.tickerThankYou}
+              </span>
 
-      {/* Duplicate set for continuous scrolling */}
-      <div className="donor-ticker-content" aria-hidden="true">
-        <span className="donor-ticker-item thank-you-item">
-          <span className="donor-heart">♥</span>
-          Thank you for your support
-        </span>
+              {donors.map((donor, index) => (
+                <span
+                  className="donor-ticker-item"
+                  key={`first-${donor.id ?? index}`}
+                >
+                  <span className="donor-heart">♥</span>
+                  {isTamil
+                    ? `${donor.donor_name} ₹${Number(donor.amount).toLocaleString("en-IN")} ${t.donated}`
+                    : `${donor.donor_name} ${t.donated} ₹${Number(donor.amount).toLocaleString("en-IN")}`}
+                  <span className="donor-separator">|</span>
+                </span>
+              ))}
+            </div>
 
-        {donors.map((donor, index) => (
-          <span
-            className="donor-ticker-item"
-            key={`second-${donor.id ?? index}`}
-          >
-            <span className="donor-heart">♥</span>
-            {donor.donor_name} donated ₹
-            {Number(donor.amount).toLocaleString("en-IN")}
-            <span className="donor-separator">|</span>
-          </span>
-        ))}
-      </div>
-    </div>
-  </div>
-</section>
+            {/* Duplicate set for continuous scrolling */}
+            <div className="donor-ticker-content" aria-hidden="true">
+              <span className="donor-ticker-item thank-you-item">
+                <span className="donor-heart">♥</span>
+                {t.tickerThankYou}
+              </span>
+
+              {donors.map((donor, index) => (
+                <span
+                  className="donor-ticker-item"
+                  key={`second-${donor.id ?? index}`}
+                >
+                  <span className="donor-heart">♥</span>
+                  {isTamil
+                    ? `${donor.donor_name} ₹${Number(donor.amount).toLocaleString("en-IN")} ${t.donated}`
+                    : `${donor.donor_name} ${t.donated} ₹${Number(donor.amount).toLocaleString("en-IN")}`}
+                  <span className="donor-separator">|</span>
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="section">
         <div className="container">
           {/* Intro */}
@@ -321,17 +306,16 @@ export default function Donations() {
               margin: "0 auto 42px",
             }}
           >
-            <div className="eyebrow">Your generosity helps us continue</div>
-            <h2 className="section-title">Give with a faithful heart</h2>
+            <div className="eyebrow">{t.generosityHelps}</div>
+            <h2 className="section-title">{t.giveWithFaithfulHeart}</h2>
             <p className="body-copy">
-              Your generous support helps sustain parish life, worship, education,
-              church maintenance and practical care for our community.
+              {t.description}
             </p>
           </div>
 
           {/* Purpose cards */}
           <div className="cards-grid">
-            {donationOptions.map((item) => (
+            {t.options.map((item) => (
               <div
                 className="card"
                 key={item.title}
@@ -369,8 +353,8 @@ export default function Donations() {
                   <Heart size={23} strokeWidth={1.8} />
                 </div>
                 <div>
-                  <h2>Donate via GPay / UPI</h2>
-                  <p>Your contribution helps support our parish ministry.</p>
+                  <h2>{t.stepFormTitle}</h2>
+                  <p>{t.description}</p>
                 </div>
               </div>
 
@@ -381,7 +365,7 @@ export default function Donations() {
                   <input
                     className="field"
                     name="name"
-                    placeholder="Full Name *"
+                    placeholder={t.namePlaceholder}
                     value={form.name}
                     onChange={handleChange}
                     required
@@ -390,7 +374,7 @@ export default function Donations() {
                     className="field"
                     type="email"
                     name="email"
-                    placeholder="Email Address *"
+                    placeholder={t.emailPlaceholder}
                     value={form.email}
                     onChange={handleChange}
                     required
@@ -399,12 +383,12 @@ export default function Donations() {
                     className="field"
                     type="tel"
                     name="phone"
-                    placeholder="Phone Number"
+                    placeholder={t.phonePlaceholder}
                     value={form.phone}
                     onChange={handleChange}
                   />
                   <select className="field" name="purpose" value={form.purpose} onChange={handleChange}>
-                    {PURPOSES.map((purpose) => (
+                    {donationPurposes.map((purpose) => (
                       <option key={purpose} value={purpose}>
                         {purpose}
                       </option>
@@ -412,7 +396,7 @@ export default function Donations() {
                   </select>
 
                   <div style={{ gridColumn: "1 / -1", marginTop: 8 }}>
-                    <p className="amount-label">Quick select amount</p>
+                    <p className="amount-label">{t.chooseAmount}</p>
                     <div className="quick-amounts">
                       {QUICK_AMOUNTS.map((amount) => {
                         const selected = form.amount === String(amount);
@@ -432,7 +416,7 @@ export default function Donations() {
                       className="field"
                       type="number"
                       name="amount"
-                      placeholder="Or enter amount (₹) *"
+                      placeholder={t.amountPlaceholder}
                       value={form.amount}
                       onChange={handleChange}
                       min={1}
@@ -442,7 +426,7 @@ export default function Donations() {
                   </div>
 
                   <button type="submit" className="button full" style={{ marginTop: 8 }}>
-                    Proceed to Pay →
+                    {t.continueButton} →
                   </button>
                 </div>
               </form>
@@ -451,10 +435,10 @@ export default function Donations() {
 
           {step === "pay" && (
             <div className="payment-card">
-              <div className="eyebrow">Step 2 — Pay & Upload Receipt</div>
+              <div className="eyebrow">{t.step2DetailsTitle}</div>
               <h2 style={{ margin: "4px 0 6px", fontSize: "1.6rem" }}>₹{form.amount}</h2>
               <p className="payment-help">
-                Use the button below to open GPay or another supported UPI app. You can also scan the QR code.
+                {t.scanQrDesc}
               </p>
 
               <div className="qr-wrapper">
@@ -462,29 +446,29 @@ export default function Donations() {
               </div>
 
               <button type="button" className="button full gpay-button" onClick={openUpiPayment}>
-                <ExternalLink size={17} /> Open GPay / UPI App
+                <ExternalLink size={17} /> {t.openUpiButton}
               </button>
 
               <div className="upi-box">
-                <span>UPI ID: </span>
+                <span>{t.upiIdLabel}: </span>
                 <strong>{UPI_ID}</strong>
               </div>
 
               <div className="payment-summary">
-                <div><strong>Name:</strong> {form.name}</div>
-                <div><strong>Purpose:</strong> {form.purpose}</div>
-                <div><strong>Amount:</strong> <span className="amount-highlight">₹{form.amount}</span></div>
+                <div><strong>{t.nameLabel}:</strong> {form.name}</div>
+                <div><strong>{t.purposeLabel}:</strong> {form.purpose}</div>
+                <div><strong>{t.amountToPayLabel}:</strong> <span className="amount-highlight">₹{form.amount}</span></div>
               </div>
 
               <input
                 className="field"
-                placeholder="UPI Transaction ID / Reference (optional)"
+                placeholder={t.upiRefPlaceholder}
                 value={upiRef}
                 onChange={(event) => setUpiRef(event.target.value)}
               />
 
               <label className="receipt-label" htmlFor="donation-receipt">
-                <Upload size={17} /> Payment screenshot *
+                <Upload size={17} /> {t.receiptUploadLabel} *
               </label>
               <input
                 id="donation-receipt"
@@ -498,20 +482,20 @@ export default function Donations() {
               {error && <p className="payment-error">{error}</p>}
 
               <button type="button" className="button full" onClick={handleConfirmPayment} disabled={loading}>
-                {loading ? "Submitting donation…" : "✓ I have completed the payment"}
+                {loading ? t.confirmingButton : `✓ ${t.confirmButton}`}
               </button>
 
               <button type="button" className="back-button" onClick={() => setStep("form")}>
-                <ArrowLeft size={14} /> Go back
+                <ArrowLeft size={14} /> {t.backButton}
               </button>
             </div>
           )}
 
           <div style={{ textAlign: "center", margin: "60px auto 0", maxWidth: 600 }}>
-            <div className="eyebrow">Thank you</div>
-            <h2 className="section-title">Every contribution matters</h2>
+            <div className="eyebrow">{t.bottomEyebrow}</div>
+            <h2 className="section-title">{t.bottomTitle}</h2>
             <p className="body-copy">
-              Your support, whether large or small, helps our parish continue its mission of faith, service and community.
+              {t.bottomDesc}
             </p>
           </div>
         </div>

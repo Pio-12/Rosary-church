@@ -23,12 +23,33 @@ import { LatinCross } from "./LatinCross";
    NAVIGATION LINKS
    ========================================================= */
 
-const links = [
+const desktopLinks = [
   ["home", "/"],
   ["about", "/about"],
   ["massTimings", "/mass-timings"],
-  ["readings", "/readings"],
   ["events", "/events"],
+  ["readings", "/readings"],
+  ["gallery", "/gallery"],
+  ["prayerRequest", "/prayer-request"],
+  ["contact", "/contact"],
+] as const;
+
+const mobileLinks = [
+  ["home", "/"],
+  ["about", "/about"],
+  ["massTimings", "/mass-timings"],
+  ["events", "/events"],
+  ["readings", "/readings"],
+  ["gallery", "/gallery"],
+  ["virtualTour", "/gallery#virtual-tour"],
+  ["contact", "/contact"],
+] as const;
+
+const footerLinks = [
+  ["about", "/about"],
+  ["massTimings", "/mass-timings"],
+  ["events", "/events"],
+  ["readings", "/readings"],
   ["gallery", "/gallery"],
   ["prayerRequest", "/prayer-request"],
   ["contact", "/contact"],
@@ -45,12 +66,13 @@ const logoURL =
    LANGUAGE SWITCHER
    ========================================================= */
 
-function LanguageSwitcher() {
+export function LanguageSwitcher() {
   const { language, setLanguage } = useLanguage();
 
   return (
     <div
       className="language-switcher"
+      role="group"
       aria-label="Language selection"
     >
       <button
@@ -58,8 +80,10 @@ function LanguageSwitcher() {
         className={language === "en" ? "active" : ""}
         onClick={() => setLanguage("en")}
         aria-pressed={language === "en"}
+        aria-label="Switch to English"
       >
-        English
+        <span className="lang-text-full">English</span>
+        <span className="lang-text-short">EN</span>
       </button>
 
       <button
@@ -67,6 +91,7 @@ function LanguageSwitcher() {
         className={language === "ta" ? "active" : ""}
         onClick={() => setLanguage("ta")}
         aria-pressed={language === "ta"}
+        aria-label="தமிழுக்கு மாற்றவும்"
       >
         தமிழ்
       </button>
@@ -196,7 +221,7 @@ export function Header() {
               className="desktop-nav"
               aria-label="Main navigation"
             >
-              {links.map(([label, href]) => (
+              {desktopLinks.map(([label, href]) => (
                 <Link
                   key={href}
                   href={href}
@@ -222,26 +247,31 @@ export function Header() {
             </div>
 
             {/* -------------------------------------------------
-                MOBILE MENU BUTTON
+                MOBILE ACTIONS: LANGUAGE TOGGLE + MENU BUTTON
+                (Always outside the mobile drawer)
                 ------------------------------------------------- */}
 
-            <button
-              className="mobile-toggle"
-              type="button"
-              aria-label={
-                open
-                  ? "Close navigation"
-                  : "Open navigation"
-              }
-              aria-expanded={open}
-              onClick={() => setOpen(!open)}
-            >
-              {open ? (
-                <X size={24} />
-              ) : (
-                <Menu size={24} />
-              )}
-            </button>
+            <div className="mobile-actions">
+              <LanguageSwitcher />
+
+              <button
+                className="mobile-toggle"
+                type="button"
+                aria-label={
+                  open
+                    ? t.nav.closeNavigation
+                    : t.nav.openNavigation
+                }
+                aria-expanded={open}
+                onClick={() => setOpen(!open)}
+              >
+                {open ? (
+                  <X size={24} />
+                ) : (
+                  <Menu size={24} />
+                )}
+              </button>
+            </div>
           </div>
         </header>
       </div>
@@ -259,7 +289,7 @@ export function Header() {
       />
 
       {/* =====================================================
-          MOBILE SIDE DRAWER
+          MOBILE SIDE DRAWER (Only navigation links, NO language toggle)
           ===================================================== */}
 
       <aside
@@ -287,34 +317,28 @@ export function Header() {
             className="mobile-close"
             type="button"
             onClick={closeMenu}
-            aria-label="Close navigation"
+            aria-label={t.nav.closeNavigation}
           >
             <X size={22} />
           </button>
         </div>
 
         {/* ---------------------------------------------------
-            MOBILE LANGUAGE SWITCHER
-            --------------------------------------------------- */}
-
-        <LanguageSwitcher />
-
-        {/* ---------------------------------------------------
-            MOBILE LINKS
+            MOBILE LINKS (Navigation only)
             --------------------------------------------------- */}
 
         <nav
           className="mobile-nav"
           aria-label="Mobile navigation"
         >
-          {links.map(([label, href], index) => (
+          {mobileLinks.map(([label, href], index) => (
             <Link
               key={href}
               href={href}
               onClick={closeMenu}
               style={
                 {
-                  "--mobile-delay": `${index * 70}ms`,
+                  "--mobile-delay": `${index * 60}ms`,
                 } as CSSProperties
               }
             >
@@ -394,7 +418,7 @@ export function Footer() {
             <h3>{t.footer.quickLinks}</h3>
 
             <div className="footer-links">
-              {links.slice(1).map(([label, href]) => (
+              {footerLinks.map(([label, href]) => (
                 <Link
                   key={href}
                   href={href}
@@ -430,7 +454,7 @@ export function Footer() {
               <p>
                 <a
                   href="tel:+914522343490"
-                  aria-label="Call Our Lady of Holy Rosary Church"
+                  aria-label={language === "ta" ? "அழைக்க: 0452-2343490" : "Call Our Lady of Holy Rosary Church"}
                 >
                   {t.footer.phone}
                 </a>
@@ -444,7 +468,7 @@ export function Footer() {
               <p>
                 <a
                   href="mailto:rosarychurchmadurai@gmail.com"
-                  aria-label="Email Our Lady of Holy Rosary Church"
+                  aria-label={language === "ta" ? "மின்னஞ்சல் அனுப்ப: rosarychurchmadurai@gmail.com" : "Email Our Lady of Holy Rosary Church"}
                 >
                   rosarychurchmadurai@gmail.com
                 </a>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useLanguage } from "./LanguageProvider";
 
 type FlipCardProps = {
   name: string;
@@ -17,6 +18,8 @@ export function FlipCard({
   address,
   index = 0,
 }: FlipCardProps) {
+  const { language } = useLanguage();
+  const isTamil = language === "ta";
   const [isFlipped, setIsFlipped] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
   const userInteracted = useRef(false);
@@ -103,9 +106,15 @@ export function FlipCard({
         role="button"
         tabIndex={0}
         aria-pressed={isFlipped}
-        aria-label={`${name}. Press to ${
-          isFlipped ? "hide" : "show"
-        } location details`}
+        aria-label={`${name}. ${
+          isTamil
+            ? isFlipped
+              ? "விவரங்களை மறைக்க அழுத்தவும்"
+              : "விவரங்களைக் காண அழுத்தவும்"
+            : isFlipped
+            ? "Press to hide location details"
+            : "Press to show location details"
+        }`}
         onClick={handleToggle}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
@@ -122,7 +131,9 @@ export function FlipCard({
             </div>
             <h3>{name}</h3>
             <p>{location}</p>
-            <span className="flip-card-hint">Tap to view location ↻</span>
+            <span className="flip-card-hint">
+              {isTamil ? "அமைவிடத்தைக் காண தொடவும் ↻" : "Tap to view location ↻"}
+            </span>
           </div>
         </div>
 

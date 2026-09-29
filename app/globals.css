@@ -14193,6 +14193,7 @@ select.field {
 }
 
 
+
 /* =========================================================
    REDUCED MOTION
 ========================================================= */
@@ -14213,3 +14214,196 @@ select.field {
   }
 
 }
+
+/* =========================================================
+   LANGUAGE SWITCHER & MOBILE ACTIONS (CRITICAL REQUIREMENT)
+   [Logo]        [EN / தமிழ் TOGGLE]   [MENU ☰]
+========================================================= */
+
+.lang-text-short {
+  display: none;
+}
+
+.lang-text-full {
+  display: inline;
+}
+
+.mobile-actions {
+  display: none;
+}
+
+.header .language-switcher {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(4, 95, 128, 0.06);
+  border: 1px solid rgba(4, 95, 128, 0.14);
+  border-radius: 999px;
+  padding: 3px 4px;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.header .language-switcher button {
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--blue-dark);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 14px;
+  cursor: pointer;
+  line-height: 1.2;
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.header .language-switcher button:hover {
+  color: var(--blue-deep);
+}
+
+.header .language-switcher button.active {
+  background: var(--blue-deep);
+  color: #ffffff;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(4, 95, 128, 0.22);
+}
+
+.header .language-switcher button.active:hover {
+  color: #ffffff;
+}
+
+/* Ensure no language switcher appears inside mobile drawer */
+.mobile-drawer .language-switcher {
+  display: none !important;
+}
+
+@media (max-width: 850px) {
+  .lang-text-full {
+    display: none;
+  }
+
+  .lang-text-short {
+    display: inline;
+  }
+
+  .header .desktop-nav,
+  .header .desktop-actions {
+    display: none !important;
+  }
+
+  .header .mobile-actions {
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+    flex: 0 0 auto;
+    order: 2;
+  }
+
+  .header .mobile-actions .language-switcher {
+    padding: 2px 3px;
+    gap: 2px;
+  }
+
+  .header .mobile-actions .language-switcher button {
+    padding: 5px 9px;
+    font-size: 12px;
+    min-height: 32px;
+  }
+
+  .header .mobile-toggle {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid rgba(4, 95, 128, 0.16);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--blue-dark);
+    margin-left: 0;
+    cursor: pointer;
+  }
+}
+
+@media (max-width: 430px) {
+  .header .mobile-actions {
+    gap: 6px;
+  }
+
+  .header .mobile-actions .language-switcher button {
+    padding: 4px 7px;
+    font-size: 11.5px;
+  }
+
+  .header .mobile-toggle {
+    width: 38px;
+    height: 38px;
+  }
+}
+
+@media (max-width: 375px) {
+  .header .mobile-actions {
+    gap: 4px;
+  }
+
+  .header .mobile-actions .language-switcher {
+    padding: 2px;
+  }
+
+  .header .mobile-actions .language-switcher button {
+    padding: 4px 6px;
+    font-size: 11px;
+    min-height: 28px;
+  }
+
+  .header .mobile-toggle {
+    width: 36px;
+    height: 36px;
+  }
+
+  .header .brand-logo {
+    width: 40px;
+    height: 40px;
+  }
+
+  .header .brand-copy {
+    font-size: 14px;
+    max-width: 120px;
+  }
+}
+
+@media (max-width: 320px) {
+  .header .mobile-actions {
+    gap: 3px;
+  }
+
+  .header .mobile-actions .language-switcher {
+    padding: 1px 2px;
+  }
+
+  .header .mobile-actions .language-switcher button {
+    padding: 3px 5px;
+    font-size: 10px;
+    min-height: 26px;
+  }
+
+  .header .mobile-toggle {
+    width: 32px;
+    height: 32px;
+  }
+
+  .header .brand-logo {
+    width: 34px;
+    height: 34px;
+  }
+
+  .header .brand-copy {
+    font-size: 12.5px;
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+

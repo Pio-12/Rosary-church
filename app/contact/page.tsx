@@ -4,8 +4,13 @@ import { FormEvent, useState } from "react";
 import { Mail, MapPin, Phone, CheckCircle, AlertCircle } from "lucide-react";
 import { PageHero } from "../components/site";
 import { supabase } from "../../lib/supabase/client";
+import { useLanguage } from "../components/LanguageProvider";
+import { translations } from "@/lib/supabase/translations";
 
 export default function Contact() {
+  const { language } = useLanguage();
+  const t = translations[language].contact;
+
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(false);
@@ -27,7 +32,7 @@ export default function Contact() {
     const content = String(formData.get("content") || "").trim();
 
     if (!name || !email || !content) {
-      setMessage("Please fill in all required fields.");
+      setMessage(t.validationRequired);
       setSuccess(false);
       setLoading(false);
       return;
@@ -46,14 +51,14 @@ export default function Contact() {
 
     if (error) {
       console.error("Contact form error:", error);
-      setMessage("Unable to send your message. Please try again.");
+      setMessage(t.errorSending);
       setSuccess(false);
       setLoading(false);
       return;
     }
 
     setSuccess(true);
-    setMessage("Thank you. Your message has been sent successfully.");
+    setMessage(t.successSending);
     form.reset();
     setLoading(false);
   }
@@ -61,8 +66,8 @@ export default function Contact() {
   return (
     <main className="contact-page">
       <PageHero
-        title="Contact"
-        crumb="Contact"
+        title={t.pageTitle}
+        crumb={t.crumb}
       />
 
       <section className="section contact-section">
@@ -70,15 +75,14 @@ export default function Contact() {
           <div className="contact-grid">
             {/* LEFT: CONTACT INFORMATION */}
             <div className="contact-information">
-              <div className="eyebrow">WE ARE HERE FOR YOU</div>
+              <div className="eyebrow">{t.eyebrow}</div>
 
               <h2 className="section-title">
-                Come visit us
+                {t.title}
               </h2>
 
               <p className="body-copy contact-intro">
-                Whether you have a question, need prayer, or simply want to
-                say hello, our parish team would be glad to hear from you.
+                {t.intro}
               </p>
 
               <div className="contact-details">
@@ -88,11 +92,9 @@ export default function Contact() {
                   </div>
 
                   <div className="detail-content">
-                    <strong>Address</strong>
-                    <span>
-                      Town Hall Road
-                      <br />
-                      Madurai, Tamil Nadu - 625001
+                    <strong>{t.addressLabel}</strong>
+                    <span style={{ whiteSpace: "pre-line" }}>
+                      {t.addressText}
                     </span>
                   </div>
                 </div>
@@ -103,8 +105,8 @@ export default function Contact() {
                   </div>
 
                   <div className="detail-content">
-                    <strong>Phone</strong>
-                    <span>0452-2343490</span>
+                    <strong>{t.phoneLabel}</strong>
+                    <span>{t.phoneText}</span>
                   </div>
                 </div>
 
@@ -114,8 +116,8 @@ export default function Contact() {
                   </div>
 
                   <div className="detail-content">
-                    <strong>Email</strong>
-                    <span>Contact the parish office</span>
+                    <strong>{t.emailLabel}</strong>
+                    <span>{t.emailText}</span>
                   </div>
                 </div>
               </div>
@@ -124,13 +126,12 @@ export default function Contact() {
             {/* RIGHT: CONTACT FORM */}
             <div className="contact-panel">
               <div className="contact-panel-heading">
-                <div className="eyebrow">GET IN TOUCH</div>
+                <div className="eyebrow">{t.formEyebrow}</div>
 
-                <h2>Send us a message</h2>
+                <h2>{t.formTitle}</h2>
 
                 <p>
-                  We would be happy to hear from you. Please complete the form
-                  below and our parish team will get back to you.
+                  {t.formDesc}
                 </p>
               </div>
 
@@ -141,7 +142,7 @@ export default function Contact() {
                 <div className="form-grid">
                   <div className="form-field">
                     <label htmlFor="name">
-                      Name <span>*</span>
+                      {t.nameLabel} <span>*</span>
                     </label>
 
                     <input
@@ -149,40 +150,40 @@ export default function Contact() {
                       className="field"
                       name="name"
                       type="text"
-                      placeholder="Enter your name"
+                      placeholder={t.namePlaceholder}
                       required
                     />
                   </div>
 
                   <div className="form-field">
                     <label htmlFor="email">
-                      Email <span>*</span>
+                      {t.emailInputLabel} <span>*</span>
                     </label>
 
                     <input
                       id="email"
                       className="field"
-                      type="email"
                       name="email"
-                      placeholder="Enter your email"
+                      type="email"
+                      placeholder={t.emailPlaceholder}
                       required
                     />
                   </div>
 
                   <div className="form-field">
-                    <label htmlFor="phone">Phone</label>
+                    <label htmlFor="phone">{t.phoneInputLabel}</label>
 
                     <input
                       id="phone"
                       className="field"
-                      type="tel"
                       name="phone"
-                      placeholder="Enter your phone number"
+                      type="tel"
+                      placeholder={t.phonePlaceholder}
                     />
                   </div>
 
                   <div className="form-field">
-                    <label htmlFor="subject">Subject</label>
+                    <label htmlFor="subject">{t.subjectLabel}</label>
 
                     <select
                       id="subject"
@@ -191,37 +192,37 @@ export default function Contact() {
                       defaultValue=""
                     >
                       <option value="" disabled>
-                        Select a subject
+                        {t.subjectPlaceholder}
                       </option>
 
                       <option value="General enquiry">
-                        General enquiry
+                        {t.subjects.general}
                       </option>
 
                       <option value="Prayer request">
-                        Prayer request
+                        {t.subjects.prayer}
                       </option>
 
                       <option value="Mass enquiry">
-                        Mass enquiry
+                        {t.subjects.mass}
                       </option>
 
                       <option value="Other">
-                        Other
+                        {t.subjects.other}
                       </option>
                     </select>
                   </div>
 
                   <div className="form-field form-field-full">
                     <label htmlFor="content">
-                      Message <span>*</span>
+                      {t.messageLabel} <span>*</span>
                     </label>
 
                     <textarea
                       id="content"
                       className="field textarea"
                       name="content"
-                      placeholder="Write your message here..."
+                      placeholder={t.messagePlaceholder}
                       rows={6}
                       required
                     />
@@ -233,7 +234,7 @@ export default function Contact() {
                       className="button contact-submit"
                       disabled={loading}
                     >
-                      {loading ? "Sending..." : "Send message"}
+                      {loading ? t.sendingButton : t.sendButton}
                       {!loading && <span aria-hidden="true">→</span>}
                     </button>
                   </div>

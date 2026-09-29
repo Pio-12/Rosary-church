@@ -2,12 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import { useLanguage } from "./LanguageProvider";
+import { translations } from "@/lib/supabase/translations";
 
 const logoUrl =
   "https://ncedxbcsrcwuoailxsph.supabase.co/storage/v1/object/public/church-images/ChatGPT%20Image%20Sep%2011,%202026,%2009_33_49%20PM.png";
 
 export default function PageLoader() {
   const pathname = usePathname();
+  const { language } = useLanguage();
+  const churchName = translations[language].common.churchName;
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -48,13 +52,13 @@ export default function PageLoader() {
 
           <img
             src={logoUrl}
-            alt="Our Lady of Holy Rosary Church"
+            alt={churchName}
             className="page-loader-logo"
           />
         </div>
 
         <p className="page-loader-title">
-          Our Lady of Holy Rosary Church
+          {churchName}
         </p>
 
         <div className="page-loader-dots">

@@ -10,6 +10,8 @@ import {
   Sparkles,
 } from "lucide-react";
 import { getGalleryItems } from "../../lib/supabase/gallery";
+import { useLanguage } from "../components/LanguageProvider";
+import { translations } from "@/lib/supabase/translations";
 
 type GalleryItem = {
   id: string;
@@ -19,27 +21,20 @@ type GalleryItem = {
   category_id?: string | null;
 };
 
-const categories = [
-  "All",
-  "Church",
-  "Holy Mass",
-  "Feasts",
-  "Processions",
-  "Events",
-  "Community",
-];
-
-const stripWords = [
-  "FAITH",
-  "HOPE",
-  "LOVE",
-  "PRAYER",
-  "COMMUNITY",
-  "GRACE",
-  "TOGETHERNESS",
-];
+const categoryMap = [
+  { id: "All", key: "all" },
+  { id: "Church", key: "church" },
+  { id: "Holy Mass", key: "holyMass" },
+  { id: "Feasts", key: "feasts" },
+  { id: "Processions", key: "processions" },
+  { id: "Events", key: "events" },
+  { id: "Community", key: "community" },
+] as const;
 
 export default function Gallery() {
+  const { language } = useLanguage();
+  const t = translations[language].gallery;
+
   const [photos, setPhotos] = useState<GalleryItem[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [loading, setLoading] = useState(true);
@@ -167,24 +162,21 @@ export default function Gallery() {
           <div className="gallery-showcase-copy">
             <div className="eyebrow gallery-light-eyebrow">
               <Sparkles size={14} />
-              Life of our parish
+              {t.showcaseEyebrow}
             </div>
 
             <h1 className="gallery-showcase-title">
-              Moments of
-              <span>Faith & Grace</span>
+              {t.showcaseTitle1}
+              <span>{t.showcaseTitle2}</span>
             </h1>
 
-            <p>
-              A collection of beautiful memories, celebrations, prayers and
-              moments from Our Lady of Holy Rosary Church.
-            </p>
+            <p>{t.showcaseDescription}</p>
 
             <a
               href="#church-pictures"
               className="button gallery-showcase-button"
             >
-              Explore the gallery
+              {t.exploreGallery}
               <ArrowRight size={16} />
             </a>
           </div>
@@ -197,12 +189,11 @@ export default function Gallery() {
 
               <div>
                 <strong>
-                  {activePhoto.title || "Moments of Grace"}
+                  {activePhoto.title || t.defaultPhotoTitle}
                 </strong>
 
                 <span>
-                  {activePhoto.description ||
-                    "Memories from our parish community"}
+                  {activePhoto.description || t.defaultPhotoDesc}
                 </span>
               </div>
             </div>
@@ -212,7 +203,7 @@ export default function Gallery() {
             <button
               type="button"
               onClick={previousSlide}
-              aria-label="Previous gallery image"
+              aria-label={t.prevImage}
             >
               <ChevronLeft size={20} />
             </button>
@@ -224,7 +215,7 @@ export default function Gallery() {
                   type="button"
                   className={activeIndex === index ? "active" : ""}
                   onClick={() => setActiveIndex(index)}
-                  aria-label={`Show gallery image ${index + 1}`}
+                  aria-label={`${t.showImageAria} ${index + 1}`}
                   aria-current={activeIndex === index ? "true" : undefined}
                 />
               ))}
@@ -233,7 +224,7 @@ export default function Gallery() {
             <button
               type="button"
               onClick={nextSlide}
-              aria-label="Next gallery image"
+              aria-label={t.nextImage}
             >
               <ChevronRight size={20} />
             </button>
@@ -250,7 +241,7 @@ export default function Gallery() {
         aria-label="Parish values"
       >
         <div className="gallery-marquee-track">
-          {[...stripWords, ...stripWords].map((word, index) => (
+          {[...t.stripWords, ...t.stripWords].map((word, index) => (
             <span key={`${word}-${index}`}>
               {word}
               <b>✦</b>
@@ -296,7 +287,7 @@ export default function Gallery() {
 
             <div className="story-floating-label">
               <Images size={18} />
-              <span>Moments of grace</span>
+              <span>{t.momentsOfGrace}</span>
             </div>
 
             <div className="story-circle story-circle-one" />
@@ -304,33 +295,29 @@ export default function Gallery() {
           </div>
 
           <div className="gallery-story-content">
-            <div className="eyebrow">Life of our parish</div>
+            <div className="eyebrow">{t.storyEyebrow}</div>
 
             <h2 className="section-title">
-              Every Moment
-              <span>Tells a Story</span>
+              {t.storyTitle1}
+              <span>{t.storyTitle2}</span>
             </h2>
 
-            <p className="body-copy">
-              From Holy Mass and processions to parish celebrations and
-              community gatherings, every photograph reflects the faith,
-              devotion and togetherness of our church family.
-            </p>
+            <p className="body-copy">{t.storyDescription}</p>
 
             <div className="story-stats">
               <div>
                 <strong>{photos.length || "12"}+</strong>
-                <span>Memories</span>
+                <span>{t.statMemories}</span>
               </div>
 
               <div>
                 <strong>1</strong>
-                <span>Faith community</span>
+                <span>{t.statCommunity}</span>
               </div>
 
               <div>
                 <strong>∞</strong>
-                <span>Grace-filled moments</span>
+                <span>{t.statGrace}</span>
               </div>
             </div>
           </div>
@@ -348,16 +335,13 @@ export default function Gallery() {
         <div className="container">
           <div className="gallery-heading-row">
             <div>
-              <div className="eyebrow">Moments of faith</div>
+              <div className="eyebrow">{t.picturesEyebrow}</div>
 
-              <h2 className="section-title">
-                Our Church in Pictures
-              </h2>
+              <h2 className="section-title">{t.picturesTitle}</h2>
             </div>
 
             <p className="body-copy gallery-heading-copy">
-              Explore moments from the life of Our Lady of Holy Rosary Church,
-              from worship and celebrations to community life.
+              {t.picturesDescription}
             </p>
           </div>
 
@@ -370,18 +354,18 @@ export default function Gallery() {
             role="tablist"
             aria-label="Gallery categories"
           >
-            {categories.map((category) => (
+            {categoryMap.map((cat) => (
               <button
-                key={category}
+                key={cat.id}
                 type="button"
                 role="tab"
-                aria-selected={selectedCategory === category}
+                aria-selected={selectedCategory === cat.id}
                 className={`gallery-filter ${
-                  selectedCategory === category ? "active" : ""
+                  selectedCategory === cat.id ? "active" : ""
                 }`}
-                onClick={() => handleCategoryChange(category)}
+                onClick={() => handleCategoryChange(cat.id)}
               >
-                {category}
+                {t.categories[cat.key]}
               </button>
             ))}
           </div>
@@ -393,11 +377,11 @@ export default function Gallery() {
           {loading ? (
             <div className="gallery-loading">
               <div className="gallery-loader" />
-              <p>Loading beautiful memories...</p>
+              <p>{t.loading}</p>
             </div>
           ) : filteredPhotos.length === 0 ? (
             <div className="empty-state">
-              <p>No gallery images available for this category.</p>
+              <p>{t.empty}</p>
             </div>
           ) : (
             <>
@@ -425,7 +409,7 @@ export default function Gallery() {
                       />
 
                       <div className="animated-gallery-overlay">
-                        <span>View memory</span>
+                        <span>{t.viewMemory}</span>
                         <ArrowRight size={17} />
                       </div>
 
@@ -449,7 +433,7 @@ export default function Gallery() {
 
               {/* Mobile swipe instruction */}
               <div className="gallery-swipe-hint">
-                <span>Swipe to explore more moments</span>
+                <span>{t.swipeHint}</span>
                 <span className="gallery-swipe-arrow">→</span>
               </div>
             </>
@@ -487,22 +471,18 @@ export default function Gallery() {
           8. VIRTUAL TOUR
       ====================================================== */}
 
-      <section className="section virtual-tour-section">
+      <section className="section virtual-tour-section" id="virtual-tour">
         <div className="container">
           <div className="virtual-tour-grid">
             <div className="virtual-tour-content">
-              <div className="eyebrow">Explore the church</div>
+              <div className="eyebrow">{t.virtualTourEyebrow}</div>
 
               <h2 className="section-title">
-                Take a 360°
-                <span>Virtual Tour</span>
+                {t.virtualTourTitle1}
+                <span>{t.virtualTourTitle2}</span>
               </h2>
 
-              <p className="body-copy">
-                Experience Our Lady of Holy Rosary Church from wherever you
-                are. Explore the church through Google Maps and discover its
-                sacred spaces, architecture and surroundings.
-              </p>
+              <p className="body-copy">{t.virtualTourDescription}</p>
 
               <a
                 href="https://maps.app.goo.gl/u3AGkmedtFd44oqJ7"
@@ -510,7 +490,7 @@ export default function Gallery() {
                 rel="noopener noreferrer"
                 className="button"
               >
-                Open 360° Virtual Tour
+                {t.openVirtualTour}
                 <ExternalLink size={16} />
               </a>
             </div>
@@ -541,13 +521,13 @@ export default function Gallery() {
           onClick={() => setSelectedPhoto(null)}
           role="dialog"
           aria-modal="true"
-          aria-label="Gallery image preview"
+          aria-label={t.previewLabel}
         >
           <button
             type="button"
             className="gallery-lightbox-close"
             onClick={() => setSelectedPhoto(null)}
-            aria-label="Close image preview"
+            aria-label={t.closePreview}
           >
             ×
           </button>

@@ -1,461 +1,1100 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import {
+  MapPin,
+  Phone,
+  Cross,
+  Users,
+  BookOpen,
+  Heart,
+  Sparkles,
+  ArrowDown,
+  Church,
+  ChevronRight,
+  GraduationCap,
+  Building2,
+  Calendar,
+  Shield,
+  Layers,
+} from "lucide-react";
+import { ScrollReveal } from "@/app/components/ScrollReveal";
+import { AutoScrollCards } from "@/app/components/AutoScrollCards";
+import { FlipCard } from "@/app/components/FlipCard";
+import { LatinCross } from "@/app/components/LatinCross";
+import { useLanguage } from "./LanguageProvider";
+import { translations } from "@/lib/supabase/translations";
 
-type Language = "en" | "ta";
+type SiteSettings = {
+  hero_image_url?: string | null;
+  established_year?: number | null;
+  church_name?: string | null;
+  tagline?: string | null;
+  address?: string | null;
+  phone?: string | null;
+  email?: string | null;
+} | null;
 
-/**
- * Reveals any [data-reveal] element inside `rootRef` the first time it
- * scrolls into view, then leaves it alone. Works on every mobile browser
- * (Safari included) since it doesn't depend on CSS scroll-timelines.
- * Respects prefers-reduced-motion by revealing everything immediately.
- */
-function useScrollReveal(rootRef: React.RefObject<HTMLElement | null>) {
-  useEffect(() => {
-    const root = rootRef.current;
-    if (!root) return;
+const substationImages = [
+  "https://ncedxbcsrcwuoailxsph.supabase.co/storage/v1/object/public/church-images/sholai%20alagupuram.jpeg",
+  "https://ncedxbcsrcwuoailxsph.supabase.co/storage/v1/object/public/church-images/perungudi.jpeg",
+  "https://ncedxbcsrcwuoailxsph.supabase.co/storage/v1/object/public/church-images/antony.jpeg",
+  "https://ncedxbcsrcwuoailxsph.supabase.co/storage/v1/object/public/church-images/simmakal.jpeg",
+];
 
-    const items = root.querySelectorAll<HTMLElement>("[data-reveal]");
-    if (!items.length) return;
+const parishLifeIcons = [Church, Users, Heart, BookOpen];
 
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
+/* Succession of 25 Parish Priests from 1627 to Present */
+const parishPriestData = [
+  { year: "1627", en: "Fr. Robert De Nobili S.J.", ta: "அருட்தந்தை ராபர்ட் டி நொபிலி S.J." },
+  { year: "1680", en: "Fr. Joseph Beshi S.J.", ta: "அருட்தந்தை ஜோசப் பெஸ்கி (வீரமாமுனிவர்) S.J." },
+  { year: "1939–1940", en: "Fr. C. Yuvenat S.J.", ta: "அருட்தந்தை C. யூவனத் S.J." },
+  { year: "1941–1944", en: "Fr. M. D. Amalraj S.J.", ta: "அருட்தந்தை M. D. அமல்ராஜ் S.J." },
+  { year: "1944–1947", en: "Fr. Consalves S.J.", ta: "அருட்தந்தை கோன்சால்வஸ் S.J." },
+  { year: "1947–1949", en: "Fr. Planchart S.J.", ta: "அருட்தந்தை பிளான்சார்ட் S.J." },
+  { year: "1950–1957", en: "Fr. J. Britto S.J.", ta: "அருட்தந்தை J. பிரிட்டோ S.J." },
+  { year: "1957", en: "Fr. Claiton S.J.", ta: "அருட்தந்தை கிளேட்டன் S.J." },
+  { year: "1958", en: "Fr. Benjamin Nattar S.J.", ta: "அருட்தந்தை பெஞ்சமின் நாட்டார் S.J." },
+  { year: "1959–1960", en: "Fr. Maria Michael S.J.", ta: "அருட்தந்தை மரிய மைக்கேல் S.J." },
+  { year: "1960–1966", en: "Fr. T. Kurian S.J.", ta: "அருட்தந்தை T. குரியன் S.J." },
+  { year: "1966–1972", en: "Fr. De Cruz S.J.", ta: "அருட்தந்தை டி குரூஸ் S.J." },
+  { year: "1972–1976", en: "Fr. Zacharias", ta: "அருட்தந்தை சக்கரியாஸ்" },
+  { year: "1976–1981", en: "Fr. J. Joseph Xavier", ta: "அருட்தந்தை J. ஜோசப் சேவியர்" },
+  { year: "1981–1982", en: "Fr. Sengole", ta: "அருட்தந்தை செங்கோல்" },
+  { year: "1982–1985", en: "Fr. Arul Valan", ta: "அருட்தந்தை அருள் வளன்" },
+  { year: "1985–1992", en: "Fr. Xavier Raj", ta: "அருட்தந்தை சேவியர் ராஜ்" },
+  { year: "1992–1993", en: "Fr. David Kulandai S.J.", ta: "அருட்தந்தை டேவிட் குழந்தை S.J." },
+  { year: "1993–1997", en: "Fr. Lawrence Xavier", ta: "அருட்தந்தை லாரன்ஸ் சேவியர்" },
+  { year: "1997–2004", en: "Fr. Jeganivasagar", ta: "அருட்தந்தை ஜெகனிவாசகர்" },
+  { year: "2004–2009", en: "Fr. Benedict Barnabas", ta: "அருட்தந்தை பெனடிக்ட் பர்னபாஸ்" },
+  { year: "2009–2015", en: "Fr. Angel Raj", ta: "அருட்தந்தை ஏஞ்சல் ராஜ்" },
+  { year: "2015–2020", en: "Fr. John Britto Packia Raj", ta: "அருட்தந்தை ஜான் பிரிட்டோ பாக்கியராஜ்" },
+  { year: "2020–2023", en: "Fr. Anandam", ta: "அருட்தந்தை ஆனந்தம்" },
+  { year: "2023–Present", en: "Fr. Amal Raj", ta: "அருட்தந்தை அமல் ராஜ்" },
+];
 
-    if (prefersReducedMotion || typeof IntersectionObserver === "undefined") {
-      items.forEach((el) => el.classList.add("is-visible"));
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("is-visible");
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.15, rootMargin: "0px 0px -10% 0px" }
-    );
-
-    items.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
-  }, [rootRef]);
+function SectionDivider({
+  toDark = false,
+  inverted = false,
+}: {
+  toDark?: boolean;
+  inverted?: boolean;
+}) {
+  return (
+    <div
+      className={`about-transition-divider ${
+        toDark ? "divider-to-dark" : "divider-to-light"
+      } ${inverted ? "divider-inverted" : ""}`}
+      aria-hidden="true"
+    >
+      <div className="divider-ambient-glow" />
+      <div className="divider-content">
+        <span className="divider-line" />
+        <span className="divider-cross">
+          <LatinCross />
+        </span>
+        <span className="divider-line" />
+      </div>
+    </div>
+  );
 }
 
-/** Inline style helper for staggering a group of revealed siblings. */
-function stagger(index: number): React.CSSProperties {
-  return { "--i": index } as React.CSSProperties;
-}
+export default function AboutContent({
+  siteSettings,
+}: {
+  siteSettings: SiteSettings;
+}) {
+  const { language } = useLanguage();
+  const t = translations[language].about;
+  const common = translations[language].common;
 
-const translations = {
-  en: {
-    heroEyebrow: "Our Parish",
-    heroTitle: "About Holy Rosary Church",
-    heroDescription:
-      "A community of faith, prayer, service, and devotion, journeying together in the love of Christ.",
+  const churchName =
+    language === "ta"
+      ? common.churchName
+      : siteSettings?.church_name ?? common.churchName;
 
-    historyEyebrow: "Our History",
-    historyTitle: "A Journey of Faith",
-    historyDescription:
-      "Holy Rosary Church continues to grow as a spiritual home for families, children, youth, and the entire parish community.",
-
-    priestsEyebrow: "Parish Priests",
-    priestsTitle: "Our Parish Priests",
-
-    grottosEyebrow: "Places of Devotion",
-    grottosTitle: "Kurusadis & Grottos in the Parish",
-
-    parishInformationEyebrow: "Parish Information",
-    secularInstituteTitle: "Secular Institute",
-    educationalEyebrow: "Educational Institutions",
-    parishLifeEyebrow: "Parish Life",
-    visitEyebrow: "Visit Us",
-    visitTitle: "Holy Rosary Church",
-
-    addressLabel: "Address",
-    contactLabel: "Contact",
-    phoneLabel: "Phone",
-    emailLabel: "Email",
-    nil: "Nil",
-
-    languageEnglish: "English",
-    languageTamil: "தமிழ்",
-
-    grottoLocation: "Holy Rosary Church",
-
-    parishLife: [
-      {
-        title: "Holy Mass",
-        description:
-          "Participate in the Holy Eucharist and grow in communion with Christ.",
-      },
-      {
-        title: "Prayer Groups",
-        description:
-          "Join our parish prayer groups and deepen your personal relationship with God.",
-      },
-      {
-        title: "Youth Ministry",
-        description:
-          "Encouraging young people to live their faith with joy, courage, and service.",
-      },
-      {
-        title: "Children's Formation",
-        description:
-          "Helping children discover the love of Jesus through faith formation and activities.",
-      },
-    ],
-
-    grottos: [
-      {
-        title: "Sahayamatha Grotto",
-        location: "Holy Rosary Church",
-      },
-    ],
-
-    history: [
-      {
-        year: "01",
-        name: "Rev. Fr. A. Maria Soosai (1980–1984)",
-      },
-      {
-        year: "02",
-        name: "Rev. Fr. S. Arul (1984–1988)",
-      },
-      {
-        year: "03",
-        name: "Rev. Fr. A. Joseph (1988–1992)",
-      },
-      {
-        year: "04",
-        name: "Rev. Fr. David Kulandai S.J. (1992–1993)",
-      },
-      {
-        year: "05",
-        name: "Rev. Fr. Lawrence Xavier (1993–1997)",
-      },
-      {
-        year: "06",
-        name: "Rev. Fr. Jeganivasagar (1997–2004)",
-      },
-      {
-        year: "07",
-        name: "Rev. Fr. Benedict Barnabas (2004–2009)",
-      },
-      {
-        year: "08",
-        name: "Rev. Fr. Angel (2009–Present)",
-      },
-    ],
-  },
-
-  ta: {
-    heroEyebrow: "எங்கள் பங்கு",
-    heroTitle: "ஜெபமாலை அன்னை ஆலயத்தைப் பற்றி",
-    heroDescription:
-      "கிறிஸ்துவின் அன்பில் ஒன்றிணைந்து, நம்பிக்கை, ஜெபம், சேவை மற்றும் பக்தியில் வளர்ந்து வரும் இறைமக்களின் சமூகம்.",
-
-    historyEyebrow: "எங்கள் வரலாறு",
-    historyTitle: "நம்பிக்கையின் பயணம்",
-    historyDescription:
-      "ஜெபமாலை அன்னை ஆலயம் குடும்பங்கள், குழந்தைகள், இளைஞர்கள் மற்றும் முழு பங்கு மக்களுக்கும் ஆன்மீக இல்லமாக தொடர்ந்து வளர்ந்து வருகிறது.",
-
-    priestsEyebrow: "பங்குத் தந்தையர்கள்",
-    priestsTitle: "எங்கள் பங்குத் தந்தையர்கள்",
-
-    grottosEyebrow: "வழிபாட்டுத் தலங்கள்",
-    grottosTitle: "பங்கில் உள்ள குருசடிகள் மற்றும் கெபிகள்",
-
-    parishInformationEyebrow: "பங்குத் தகவல்கள்",
-    secularInstituteTitle: "துறவற நிறுவனம்",
-    educationalEyebrow: "கல்வி நிறுவனங்கள்",
-    parishLifeEyebrow: "பங்கு வாழ்க்கை",
-    visitEyebrow: "எங்களைச் சந்திக்க",
-    visitTitle: "ஜெபமாலை அன்னை ஆலயம்",
-
-    addressLabel: "முகவரி",
-    contactLabel: "தொடர்பு",
-    phoneLabel: "தொலைபேசி",
-    emailLabel: "மின்னஞ்சல்",
-    nil: "இல்லை",
-
-    languageEnglish: "English",
-    languageTamil: "தமிழ்",
-
-    grottoLocation: "ஜெபமாலை அன்னை ஆலயம்",
-
-    parishLife: [
-      {
-        title: "திருப்பலி",
-        description:
-          "திருப்பலியில் பங்கேற்று, கிறிஸ்துவுடன் உள்ள உறவில் வளருங்கள்.",
-      },
-      {
-        title: "ஜெபக் குழுக்கள்",
-        description:
-          "எங்கள் பங்கு ஜெபக் குழுக்களில் இணைந்து, இறைவனுடனான உங்கள் தனிப்பட்ட உறவை ஆழப்படுத்துங்கள்.",
-      },
-      {
-        title: "இளைஞர் பணித்துறை",
-        description:
-          "இளைஞர்கள் மகிழ்ச்சியுடனும், துணிவுடனும், சேவை மனப்பான்மையுடனும் தங்கள் நம்பிக்கையை வாழ ஊக்குவித்தல்.",
-      },
-      {
-        title: "குழந்தைகள் மறைக்கல்வி",
-        description:
-          "மறைக்கல்வி மற்றும் பல்வேறு செயல்பாடுகள் மூலம் குழந்தைகள் இயேசுவின் அன்பை அறிந்துகொள்ள உதவுதல்.",
-      },
-    ],
-
-    grottos: [
-      {
-        title: "சகாயமாதா கெபி",
-        location: "ஜெபமாலை அன்னை ஆலயம்",
-      },
-    ],
-
-    history: [
-      {
-        year: "01",
-        name: "அருட்தந்தை A. மரிய சூசை (1980–1984)",
-      },
-      {
-        year: "02",
-        name: "அருட்தந்தை S. அருள் (1984–1988)",
-      },
-      {
-        year: "03",
-        name: "அருட்தந்தை A. ஜோசப் (1988–1992)",
-      },
-      {
-        year: "04",
-        name: "அருட்தந்தை டேவிட் குலந்தை S.J. (1992–1993)",
-      },
-      {
-        year: "05",
-        name: "அருட்தந்தை லாரன்ஸ் சேவியர் (1993–1997)",
-      },
-      {
-        year: "06",
-        name: "அருட்தந்தை ஜெகனிவாசகர் (1997–2004)",
-      },
-      {
-        year: "07",
-        name: "அருட்தந்தை பெனடிக்ட் பர்னபாஸ் (2004–2009)",
-      },
-      {
-        year: "08",
-        name: "அருட்தந்தை ஏஞ்சல் (2009–தற்போது வரை)",
-      },
-    ],
-  },
-};
-
-export default function AboutPageContent() {
-  /*
-   * This local language state can later be connected to your existing
-   * global LanguageProvider.
-   */
-  const [language, setLanguage] = useState<Language>("en");
-  const mainRef = useRef<HTMLElement>(null);
-
-  useScrollReveal(mainRef);
-
-  const content = translations[language];
+  const phone = siteSettings?.phone ?? "0452-2343490";
+  const address =
+    language === "ta"
+      ? "டவுன் ஹால் சாலை, மதுரை, தமிழ்நாடு - 625001"
+      : siteSettings?.address ?? "Town Hall Road, Madurai, Tamil Nadu - 625001";
 
   return (
-    <main
-      ref={mainRef}
-      className={`about-page ${language === "ta" ? "is-tamil" : "is-english"}`}
-    >
-      {/* Language selector */}
-      <div className="about-language-switcher" aria-label="Language selector">
-        <span
-          className="about-language-indicator"
-          data-position={language === "en" ? "en" : "ta"}
+    <main className="about-page">
+      <ScrollReveal />
+      <AutoScrollCards />
+
+      <noscript>
+        <style>{`
+          .about-page [data-reveal] {
+            opacity: 1 !important;
+            transform: none !important;
+            filter: none !important;
+          }
+        `}</style>
+      </noscript>
+
+      {/* =====================================================
+          1. CINEMATIC HERO SECTION
+      ===================================================== */}
+      <section className="about-hero" id="overview">
+        <div
+          className="about-hero-bg"
+          style={{
+            backgroundImage: `url(${
+              siteSettings?.hero_image_url ||
+              "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=1920&q=85"
+            })`,
+          }}
           aria-hidden="true"
         />
-        <button
-          type="button"
-          className={language === "en" ? "active" : ""}
-          onClick={() => setLanguage("en")}
-        >
-          {content.languageEnglish}
-        </button>
 
-        <button
-          type="button"
-          className={language === "ta" ? "active" : ""}
-          onClick={() => setLanguage("ta")}
-        >
-          {content.languageTamil}
-        </button>
-      </div>
+        <div className="about-hero-overlay" aria-hidden="true" />
+        <div className="about-hero-glow" aria-hidden="true" />
 
-      {/* Hero section */}
-      <section className="about-hero">
-        <span className="about-hero-glow" aria-hidden="true" />
-        <span className="about-hero-particles" aria-hidden="true">
-          <i></i><i></i><i></i><i></i><i></i><i></i>
-        </span>
-
-        <div className="about-container">
-          <p className="about-eyebrow" data-reveal style={stagger(0)}>
-            {content.heroEyebrow}
-          </p>
-
-          <h1 data-reveal style={stagger(1)}>
-            {content.heroTitle}
-          </h1>
-
-          <p className="about-hero-description" data-reveal style={stagger(2)}>
-            {content.heroDescription}
-          </p>
+        <div className="about-hero-particles" aria-hidden="true">
+          <span className="particle p1" />
+          <span className="particle p2" />
+          <span className="particle p3" />
+          <span className="particle p4" />
+          <span className="particle p5" />
+          <span className="particle p6" />
         </div>
-      </section>
 
-      {/* History introduction */}
-      <section className="about-section about-section-light">
-        <div className="about-container about-intro-grid">
-          <div data-reveal style={stagger(0)}>
-            <p className="about-eyebrow">{content.historyEyebrow}</p>
-            <h2>{content.historyTitle}</h2>
+        <div className="about-hero-watermark" aria-hidden="true">
+          <LatinCross />
+        </div>
+
+        <div className="container about-hero-container">
+          <nav className="about-breadcrumbs" aria-label="Breadcrumb">
+            <Link href="/" className="crumb-link">
+              {common.home}
+            </Link>
+            <ChevronRight size={13} className="crumb-sep" />
+            <span className="crumb-active">{t.crumb}</span>
+          </nav>
+
+          <div className="about-hero-eyebrow">
+            <Sparkles size={14} className="eyebrow-icon" />
+            <span>{t.heroEyebrow}</span>
+            <Sparkles size={14} className="eyebrow-icon" />
           </div>
 
-          <p className="about-section-description" data-reveal style={stagger(1)}>
-            {content.historyDescription}
-          </p>
+          <h1 className="about-hero-title serif">{t.heroTitle}</h1>
+
+          <p className="about-hero-subtitle">{churchName}</p>
+
+          <div className="about-hero-divider" aria-hidden="true">
+            <span className="divider-half" />
+            <span className="divider-cross">
+              <LatinCross />
+            </span>
+            <span className="divider-half" />
+          </div>
+
+          <p className="about-hero-lead">{t.heroLead}</p>
+
+          <div className="about-hero-nav">
+            <a href="#history" className="hero-pill-btn">
+              <span>{t.quickNavHistory}</span>
+              <ArrowDown size={14} />
+            </a>
+            <a href="#priests" className="hero-pill-btn">
+              <span>{t.quickNavPriests}</span>
+              <ArrowDown size={14} />
+            </a>
+            <a href="#substations" className="hero-pill-btn">
+              <span>{t.quickNavSubstations}</span>
+              <ArrowDown size={14} />
+            </a>
+            <a href="#community" className="hero-pill-btn">
+              <span>{t.quickNavParishLife}</span>
+              <ArrowDown size={14} />
+            </a>
+          </div>
+        </div>
+
+        <a
+          href="#intro"
+          className="about-scroll-indicator"
+          aria-label={t.scrollDiscover}
+        >
+          <span>{t.scrollDiscover}</span>
+          <ArrowDown size={14} />
+        </a>
+      </section>
+
+      {/* =====================================================
+          2. CINEMATIC INTRODUCTION
+      ===================================================== */}
+      <section className="section about-intro-section" id="intro">
+        <div className="container two-col intro-grid">
+          <div
+            className="intro-copy-column"
+            data-reveal="slide-left"
+            style={{ "--i": 0 } as React.CSSProperties}
+          >
+            <div className="eyebrow">{t.introEyebrow}</div>
+
+            <h2 className="section-title">{t.introTitle}</h2>
+
+            <p className="body-copy">
+              {churchName} {t.introP1}
+            </p>
+
+            <p className="body-copy">{t.introP2}</p>
+
+            <p className="body-copy">{t.introP3}</p>
+
+            <blockquote className="quote cinematic-quote">
+              <span className="quote-mark">“</span>
+              {t.quoteText}
+              <br />
+              <span className="quote-caption">{t.quoteCaption}</span>
+            </blockquote>
+          </div>
+
+          <div
+            className="intro-image-column"
+            data-reveal="slide-right"
+            style={{ "--i": 1 } as React.CSSProperties}
+          >
+            <div className="cinematic-photo-wrap">
+              <div className="photo-glow" aria-hidden="true" />
+              <img
+                className="photo cinematic-photo"
+                src={
+                  siteSettings?.hero_image_url ||
+                  "https://ncedxbcsrcwuoailxsph.supabase.co/storage/v1/object/public/church-images/home/gallery-2.jpg"
+                }
+                alt={t.photoBadge}
+              />
+              <div className="photo-frame-border" aria-hidden="true" />
+              <div className="photo-caption-badge">
+                <Church size={14} />
+                <span>{t.photoBadge}</span>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Parish priest history */}
-      <section className="about-section about-section-blue">
-        <div className="about-container">
-          <p className="about-eyebrow" data-reveal>
-            {content.priestsEyebrow}
-          </p>
-          <h2 data-reveal>{content.priestsTitle}</h2>
+      {/* TRANSITION TO MARIAN BLUE */}
+      <SectionDivider toDark />
 
-          <div className="about-history-list">
-            {content.history.map((entry, index) => (
+      {/* =====================================================
+          3. PARISH IDENTITY & TODAY
+      ===================================================== */}
+      <section className="wine-band about-identity-section" id="identity">
+        <div className="container">
+          <div
+            className="section-heading text-center"
+            data-reveal="fade-up"
+            style={{ "--i": 0 } as React.CSSProperties}
+          >
+            <div>
+              <div className="eyebrow">{t.identityEyebrow}</div>
+
+              <h2 className="section-title">{t.identityTitle}</h2>
+
+              <p className="body-copy text-subdued max-w-prose mx-auto">
+                {t.identityDescription}
+              </p>
+            </div>
+          </div>
+
+          <div className="cards-grid pop-grid identity-cards-grid auto-scroll-rail">
+            <div
+              className="card pop-card cinematic-card"
+              data-reveal="pop"
+              style={{ "--i": 0 } as React.CSSProperties}
+            >
+              <div className="card-body">
+                <div className="card-header-row">
+                  <div className="card-icon-halo">
+                    <MapPin size={22} />
+                  </div>
+                  <span className="card-step-badge">01</span>
+                </div>
+                <h3>{t.locationTitle}</h3>
+                <p>{address}</p>
+              </div>
+            </div>
+
+            <div
+              className="card pop-card cinematic-card"
+              data-reveal="pop"
+              style={{ "--i": 1 } as React.CSSProperties}
+            >
+              <div className="card-body">
+                <div className="card-header-row">
+                  <div className="card-icon-halo">
+                    <Users size={22} />
+                  </div>
+                  <span className="card-step-badge">02</span>
+                </div>
+                <h3>{t.communityTitle}</h3>
+                <p>{t.communityDesc}</p>
+              </div>
+            </div>
+
+            <div
+              className="card pop-card cinematic-card"
+              data-reveal="pop"
+              style={{ "--i": 2 } as React.CSSProperties}
+            >
+              <div className="card-body">
+                <div className="card-header-row">
+                  <div className="card-icon-halo">
+                    <Church size={22} />
+                  </div>
+                  <span className="card-step-badge">03</span>
+                </div>
+                <h3>{t.chapelsTitle}</h3>
+                <p>{t.chapelsDesc}</p>
+              </div>
+            </div>
+
+            <div
+              className="card pop-card cinematic-card"
+              data-reveal="pop"
+              style={{ "--i": 3 } as React.CSSProperties}
+            >
+              <div className="card-body">
+                <div className="card-header-row">
+                  <div className="card-icon-halo">
+                    <Sparkles size={22} />
+                  </div>
+                  <span className="card-step-badge">04</span>
+                </div>
+                <h3>{t.patronessTitle}</h3>
+                <p>{t.patronessName}</p>
+              </div>
+            </div>
+
+            <div
+              className="card pop-card cinematic-card"
+              data-reveal="pop"
+              style={{ "--i": 4 } as React.CSSProperties}
+            >
+              <div className="card-body">
+                <div className="card-header-row">
+                  <div className="card-icon-halo">
+                    <Phone size={22} />
+                  </div>
+                  <span className="card-step-badge">05</span>
+                </div>
+                <h3>{t.telephoneTitle}</h3>
+                <p>{phone}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* TRANSITION TO LIGHT */}
+      <SectionDivider />
+
+      {/* =====================================================
+          4. SUBSTATIONS (Mission Chapels)
+      ===================================================== */}
+      <section className="section about-substations-section" id="substations">
+        <div className="container">
+          <div
+            className="section-heading"
+            data-reveal="fade-up"
+            style={{ "--i": 0 } as React.CSSProperties}
+          >
+            <div>
+              <div className="eyebrow">{t.substationsEyebrow}</div>
+
+              <h2 className="section-title">{t.substationsTitle}</h2>
+
+              <p className="body-copy">{t.substationsDescription}</p>
+            </div>
+          </div>
+
+          <div className="cards-grid substations-grid auto-scroll-rail">
+            {t.substations.map((station, index) => (
+              <FlipCard
+                key={station.name}
+                name={station.name}
+                location={station.location}
+                image={substationImages[index]}
+                address={station.address}
+                index={index}
+              />
+            ))}
+          </div>
+
+          <div className="mobile-scroll-hint" aria-hidden="true">
+            <span>{t.substationsHint}</span>
+          </div>
+        </div>
+      </section>
+
+      {/* TRANSITION TO MARIAN BLUE */}
+      <SectionDivider toDark />
+
+      {/* =====================================================
+          5. PARISH LIFE & FELLOWSHIP
+      ===================================================== */}
+      <section className="wine-band about-parish-life-section" id="community">
+        <div className="container">
+          <div
+            className="section-heading text-center"
+            data-reveal="fade-up"
+            style={{ "--i": 0 } as React.CSSProperties}
+          >
+            <div>
+              <div className="eyebrow">{t.parishLifeEyebrow}</div>
+
+              <h2 className="section-title">{t.parishLifeTitle}</h2>
+
+              <p className="body-copy text-subdued max-w-prose mx-auto">
+                {t.parishLifeDescription}
+              </p>
+            </div>
+          </div>
+
+          <div className="cards-grid parish-life-grid auto-scroll-rail">
+            {t.parishLifeItems.map((item, index) => {
+              const IconComp = parishLifeIcons[index] ?? Church;
+              return (
+                <div
+                  className="card cinematic-card"
+                  key={item.title}
+                  data-reveal="fade-up"
+                  style={{ "--i": index } as React.CSSProperties}
+                >
+                  <div className="card-body">
+                    <div className="card-header-row">
+                      <div className="card-icon-halo">
+                        <IconComp size={22} />
+                      </div>
+                      <span className="card-step-badge">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                    </div>
+                    <h3>{item.title}</h3>
+                    <p>{item.text}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div
+            className="about-extra-content"
+            data-reveal="fade-up"
+            style={{ "--i": 4 } as React.CSSProperties}
+          >
+            <div className="extra-content-box">
+              <Layers className="extra-icon" size={24} />
+              <p className="body-copy">{t.parishLifeExtra}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* TRANSITION TO LIGHT */}
+      <SectionDivider />
+
+      {/* =====================================================
+          6. PARISH ASSOCIATIONS & PARTICIPATORY STRUCTURES
+      ===================================================== */}
+      <section className="section about-associations-section">
+        <div className="container">
+          <div
+            className="section-heading"
+            data-reveal="fade-up"
+            style={{ "--i": 0 } as React.CSSProperties}
+          >
+            <div>
+              <div className="eyebrow">{t.associationsEyebrow}</div>
+
+              <h2 className="section-title">{t.associationsTitle}</h2>
+
+              <p className="body-copy">{t.associationsDescription}</p>
+            </div>
+          </div>
+
+          <div className="cards-grid lr-grid associations-grid auto-scroll-rail">
+            {t.associations.map((association, index) => (
               <div
-                className="about-history-item"
-                key={entry.year}
-                data-reveal
-                style={stagger(index)}
+                className={`card lr-card cinematic-card ${
+                  index % 2 === 0 ? "lr-left" : "lr-right"
+                }`}
+                key={association}
+                data-reveal="lr"
+                style={
+                  {
+                    "--i": Math.floor(index / 2),
+                  } as React.CSSProperties
+                }
               >
-                <div className="about-history-number">{entry.year}</div>
+                <div className="card-body">
+                  <div className="association-badge">
+                    <span>{String(index + 1).padStart(2, "0")}</span>
+                  </div>
+                  <h3>{association}</h3>
+                  <p>{t.associationsDefaultDesc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
 
-                <div className="about-history-name">{entry.name}</div>
+          {/* Participatory Structures Subsection */}
+          <div
+            className="section-heading"
+            data-reveal="fade-up"
+            style={{ marginTop: 75, "--i": 0 } as React.CSSProperties}
+          >
+            <div>
+              <div className="eyebrow">{t.structuresEyebrow}</div>
+
+              <h2 className="section-title">{t.structuresTitle}</h2>
+
+              <p className="body-copy">{t.structuresDescription}</p>
+            </div>
+          </div>
+
+          <div className="cards-grid structures-grid mobile-snap-rail">
+            {t.structures.map((item, index) => (
+              <div
+                className="card cinematic-card structure-card"
+                key={item}
+                data-reveal="fade-up"
+                style={{ "--i": index } as React.CSSProperties}
+              >
+                <div className="card-body">
+                  <div className="card-header-row">
+                    <div className="card-icon-halo">
+                      <Shield size={20} />
+                    </div>
+                    <span className="card-step-badge">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                  </div>
+                  <h3>{item}</h3>
+                  <p>{t.structuresDefaultDesc}</p>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Grottos */}
-      <section className="about-section about-section-light">
-        <div className="about-container">
-          <p className="about-eyebrow" data-reveal>
-            {content.grottosEyebrow}
-          </p>
-          <h2 data-reveal>{content.grottosTitle}</h2>
+      {/* TRANSITION TO MARIAN BLUE */}
+      <SectionDivider toDark />
 
-          <div className="about-card-grid about-grotto-grid">
-            {content.grottos.map((grotto, index) => (
-              <article
-                className="about-info-card"
-                key={grotto.title}
-                data-reveal
-                style={stagger(index)}
+      {/* =====================================================
+          7. HISTORICAL JOURNEY (1592 to 2020)
+      ===================================================== */}
+      <section className="wine-band about-history-section" id="history">
+        <div className="container">
+          <div
+            className="section-heading text-center"
+            data-reveal="fade-up"
+            style={{ "--i": 0 } as React.CSSProperties}
+          >
+            <div>
+              <div className="eyebrow">{t.historyEyebrow}</div>
+
+              <h2 className="section-title">{t.historyTitle}</h2>
+
+              <p className="body-copy text-subdued max-w-prose mx-auto">
+                {t.historyDescription}
+              </p>
+            </div>
+          </div>
+
+          {/* Historic narrative two-col */}
+          <div className="two-col history-narrative-grid">
+            <div
+              className="history-narrative-copy"
+              data-reveal="slide-left"
+              style={{ "--i": 0 } as React.CSSProperties}
+            >
+              <p className="body-copy">{t.historyP1}</p>
+              <p className="body-copy">{t.historyP2}</p>
+              <p className="body-copy">{t.historyP3}</p>
+            </div>
+
+            <div
+              className="history-narrative-media"
+              data-reveal="slide-right"
+              style={{ "--i": 1 } as React.CSSProperties}
+            >
+              <div className="cinematic-photo-wrap">
+                <img
+                  className="photo cinematic-photo"
+                  src="https://ncedxbcsrcwuoailxsph.supabase.co/storage/v1/object/public/church-images/home/gallery-2.jpg"
+                  alt={churchName}
+                />
+                <div className="photo-caption-badge">
+                  <Calendar size={14} />
+                  <span>{t.historyBadge}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Grand Illuminated Timeline */}
+          <div
+            className="section-heading text-center"
+            data-reveal="fade-up"
+            style={{ marginTop: 80, marginBottom: 40, "--i": 0 } as React.CSSProperties}
+          >
+            <div>
+              <div className="eyebrow">{t.timelineEyebrow}</div>
+              <h2 className="section-title">{t.timelineTitle}</h2>
+            </div>
+          </div>
+
+          <div className="history-timeline-container">
+            <div className="timeline-spine" aria-hidden="true">
+              <span className="timeline-spine-glow" />
+            </div>
+
+            <div className="history-milestones-list">
+              {t.historyEntries.map((entry, index) => {
+                const isEven = index % 2 === 0;
+                return (
+                  <div
+                    className={`history-milestone ${
+                      isEven ? "milestone-left" : "milestone-right"
+                    }`}
+                    key={`${entry.year}-${index}`}
+                    data-reveal={isEven ? "slide-left" : "slide-right"}
+                    style={
+                      {
+                        "--i": index % 4,
+                      } as React.CSSProperties
+                    }
+                  >
+                    <div className="timeline-node" aria-hidden="true">
+                      <span className="node-halo" />
+                      <span className="node-core" />
+                    </div>
+
+                    <div className="milestone-card">
+                      <div className="milestone-header">
+                        <div className="milestone-meta-row">
+                          <span className="card-step-badge">
+                            {String(index + 1).padStart(2, "0")}
+                          </span>
+                          <span className="milestone-year">{entry.year}</span>
+                        </div>
+                        <h3 className="milestone-title">{entry.title}</h3>
+                      </div>
+                      <p className="milestone-text">{entry.text}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* TRANSITION TO MARIAN BLUE ACCENT */}
+      <SectionDivider toDark inverted />
+
+      {/* =====================================================
+          8. SUCCESSION OF PARISH PRIESTS (1627 to Present)
+      ===================================================== */}
+      <section className="wine-band about-priests-section" id="priests">
+        <div className="container">
+          <div
+            className="section-heading text-center"
+            data-reveal="fade-up"
+            style={{ "--i": 0 } as React.CSSProperties}
+          >
+            <div>
+              <div className="eyebrow">{t.priestsEyebrow}</div>
+
+              <h2 className="section-title">{t.priestsTitle}</h2>
+
+              <p className="body-copy text-subdued max-w-prose mx-auto">
+                {t.priestsDescription}
+              </p>
+            </div>
+          </div>
+
+          <div className="priest-timeline-grid mobile-snap-rail">
+            {parishPriestData.map((priest, index) => (
+              <div
+                className="priest-item cinematic-card"
+                key={`${priest.year}-${priest.en}`}
+                data-reveal="priest"
+                style={
+                  {
+                    "--i": index % 6,
+                  } as React.CSSProperties
+                }
               >
-                <h3>{grotto.title}</h3>
-                <p>{grotto.location}</p>
-              </article>
+                <div className="priest-node-connector" aria-hidden="true">
+                  <span className="priest-connector-dot" />
+                </div>
+
+                <div className="priest-badge">
+                  <span className="priest-number">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                </div>
+
+                <div className="priest-content">
+                  <p className="priest-name">
+                    {language === "ta" ? priest.ta : priest.en}
+                  </p>
+                  <span className="priest-period">{priest.year}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mobile-scroll-hint" aria-hidden="true">
+            <span>{t.swipePastorsHint}</span>
+          </div>
+        </div>
+      </section>
+
+      {/* TRANSITION TO LIGHT */}
+      <SectionDivider />
+
+      {/* =====================================================
+          9. RELIGIOUS COMMUNITIES & INSTITUTIONS
+      ===================================================== */}
+      <section className="section about-institutions-section" id="institutions">
+        <div className="container">
+          {/* Religious Presence */}
+          <div
+            className="section-heading"
+            data-reveal="fade-up"
+            style={{ "--i": 0 } as React.CSSProperties}
+          >
+            <div>
+              <div className="eyebrow">{t.religiousEyebrow}</div>
+
+              <h2 className="section-title">{t.religiousTitle}</h2>
+
+              <p className="body-copy">{t.religiousDescription}</p>
+            </div>
+          </div>
+
+          <div className="cards-grid communities-grid mobile-snap-rail">
+            {t.religiousCommunities.map((community, index) => (
+              <div
+                className="card cinematic-card"
+                key={community.name}
+                data-reveal="fade-up"
+                style={{ "--i": index } as React.CSSProperties}
+              >
+                <div className="card-body">
+                  <div className="card-header-row">
+                    <div className="card-icon-halo">
+                      <Heart size={20} />
+                    </div>
+                    <span className="card-step-badge">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                  </div>
+                  <h3>{community.name}</h3>
+                  <p className="detail-pill">{community.number}</p>
+                  <p className="phone-line">
+                    <Phone size={13} />
+                    <span>{community.phone}</span>
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Secular Institute Note */}
+          <div
+            className="secular-institute-block"
+            data-reveal="fade-up"
+            style={{ "--i": 2 } as React.CSSProperties}
+          >
+            <div className="eyebrow">{t.secularInstituteEyebrow}</div>
+            <h3>{t.secularInstituteTitle}</h3>
+            <p className="body-copy">{t.secularInstituteNil}</p>
+          </div>
+
+          {/* Educational Institutions Under Parish Priest */}
+          <div
+            className="section-heading"
+            data-reveal="fade-up"
+            style={{ marginTop: 70, "--i": 0 } as React.CSSProperties}
+          >
+            <div>
+              <div className="eyebrow">{t.educationalPriestEyebrow}</div>
+
+              <h2 className="section-title">{t.educationalPriestTitle}</h2>
+
+              <p className="body-copy">{t.educationalPriestDesc}</p>
+            </div>
+          </div>
+
+          <div className="cards-grid institutions-grid mobile-snap-rail">
+            {t.parishInstitutions.map((institution, index) => (
+              <div
+                className="card cinematic-card"
+                key={institution.name}
+                data-reveal="fade-up"
+                style={{ "--i": index } as React.CSSProperties}
+              >
+                <div className="card-body">
+                  <div className="card-header-row">
+                    <div className="card-icon-halo">
+                      <GraduationCap size={20} />
+                    </div>
+                    <span className="card-step-badge">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                  </div>
+                  <h3>{institution.name}</h3>
+                  <p className="phone-line">
+                    <Phone size={13} />
+                    <span>{institution.phone}</span>
+                  </p>
+                  <p className="detail-pill">{institution.details}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Institutions Under Religious */}
+          <div
+            className="section-heading"
+            data-reveal="fade-up"
+            style={{ marginTop: 70, "--i": 0 } as React.CSSProperties}
+          >
+            <div>
+              <div className="eyebrow">{t.educationalReligiousEyebrow}</div>
+
+              <h2 className="section-title">{t.educationalReligiousTitle}</h2>
+            </div>
+          </div>
+
+          <div className="cards-grid institutions-grid mobile-snap-rail">
+            {t.religiousInstitutions.map((institution, index) => (
+              <div
+                className="card cinematic-card"
+                key={institution.name}
+                data-reveal="fade-up"
+                style={{ "--i": index } as React.CSSProperties}
+              >
+                <div className="card-body">
+                  <div className="card-header-row">
+                    <div className="card-icon-halo">
+                      <Building2 size={20} />
+                    </div>
+                    <span className="card-step-badge">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                  </div>
+                  <h3>{institution.name}</h3>
+                  <p className="phone-line">
+                    <Phone size={13} />
+                    <span>{institution.phone}</span>
+                  </p>
+                  <p className="detail-pill">{institution.details}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Kurusadis & Grottos */}
+          <div
+            className="section-heading"
+            data-reveal="fade-up"
+            style={{ marginTop: 70, "--i": 0 } as React.CSSProperties}
+          >
+            <div>
+              <div className="eyebrow">{t.grottosEyebrow}</div>
+
+              <h2 className="section-title">{t.grottosTitle}</h2>
+            </div>
+          </div>
+
+          <div className="cards-grid grottos-grid mobile-snap-rail">
+            {t.kurusadis.map((item, index) => (
+              <div
+                className="card cinematic-card"
+                key={item.name}
+                data-reveal="fade-up"
+                style={{ "--i": index } as React.CSSProperties}
+              >
+                <div className="card-body">
+                  <div className="card-header-row">
+                    <div className="card-icon-halo">
+                      <Cross size={20} />
+                    </div>
+                    <span className="card-step-badge">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                  </div>
+                  <h3>{item.name}</h3>
+                  <p className="location-line">
+                    <MapPin size={13} />
+                    <span>{item.location}</span>
+                  </p>
+                </div>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Parish information */}
-      <section className="about-section about-section-blue about-parish-information">
-        <div className="about-container">
-          <p className="about-eyebrow" data-reveal>
-            {content.parishInformationEyebrow}
-          </p>
-          <h2 data-reveal>{content.secularInstituteTitle}</h2>
+      {/* TRANSITION TO MARIAN BLUE */}
+      <SectionDivider toDark />
 
-          <p className="about-empty-value" data-reveal>
-            {content.nil}
-          </p>
-        </div>
-      </section>
+      {/* =====================================================
+          10. PARISH LEGACY & CINEMATIC CLOSING
+      ===================================================== */}
+      <section className="wine-band about-legacy-section" id="legacy">
+        <div className="container">
+          <div
+            className="section-heading text-center"
+            data-reveal="fade-up"
+            style={{ "--i": 0 } as React.CSSProperties}
+          >
+            <div>
+              <div className="eyebrow">{t.legacySectionEyebrow}</div>
 
-      {/* Educational institutions */}
-      <section className="about-section about-section-light">
-        <div className="about-container">
-          <p className="about-eyebrow" data-reveal>
-            {content.educationalEyebrow}
-          </p>
+              <h2 className="section-title">{t.legacySectionTitle}</h2>
 
-          <div className="about-empty-card" data-reveal>
-            <p>{content.nil}</p>
+              <p className="body-copy text-subdued max-w-prose mx-auto">
+                {t.legacySectionDescription}
+              </p>
+            </div>
+          </div>
+
+          <div className="cards-grid legacy-pillars-grid mobile-snap-rail">
+            <div
+              className="card cinematic-card"
+              data-reveal="pop"
+              style={{ "--i": 0 } as React.CSSProperties}
+            >
+              <div className="card-body">
+                <div className="card-header-row">
+                  <div className="card-icon-halo">
+                    <Cross size={22} />
+                  </div>
+                  <span className="card-step-badge">01</span>
+                </div>
+                <h3>{t.legacyFaithTitle}</h3>
+                <p>{t.legacyFaithDesc}</p>
+              </div>
+            </div>
+
+            <div
+              className="card cinematic-card"
+              data-reveal="pop"
+              style={{ "--i": 1 } as React.CSSProperties}
+            >
+              <div className="card-body">
+                <div className="card-header-row">
+                  <div className="card-icon-halo">
+                    <BookOpen size={22} />
+                  </div>
+                  <span className="card-step-badge">02</span>
+                </div>
+                <h3>{t.legacyEducationTitle}</h3>
+                <p>{t.legacyEducationDesc}</p>
+              </div>
+            </div>
+
+            <div
+              className="card cinematic-card"
+              data-reveal="pop"
+              style={{ "--i": 2 } as React.CSSProperties}
+            >
+              <div className="card-body">
+                <div className="card-header-row">
+                  <div className="card-icon-halo">
+                    <Users size={22} />
+                  </div>
+                  <span className="card-step-badge">03</span>
+                </div>
+                <h3>{t.legacyCommunityTitle}</h3>
+                <p>{t.legacyCommunityDesc}</p>
+              </div>
+            </div>
+          </div>
+
+          <div
+            className="closing-reflection-banner"
+            data-reveal="fade-up"
+            style={{ "--i": 3 } as React.CSSProperties}
+          >
+            <div className="reflection-watermark" aria-hidden="true">
+              <LatinCross />
+            </div>
+            <div className="reflection-content">
+              <span className="reflection-eyebrow">
+                {t.reflectionEyebrow}
+              </span>
+              <h3 className="reflection-heading serif">
+                {t.reflectionHeading}
+              </h3>
+              <p className="reflection-lead">{t.reflectionLead}</p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Parish life */}
-      <section className="about-section about-section-light">
-        <div className="about-container">
-          <p className="about-eyebrow" data-reveal>
-            {content.parishLifeEyebrow}
-          </p>
+      {/* TRANSITION TO LIGHT */}
+      <SectionDivider />
 
-          <div className="about-card-grid about-parish-life-grid">
-            {content.parishLife.map((item, index) => (
-              <article
-                className="about-info-card"
-                key={item.title}
-                data-reveal
-                style={stagger(index)}
-              >
-                <h3>{item.title}</h3>
-                <p>{item.description}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* =====================================================
+          11. VISIT & CONTACT SECTION
+      ===================================================== */}
+      <section className="section about-contact-section" id="contact">
+        <div className="container">
+          <div
+            className="section-heading"
+            data-reveal="fade-up"
+            style={{ "--i": 0 } as React.CSSProperties}
+          >
+            <div>
+              <div className="eyebrow">{t.visitEyebrow}</div>
 
-      {/* Visit us */}
-      <section className="about-section about-section-visit">
-        <div className="about-container about-visit-grid">
-          <div data-reveal>
-            <p className="about-eyebrow">{content.visitEyebrow}</p>
-            <h2>{content.visitTitle}</h2>
+              <h2 className="section-title">{t.visitTitle}</h2>
+
+              <p className="body-copy">{t.visitDescription}</p>
+            </div>
           </div>
 
-          <div className="about-contact-details">
-            <div className="about-contact-item" data-reveal style={stagger(0)}>
-              <span>{content.addressLabel}</span>
-              <p>{content.nil}</p>
+          <div className="contact-grid about-contact-grid">
+            <div
+              className="contact-card-box"
+              data-reveal="slide-left"
+              style={{ "--i": 0 } as React.CSSProperties}
+            >
+              <div className="contact-icon-halo">
+                <MapPin size={22} />
+              </div>
+              <div className="contact-info-block">
+                <h3>{t.addressCardTitle}</h3>
+                <p className="body-copy">{address}</p>
+              </div>
             </div>
 
-            <div className="about-contact-item" data-reveal style={stagger(1)}>
-              <span>{content.contactLabel}</span>
-              <p>{content.nil}</p>
-            </div>
-
-            <div className="about-contact-item" data-reveal style={stagger(2)}>
-              <span>{content.phoneLabel}</span>
-              <p>{content.nil}</p>
-            </div>
-
-            <div className="about-contact-item" data-reveal style={stagger(3)}>
-              <span>{content.emailLabel}</span>
-              <p>{content.nil}</p>
+            <div
+              className="contact-card-box"
+              data-reveal="slide-right"
+              style={{ "--i": 1 } as React.CSSProperties}
+            >
+              <div className="contact-icon-halo">
+                <Phone size={22} />
+              </div>
+              <div className="contact-info-block">
+                <h3>{t.telephoneCardTitle}</h3>
+                <p className="body-copy">{phone}</p>
+              </div>
             </div>
           </div>
         </div>

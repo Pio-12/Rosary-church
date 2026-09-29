@@ -1,70 +1,36 @@
-import { PageHero } from "../components/site";
+"use client";
 
-const entries = [
-  [
-    "1592",
-    "The Jesuits began the Madurai Mission with a small chapel dedicated to Our Lady. The chapel was ministered by Fr. Fernandez, and missionaries including Robert de Nobili and Joseph Beschi later served in the mission.",
-  ],
-  [
-    "1763",
-    "A letter from 1763 records that Yousuf Khan, who opposed the English, had around 400 French soldiers, who were Catholics, and refers to a beautiful church built near the West Gate of Madurai.",
-  ],
-  [
-    "1770",
-    "From around 1770 onwards, Jesuit missionaries continued serving the people living around Rosary Church.",
-  ],
-  [
-    "1773",
-    "Following the suppression of the Society of Jesus, the church came under the care of Padroado priests.",
-  ],
-  [
-    "1939",
-    "Fr. Yuvenat started the parish school, adding education to the parish's service to the local community.",
-  ],
-  [
-    "1966",
-    "Fr. De Cruz took charge of the parish and built a new church according to the liturgical renewal associated with the Second Vatican Council.",
-  ],
-  [
-    "1967",
-    "The Novena to Our Lady of Perpetual Help was started and became part of the devotional life of the parish.",
-  ],
-  [
-    "Later Years",
-    "A new presbytery was built by Fr. Joseph Xavier. The parish also developed four substations serving communities in Solaialagupuram, Perungudi, St. Antony's Street and Simmakkal.",
-  ],
-];
+import { PageHero } from "../components/site";
+import { useLanguage } from "../components/LanguageProvider";
+import { translations } from "@/lib/supabase/translations";
 
 export default function History() {
+  const { language } = useLanguage();
+  const t = translations[language].history;
+
   return (
     <main>
       <PageHero
-        title="Our History"
-        crumb="History"
+        title={t.pageTitle}
+        crumb={t.crumb}
       />
 
       {/* INTRODUCTION */}
       <section className="section">
         <div className="container two-col">
           <div>
-            <div className="eyebrow">A heritage of faith</div>
+            <div className="eyebrow">{t.introEyebrow}</div>
 
             <h2 className="section-title">
-              Rooted in Madurai
+              {t.introTitle}
             </h2>
 
             <p className="body-copy">
-              The history of Holy Rosary Church is closely connected with the
-              history of the Catholic mission in Madurai. Beginning with the
-              Madurai Mission in 1592, generations of missionaries and
-              parishioners have contributed to the life and growth of the
-              community.
+              {t.introP1}
             </p>
 
             <p className="body-copy">
-              Through changing times, the parish has continued its mission of
-              worship, education, devotion and service to the people of
-              Madurai.
+              {t.introP2}
             </p>
           </div>
 
@@ -81,20 +47,20 @@ export default function History() {
         <div className="container">
           <div className="section-heading">
             <div>
-              <div className="eyebrow">Through the years</div>
+              <div className="eyebrow">{t.timelineEyebrow}</div>
 
               <h2 className="section-title">
-                A Journey Through History
+                {t.timelineTitle}
               </h2>
             </div>
           </div>
 
           <div className="history-list">
-            {entries.map(([year, text]) => (
-              <div className="history-item" key={year}>
-                <strong>{year}</strong>
+            {t.entries.map((entry) => (
+              <div className="history-item" key={entry.year}>
+                <strong>{entry.year}</strong>
 
-                <p>{text}</p>
+                <p>{entry.text}</p>
               </div>
             ))}
           </div>
@@ -106,10 +72,10 @@ export default function History() {
         <div className="container">
           <div className="section-heading">
             <div>
-              <div className="eyebrow">Continuing the mission</div>
+              <div className="eyebrow">{t.legacyEyebrow}</div>
 
               <h2 className="section-title">
-                A Living Heritage
+                {t.legacyTitle}
               </h2>
             </div>
           </div>
@@ -117,34 +83,25 @@ export default function History() {
           <div className="cards-grid">
             <div className="card">
               <div className="card-body">
-                <h3>Faith</h3>
+                <h3>{t.faithTitle}</h3>
 
-                <p>
-                  A parish rooted in prayer, worship and devotion to Our Lady
-                  of Holy Rosary.
-                </p>
+                <p>{t.faithDesc}</p>
               </div>
             </div>
 
             <div className="card">
               <div className="card-body">
-                <h3>Education</h3>
+                <h3>{t.educationTitle}</h3>
 
-                <p>
-                  The parish has a long connection with education, beginning
-                  with the parish school started in 1939.
-                </p>
+                <p>{t.educationDesc}</p>
               </div>
             </div>
 
             <div className="card">
               <div className="card-body">
-                <h3>Community</h3>
+                <h3>{t.communityTitle}</h3>
 
-                <p>
-                  The parish continues to serve its community through its
-                  worship, associations and four substations.
-                </p>
+                <p>{t.communityDesc}</p>
               </div>
             </div>
           </div>
