@@ -14407,3 +14407,29 @@ select.field {
   }
 }
 
+@media (max-width: 768px) {
+  .site-header .brand {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .site-header .brand-copy {
+    min-width: 0;
+    line-height: 1.1;
+  }
+
+  .site-header .brand-copy > span:first-child {
+    display: block;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+    font-size: 15px;
+    line-height: 1.15;
+  }
+
+  .site-header .brand-copy > span:last-child {
+    display: block;
+    font-size: 10px;
+    margin-top: 3px;
+  }
+}
