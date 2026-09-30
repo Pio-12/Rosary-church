@@ -20,14 +20,13 @@ import { translations } from "@/lib/supabase/translations";
    CONFIGURATION CONSTANTS
    ========================================================================== */
 
-export const PAYMENT_LINK =
+const PAYMENT_LINK =
   "upi://pay?pa=martinlikesyou3@oksbi&pn=Our%20Lady%20of%20Holy%20Rosary%20Church&cu=INR&tn=Mass%20Intention";
-
 /** Fixed offering amount per Mass intention */
-export const MASS_OFFERING_AMOUNT = 200;
+ const MASS_OFFERING_AMOUNT = 200;
 
 /** Maximum words allowed in the intention text */
-export const MAX_WORDS = 50;
+ const MAX_WORDS = 50;
 
 /* Helper function to count words */
 function countWords(str: string): number {
