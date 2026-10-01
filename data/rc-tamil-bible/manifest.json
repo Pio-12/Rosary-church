@@ -1,0 +1,555 @@
+[
+  {
+    "bookNumber": 1,
+    "englishName": "Genesis",
+    "tamilName": "தொடக்க நூல்",
+    "fileName": "Genesis.json",
+    "totalChapters": 50
+  },
+  {
+    "bookNumber": 2,
+    "englishName": "Exodus",
+    "tamilName": "விடுதலைப் பயணம்",
+    "fileName": "Exodus.json",
+    "totalChapters": 40
+  },
+  {
+    "bookNumber": 3,
+    "englishName": "Leviticus",
+    "tamilName": "லேவியர்",
+    "fileName": "Leviticus.json",
+    "totalChapters": 27
+  },
+  {
+    "bookNumber": 4,
+    "englishName": "Numbers",
+    "tamilName": "எண்ணிக்கை",
+    "fileName": "Numbers.json",
+    "totalChapters": 36
+  },
+  {
+    "bookNumber": 5,
+    "englishName": "Deuteronomy",
+    "tamilName": "இணைச் சட்டம்",
+    "fileName": "Deuteronomy.json",
+    "totalChapters": 34
+  },
+  {
+    "bookNumber": 6,
+    "englishName": "Joshua",
+    "tamilName": "யோசுவா",
+    "fileName": "Joshua.json",
+    "totalChapters": 24
+  },
+  {
+    "bookNumber": 7,
+    "englishName": "Judges",
+    "tamilName": "நீதித் தலைவர்கள்",
+    "fileName": "Judges.json",
+    "totalChapters": 21
+  },
+  {
+    "bookNumber": 8,
+    "englishName": "Ruth",
+    "tamilName": "ரூத்து",
+    "fileName": "Ruth.json",
+    "totalChapters": 4
+  },
+  {
+    "bookNumber": 9,
+    "englishName": "1 Samuel",
+    "tamilName": "சாமுவேல் - முதல் நூல்",
+    "fileName": "1 Samuel.json",
+    "totalChapters": 31
+  },
+  {
+    "bookNumber": 10,
+    "englishName": "2 Samuel",
+    "tamilName": "சாமுவேல் - இரண்டாம் நூல்",
+    "fileName": "2 Samuel.json",
+    "totalChapters": 24
+  },
+  {
+    "bookNumber": 11,
+    "englishName": "1 Kings",
+    "tamilName": "அரசர்கள் - முதல் நூல்",
+    "fileName": "1 Kings.json",
+    "totalChapters": 22
+  },
+  {
+    "bookNumber": 12,
+    "englishName": "2 Kings",
+    "tamilName": "அரசர்கள் - இரண்டாம் நூல்",
+    "fileName": "2 Kings.json",
+    "totalChapters": 25
+  },
+  {
+    "bookNumber": 13,
+    "englishName": "1 Chronicles",
+    "tamilName": "குறிப்பேடு - முதல் நூல்",
+    "fileName": "1 Chronicles.json",
+    "totalChapters": 29
+  },
+  {
+    "bookNumber": 14,
+    "englishName": "2 Chronicles",
+    "tamilName": "குறிப்பேடு - இரண்டாம் நூல்",
+    "fileName": "2 Chronicles.json",
+    "totalChapters": 36
+  },
+  {
+    "bookNumber": 15,
+    "englishName": "Ezra",
+    "tamilName": "எஸ்ரா",
+    "fileName": "Ezra.json",
+    "totalChapters": 10
+  },
+  {
+    "bookNumber": 16,
+    "englishName": "Nehemiah",
+    "tamilName": "நெகேமியா",
+    "fileName": "Nehemiah.json",
+    "totalChapters": 13
+  },
+  {
+    "bookNumber": 17,
+    "englishName": "Esther",
+    "tamilName": "எஸ்தர்",
+    "fileName": "Esther.json",
+    "totalChapters": 10
+  },
+  {
+    "bookNumber": 18,
+    "englishName": "Job",
+    "tamilName": "யோபு",
+    "fileName": "Job.json",
+    "totalChapters": 42
+  },
+  {
+    "bookNumber": 19,
+    "englishName": "Psalms",
+    "tamilName": "திருப்பாடல்கள்",
+    "fileName": "Psalms.json",
+    "totalChapters": 150
+  },
+  {
+    "bookNumber": 20,
+    "englishName": "Proverbs",
+    "tamilName": "நீதிமொழிகள்",
+    "fileName": "Proverbs.json",
+    "totalChapters": 31
+  },
+  {
+    "bookNumber": 21,
+    "englishName": "Ecclesiastes",
+    "tamilName": "சபை உரையாளர்",
+    "fileName": "Ecclesiastes.json",
+    "totalChapters": 12
+  },
+  {
+    "bookNumber": 22,
+    "englishName": "Song of Songs",
+    "tamilName": "இனிமைமிகு பாடல்",
+    "fileName": "Song of Songs.json",
+    "totalChapters": 8
+  },
+  {
+    "bookNumber": 23,
+    "englishName": "Isaiah",
+    "tamilName": "எசாயா",
+    "fileName": "Isaiah.json",
+    "totalChapters": 66
+  },
+  {
+    "bookNumber": 24,
+    "englishName": "Jeremiah",
+    "tamilName": "எரேமியா",
+    "fileName": "Jeremiah.json",
+    "totalChapters": 52
+  },
+  {
+    "bookNumber": 25,
+    "englishName": "Lamentations",
+    "tamilName": "புலம்பல்",
+    "fileName": "Lamentations.json",
+    "totalChapters": 5
+  },
+  {
+    "bookNumber": 26,
+    "englishName": "Ezekiel",
+    "tamilName": "எசேக்கியேல்",
+    "fileName": "Ezekiel.json",
+    "totalChapters": 48
+  },
+  {
+    "bookNumber": 27,
+    "englishName": "Daniel",
+    "tamilName": "தானியேல்",
+    "fileName": "Daniel.json",
+    "totalChapters": 12
+  },
+  {
+    "bookNumber": 28,
+    "englishName": "Hosea",
+    "tamilName": "ஒசேயா",
+    "fileName": "Hosea.json",
+    "totalChapters": 14
+  },
+  {
+    "bookNumber": 29,
+    "englishName": "Joel",
+    "tamilName": "யோவேல்",
+    "fileName": "Joel.json",
+    "totalChapters": 3
+  },
+  {
+    "bookNumber": 30,
+    "englishName": "Amos",
+    "tamilName": "ஆமோஸ்",
+    "fileName": "Amos.json",
+    "totalChapters": 9
+  },
+  {
+    "bookNumber": 31,
+    "englishName": "Obadiah",
+    "tamilName": "ஒபதியா",
+    "fileName": "Obadiah.json",
+    "totalChapters": 1
+  },
+  {
+    "bookNumber": 32,
+    "englishName": "Jonah",
+    "tamilName": "யோனா",
+    "fileName": "Jonah.json",
+    "totalChapters": 4
+  },
+  {
+    "bookNumber": 33,
+    "englishName": "Micah",
+    "tamilName": "மீக்கா",
+    "fileName": "Micah.json",
+    "totalChapters": 7
+  },
+  {
+    "bookNumber": 34,
+    "englishName": "Nahum",
+    "tamilName": "நாகூம்",
+    "fileName": "Nahum.json",
+    "totalChapters": 3
+  },
+  {
+    "bookNumber": 35,
+    "englishName": "Habakkuk",
+    "tamilName": "அபக்கூக்கு",
+    "fileName": "Habakkuk.json",
+    "totalChapters": 3
+  },
+  {
+    "bookNumber": 36,
+    "englishName": "Zephaniah",
+    "tamilName": "செப்பனியா",
+    "fileName": "Zephaniah.json",
+    "totalChapters": 3
+  },
+  {
+    "bookNumber": 37,
+    "englishName": "Haggai",
+    "tamilName": "ஆகாய்",
+    "fileName": "Haggai.json",
+    "totalChapters": 2
+  },
+  {
+    "bookNumber": 38,
+    "englishName": "Zechariah",
+    "tamilName": "செக்கரியா",
+    "fileName": "Zechariah.json",
+    "totalChapters": 14
+  },
+  {
+    "bookNumber": 39,
+    "englishName": "Malachi",
+    "tamilName": "மலாக்கி",
+    "fileName": "Malachi.json",
+    "totalChapters": 4
+  },
+  {
+    "bookNumber": 40,
+    "englishName": "Tobit",
+    "tamilName": "தோபித்து",
+    "fileName": "Tobit.json",
+    "totalChapters": 14
+  },
+  {
+    "bookNumber": 41,
+    "englishName": "Judith",
+    "tamilName": "யூதித்து",
+    "fileName": "Judith.json",
+    "totalChapters": 16
+  },
+  {
+    "bookNumber": 42,
+    "englishName": "Esther (Gr)",
+    "tamilName": "எஸ்தர் (கிரேக்கம்)",
+    "fileName": "Esther (Gr).json",
+    "totalChapters": 10
+  },
+  {
+    "bookNumber": 43,
+    "englishName": "Wisdom",
+    "tamilName": "சாலமோனின் ஞானம்",
+    "fileName": "Wisdom.json",
+    "totalChapters": 19
+  },
+  {
+    "bookNumber": 44,
+    "englishName": "Sirach",
+    "tamilName": "சீராக்கின் ஞானம்",
+    "fileName": "Sirach.json",
+    "totalChapters": 52
+  },
+  {
+    "bookNumber": 45,
+    "englishName": "Baruch",
+    "tamilName": "பாரூக்கு (எரேமியாவின் மடல்)",
+    "fileName": "Baruch.json",
+    "totalChapters": 6
+  },
+  {
+    "bookNumber": 46,
+    "englishName": "Daniel (Appendices)",
+    "tamilName": "தானியேல்: இணைப்புகள்",
+    "fileName": "Daniel (Appendices).json",
+    "totalChapters": 3
+  },
+  {
+    "bookNumber": 47,
+    "englishName": "1 Maccabees",
+    "tamilName": "மக்கபேயர் - முதல் நூல்",
+    "fileName": "1 Maccabees.json",
+    "totalChapters": 16
+  },
+  {
+    "bookNumber": 48,
+    "englishName": "2 Maccabees",
+    "tamilName": "மக்கபேயர் - இரண்டாம் நூல்",
+    "fileName": "2 Maccabees.json",
+    "totalChapters": 15
+  },
+  {
+    "bookNumber": 49,
+    "englishName": "Matthew",
+    "tamilName": "மத்தேயு நற்செய்தி",
+    "fileName": "Matthew.json",
+    "totalChapters": 28
+  },
+  {
+    "bookNumber": 50,
+    "englishName": "Mark",
+    "tamilName": "மாற்கு நற்செய்தி",
+    "fileName": "Mark.json",
+    "totalChapters": 16
+  },
+  {
+    "bookNumber": 51,
+    "englishName": "Luke",
+    "tamilName": "லூக்கா நற்செய்தி",
+    "fileName": "Luke.json",
+    "totalChapters": 24
+  },
+  {
+    "bookNumber": 52,
+    "englishName": "John",
+    "tamilName": "யோவான் நற்செய்தி",
+    "fileName": "John.json",
+    "totalChapters": 21
+  },
+  {
+    "bookNumber": 53,
+    "englishName": "Acts",
+    "tamilName": "திருத்தூதர் பணிகள்",
+    "fileName": "Acts.json",
+    "totalChapters": 28
+  },
+  {
+    "bookNumber": 54,
+    "englishName": "Romans",
+    "tamilName": "உரோமையருக்கு எழுதிய திருமுகம்",
+    "fileName": "Romans.json",
+    "totalChapters": 16
+  },
+  {
+    "bookNumber": 55,
+    "englishName": "1 Corinthians",
+    "tamilName": "கொரிந்தியருக்கு எழுதிய முதல் திருமுகம்",
+    "fileName": "1 Corinthians.json",
+    "totalChapters": 16
+  },
+  {
+    "bookNumber": 56,
+    "englishName": "2 Corinthians",
+    "tamilName": "கொரிந்தியருக்கு எழுதிய இரண்டாம் திருமுகம்",
+    "fileName": "2 Corinthians.json",
+    "totalChapters": 13
+  },
+  {
+    "bookNumber": 57,
+    "englishName": "Galatians",
+    "tamilName": "கலாத்தியருக்கு எழுதிய திருமுகம்",
+    "fileName": "Galatians.json",
+    "totalChapters": 6
+  },
+  {
+    "bookNumber": 58,
+    "englishName": "Ephesians",
+    "tamilName": "எபேசியருக்கு எழுதிய திருமுகம்",
+    "fileName": "Ephesians.json",
+    "totalChapters": 6
+  },
+  {
+    "bookNumber": 59,
+    "englishName": "Philippians",
+    "tamilName": "பிலிப்பியருக்கு எழுதிய திருமுகம்",
+    "fileName": "Philippians.json",
+    "totalChapters": 4
+  },
+  {
+    "bookNumber": 60,
+    "englishName": "Colossians",
+    "tamilName": "கொலோசையருக்கு எழுதிய திருமுகம்",
+    "fileName": "Colossians.json",
+    "totalChapters": 4
+  },
+  {
+    "bookNumber": 61,
+    "englishName": "1 Thessalonians",
+    "tamilName": "தெசலோனிக்கருக்கு எழுதிய முதல் திருமுகம்",
+    "fileName": "1 Thessalonians.json",
+    "totalChapters": 5
+  },
+  {
+    "bookNumber": 62,
+    "englishName": "2 Thessalonians",
+    "tamilName": "தெசலோனிக்கருக்கு எழுதிய இரண்டாம் திருமுகம்",
+    "fileName": "2 Thessalonians.json",
+    "totalChapters": 3
+  },
+  {
+    "bookNumber": 63,
+    "englishName": "1 Timothy",
+    "tamilName": "திமொத்தேயுவுக்கு எழுதிய முதல் திருமுகம்",
+    "fileName": "1 Timothy.json",
+    "totalChapters": 6
+  },
+  {
+    "bookNumber": 64,
+    "englishName": "2 Timothy",
+    "tamilName": "திமொத்தேயுவுக்கு எழுதிய இரண்டாம் திருமுகம்",
+    "fileName": "2 Timothy.json",
+    "totalChapters": 4
+  },
+  {
+    "bookNumber": 65,
+    "englishName": "Titus",
+    "tamilName": "தீத்துக்கு எழுதிய திருமுகம்",
+    "fileName": "Titus.json",
+    "totalChapters": 3
+  },
+  {
+    "bookNumber": 66,
+    "englishName": "Philemon",
+    "tamilName": "பிலமோனுக்கு எழுதிய திருமுகம்",
+    "fileName": "Philemon.json",
+    "totalChapters": 1
+  },
+  {
+    "bookNumber": 67,
+    "englishName": "Hebrews",
+    "tamilName": "எபிரேயருக்கு எழுதிய திருமுகம்",
+    "fileName": "Hebrews.json",
+    "totalChapters": 13
+  },
+  {
+    "bookNumber": 68,
+    "englishName": "James",
+    "tamilName": "யாக்கோபு எழுதிய திருமுகம்",
+    "fileName": "James.json",
+    "totalChapters": 5
+  },
+  {
+    "bookNumber": 69,
+    "englishName": "1 Peter",
+    "tamilName": "பேதுரு எழுதிய முதல் திருமுகம்",
+    "fileName": "1 Peter.json",
+    "totalChapters": 5
+  },
+  {
+    "bookNumber": 70,
+    "englishName": "2 Peter",
+    "tamilName": "பேதுரு எழுதிய இரண்டாம் திருமுகம்",
+    "fileName": "2 Peter.json",
+    "totalChapters": 3
+  },
+  {
+    "bookNumber": 71,
+    "englishName": "1 John",
+    "tamilName": "யோவான் எழுதிய முதல் திருமுகம்",
+    "fileName": "1 John.json",
+    "totalChapters": 5
+  },
+  {
+    "bookNumber": 72,
+    "englishName": "2 John",
+    "tamilName": "யோவான் எழுதிய இரண்டாம் திருமுகம்",
+    "fileName": "2 John.json",
+    "totalChapters": 1
+  },
+  {
+    "bookNumber": 73,
+    "englishName": "3 John",
+    "tamilName": "யோவான் எழுதிய மூன்றாம் திருமுகம்",
+    "fileName": "3 John.json",
+    "totalChapters": 1
+  },
+  {
+    "bookNumber": 74,
+    "englishName": "Jude",
+    "tamilName": "யூதா எழுதிய திருமுகம்",
+    "fileName": "Jude.json",
+    "totalChapters": 1
+  },
+  {
+    "bookNumber": 75,
+    "englishName": "Revelation",
+    "tamilName": "யோவானுக்கு அருளப்பெற்ற திருவெளிப்பாடு",
+    "fileName": "Revelation.json",
+    "totalChapters": 22
+  },
+  {
+    "bookNumber": 100,
+    "englishName": "Preface",
+    "tamilName": "முன்னுரை",
+    "fileName": "Preface.json",
+    "totalChapters": 0
+  },
+  {
+    "bookNumber": 400,
+    "englishName": "Deuterocanonical books",
+    "tamilName": "இணைத் திருமுறை நூல்கள்",
+    "fileName": "Deuterocanonical books.json",
+    "totalChapters": 0
+  },
+  {
+    "bookNumber": 540,
+    "englishName": "Epistles",
+    "tamilName": "திருமுகங்கள்",
+    "fileName": "Epistles.json",
+    "totalChapters": 0
+  },
+  {
+    "bookNumber": 680,
+    "englishName": "General epistles",
+    "tamilName": "பொதுத் திருமுகங்கள்",
+    "fileName": "General epistles.json",
+    "totalChapters": 0
+  }
+]

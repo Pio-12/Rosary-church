@@ -1,3 +1,5 @@
+import fs from "node:fs/promises";
+import path from "node:path";
 import ReadingsContent from "./ReadingsContent";
 
 type ReadingsData = {
@@ -23,7 +25,12 @@ type BibleChapter = {
   verses: BibleVerse[];
 };
 
-type TamilBook = {
+type RcTamilBook = {
+  bookNumber?: number;
+  englishName: string;
+  tamilName: string;
+  tamilShortName?: string;
+  osisId?: string;
   chapters: BibleChapter[];
 };
 
@@ -35,6 +42,7 @@ type ReadingItem = {
   title: string;
   tamilTitle: string;
   reference: string;
+  tamilReference: string;
 };
 
 /* =====================================================
@@ -43,20 +51,11 @@ type ReadingItem = {
 
 async function getTodaysReadings(): Promise<ReadingsData | null> {
   const now = new Date();
-
   const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
 
-  const month = String(
-    now.getMonth() + 1
-  ).padStart(2, "0");
-
-  const day = String(
-    now.getDate()
-  ).padStart(2, "0");
-
-  const url =
-    `https://cpbjr.github.io/catholic-readings-api/readings/` +
-    `${year}/${month}-${day}.json`;
+  const url = `https://cpbjr.github.io/catholic-readings-api/readings/${year}/${month}-${day}.json`;
 
   try {
     const response = await fetch(url, {
@@ -66,24 +65,18 @@ async function getTodaysReadings(): Promise<ReadingsData | null> {
     });
 
     if (!response.ok) {
-      throw new Error(
-        `Readings API returned ${response.status}`
-      );
+      throw new Error(`Readings API returned ${response.status}`);
     }
 
     return await response.json();
   } catch (error) {
-    console.error(
-      "Catholic readings API error:",
-      error
-    );
-
+    console.error("Catholic readings API error:", error);
     return null;
   }
 }
 
 /* =====================================================
-   BOOK NAME MAPPING
+   BOOK NAME MAPPINGS (CATHOLIC CANON)
 ===================================================== */
 
 const englishBookSlugs: Record<string, string> = {
@@ -119,9 +112,11 @@ const englishBookSlugs: Record<string, string> = {
   Proverbs: "proverbs",
   Ecclesiastes: "ecclesiastes",
   "Song of Songs": "canticle-of-canticles",
+  "Song of Solomon": "canticle-of-canticles",
 
   Wisdom: "wisdom",
   Sirach: "ecclesiasticus",
+  Ecclesiasticus: "ecclesiasticus",
 
   Isaiah: "isaie",
   Jeremiah: "jeremie",
@@ -184,112 +179,128 @@ const englishBookSlugs: Record<string, string> = {
   Revelation: "apocalypse",
 };
 
-/* =====================================================
-   TAMIL JSON BOOK NAMES
-===================================================== */
-
-const tamilBookFiles: Record<string, string> = {
-  Genesis: "Genesis.json",
-  Exodus: "Exodus.json",
-  Leviticus: "Leviticus.json",
-  Numbers: "Numbers.json",
-  Deuteronomy: "Deuteronomy.json",
-  Joshua: "Joshua.json",
-  Judges: "Judges.json",
-  Ruth: "Ruth.json",
-
-  "1 Samuel": "1 Samuel.json",
-  "2 Samuel": "2 Samuel.json",
-
-  "1 Kings": "1 Kings.json",
-  "2 Kings": "2 Kings.json",
-
-  "1 Chronicles": "1 Chronicles.json",
-  "2 Chronicles": "2 Chronicles.json",
-
-  Ezra: "Ezra.json",
-  Nehemiah: "Nehemiah.json",
-
-  Job: "Job.json",
-
-  Psalms: "Psalms.json",
-  Psalm: "Psalms.json",
-
-  Proverbs: "Proverbs.json",
-  Ecclesiastes: "Ecclesiastes.json",
-  "Song of Songs": "Song of Songs.json",
-
-  Isaiah: "Isaiah.json",
-  Jeremiah: "Jeremiah.json",
-  Lamentations: "Lamentations.json",
-  Ezekiel: "Ezekiel.json",
-  Daniel: "Daniel.json",
-
-  Hosea: "Hosea.json",
-  Joel: "Joel.json",
-  Amos: "Amos.json",
-  Obadiah: "Obadiah.json",
-  Jonah: "Jonah.json",
-  Micah: "Micah.json",
-  Nahum: "Nahum.json",
-  Habakkuk: "Habakkuk.json",
-  Zephaniah: "Zephaniah.json",
-  Zechariah: "Zechariah.json",
-  Malachi: "Malachi.json",
-
-  Matthew: "Matthew.json",
-  Mark: "Mark.json",
-  Luke: "Luke.json",
-  John: "John.json",
-  Acts: "Acts.json",
-
-  Romans: "Romans.json",
-
-  "1 Corinthians": "1 Corinthians.json",
-  "2 Corinthians": "2 Corinthians.json",
-
-  Galatians: "Galatians.json",
-  Ephesians: "Ephesians.json",
-  Philippians: "Philippians.json",
-  Colossians: "Colossians.json",
-
-  "1 Thessalonians": "1 Thessalonians.json",
-  "2 Thessalonians": "2 Thessalonians.json",
-
-  "1 Timothy": "1 Timothy.json",
-  "2 Timothy": "2 Timothy.json",
-
-  Titus: "Titus.json",
-  Philemon: "Philemon.json",
-  James: "James.json",
-
-  "1 Peter": "1 Peter.json",
-  "2 Peter": "2 Peter.json",
-
-  "1 John": "1 John.json",
-  "2 John": "2 John.json",
-  "3 John": "3 John.json",
-
-  Jude: "Jude.json",
-  Revelation: "Revelation.json",
+const tamilBookNames: Record<string, string> = {
+  Genesis: "தொடக்க நூல்",
+  Exodus: "விடுதலைப் பயணம்",
+  Leviticus: "லேவியர்",
+  Numbers: "எண்ணிக்கை",
+  Deuteronomy: "இணைச் சட்டம்",
+  Joshua: "யோசுவா",
+  Judges: "நீதித் தலைவர்கள்",
+  Ruth: "ரூத்து",
+  "1 Samuel": "1 சாமுவேல்",
+  "2 Samuel": "2 சாமுவேல்",
+  "1 Kings": "1 அரசர்கள்",
+  "2 Kings": "2 அரசர்கள்",
+  "1 Chronicles": "1 குறிப்பேடு",
+  "2 Chronicles": "2 குறிப்பேடு",
+  Ezra: "எஸ்ரா",
+  Nehemiah: "நெகேமியா",
+  Tobit: "தோபித்து",
+  Judith: "யூதித்து",
+  Esther: "எஸ்தர்",
+  Job: "யோபு",
+  Psalms: "திருப்பாடல்கள்",
+  Psalm: "திருப்பாடல்கள்",
+  Proverbs: "நீதிமொழிகள்",
+  Ecclesiastes: "சபை உரையாளர்",
+  "Song of Songs": "இனிமைமிகு பாடல்",
+  "Song of Solomon": "இனிமைமிகு பாடல்",
+  Wisdom: "சாலமோனின் ஞானம்",
+  Sirach: "சீராக்கின் ஞானம்",
+  Ecclesiasticus: "சீராக்கின் ஞானம்",
+  Isaiah: "எசாயா",
+  Jeremiah: "எரேமியா",
+  Lamentations: "புலம்பல்",
+  Baruch: "பாரூக்கு",
+  Ezekiel: "எசேக்கியேல்",
+  Daniel: "தானியேல்",
+  Hosea: "ஒசேயா",
+  Joel: "யோவேல்",
+  Amos: "ஆமோஸ்",
+  Obadiah: "ஒபதியா",
+  Jonah: "யோனா",
+  Micah: "மீக்கா",
+  Nahum: "நாகூம்",
+  Habakkuk: "அபக்கூக்கு",
+  Zephaniah: "செப்பனியா",
+  Haggai: "ஆகாய்",
+  Zechariah: "செக்கரியா",
+  Malachi: "மலாக்கி",
+  "1 Maccabees": "1 மக்கபேயர்",
+  "2 Maccabees": "2 மக்கபேயர்",
+  Matthew: "மத்தேயு",
+  Mark: "மாற்கு",
+  Luke: "லூக்கா",
+  John: "யோவான்",
+  Acts: "திருத்தூதர் பணிகள்",
+  Romans: "உரோமையர்",
+  "1 Corinthians": "1 கொரிந்தியர்",
+  "2 Corinthians": "2 கொரிந்தியர்",
+  Galatians: "கலாத்தியர்",
+  Ephesians: "எபேசியர்",
+  Philippians: "பிலிப்பியர்",
+  Colossians: "கொலோசையர்",
+  "1 Thessalonians": "1 தெசலோனிக்கர்",
+  "2 Thessalonians": "2 தெசலோனிக்கர்",
+  "1 Timothy": "1 திமொத்தேயு",
+  "2 Timothy": "2 திமொத்தேயு",
+  Titus: "தீத்து",
+  Philemon: "பிலமோன்",
+  Hebrews: "எபிரேயர்",
+  James: "யாக்கோபு",
+  "1 Peter": "1 பேதுரு",
+  "2 Peter": "2 பேதுரு",
+  "1 John": "1 யோவான்",
+  "2 John": "2 யோவான்",
+  "3 John": "3 யோவான்",
+  Jude: "யூதா",
+  Revelation: "திருவெளிப்பாடு",
 };
 
 /* =====================================================
-   PARSE BOOK NAME
+   CLEAN ENGLISH SCRIPTURE MARKUP
+   Removes <sc>, <na>, <cr>, and any raw tags
 ===================================================== */
 
-function getBookName(reference: string): string | null {
-  const books = Object.keys(englishBookSlugs);
+function cleanEnglishVerse(txt: string): string {
+  if (!txt) return "";
+  return txt
+    // Replace <sc>text</sc> with text itself
+    .replace(/<sc>(.*?)<\/sc>/gi, "$1")
+    // Strip annotations/notes like <na>[1]</na>
+    .replace(/<na>[\s\S]*?<\/na>/gi, "")
+    // Strip cross-references like <cr>[1]</cr>
+    .replace(/<cr>[\s\S]*?<\/cr>/gi, "")
+    // Strip any remaining html/xml tags
+    .replace(/<[^>]+>/g, "")
+    // Normalize whitespace
+    .replace(/\s+/g, " ")
+    .trim();
+}
 
-  const sortedBooks = books.sort(
+/* =====================================================
+   REFERENCE PARSER
+   Supports:
+   - Semicolon chapters: Job 38:1, 12-21; 40:3-5
+   - Cross-chapter ranges: Genesis 1:26-2:3
+   - Letter suffixes: Psalm 139:13-14ab
+===================================================== */
+
+type RefSegment = {
+  chapter: number;
+  verses?: number[];
+  start?: number;
+  end?: number;
+};
+
+function getBookName(reference: string): string | null {
+  const books = Object.keys(englishBookSlugs).sort(
     (a, b) => b.length - a.length
   );
 
-  for (const book of sortedBooks) {
-    if (
-      reference === book ||
-      reference.startsWith(`${book} `)
-    ) {
+  for (const book of books) {
+    if (reference === book || reference.startsWith(`${book} `)) {
       return book;
     }
   }
@@ -297,285 +308,208 @@ function getBookName(reference: string): string | null {
   return null;
 }
 
-/* =====================================================
-   PARSE CHAPTER
-===================================================== */
-
-function getChapter(reference: string): number | null {
-  const match = reference.match(
-    /(\d+):/
-  );
-
-  if (!match) {
-    return null;
-  }
-
-  return Number(match[1]);
-}
-
-/* =====================================================
-   PARSE VERSE RANGE
-===================================================== */
-
-function getVersePart(
+function parseReferenceSegments(
+  bookName: string,
   reference: string
-): string | null {
-  const colonIndex =
-    reference.indexOf(":");
-
-  if (colonIndex === -1) {
-    return null;
+): RefSegment[] {
+  let remainder = reference.trim();
+  if (remainder.toLowerCase().startsWith(bookName.toLowerCase())) {
+    remainder = remainder.slice(bookName.length).trim();
+  }
+  if (remainder.includes("[")) {
+    remainder = remainder.split("[")[0].trim();
   }
 
-  return reference
-    .substring(colonIndex + 1)
-    .trim();
-}
+  const parts = remainder
+    .split(";")
+    .map((s) => s.trim())
+    .filter(Boolean);
 
-/* =====================================================
-   CONVERT VERSE PART TO NUMBERS
-===================================================== */
-
-function getVerseNumbers(
-  versePart: string,
-  maxVerse: number
-): number[] {
-  const result: number[] = [];
-
-  const cleaned = versePart
-    .replace(/[a-zA-Z]/g, "")
-    .replace(/\s/g, "");
-
-  const parts = cleaned.split(",");
+  const segments: RefSegment[] = [];
+  let currentChapter: number | null = null;
 
   for (const part of parts) {
-    if (part.includes("-")) {
-      const [startString, endString] =
-        part.split("-");
-
-      const start = Number(startString);
-      const end = Number(endString);
-
-      if (
-        Number.isFinite(start) &&
-        Number.isFinite(end)
-      ) {
-        for (
-          let i = start;
-          i <= Math.min(end, maxVerse);
-          i++
-        ) {
-          result.push(i);
-        }
+    const crossMatch = part.match(/^(\d+):(\d+)\s*-\s*(\d+):(\d+)$/);
+    if (crossMatch) {
+      const ch1 = parseInt(crossMatch[1], 10);
+      const v1 = parseInt(crossMatch[2], 10);
+      const ch2 = parseInt(crossMatch[3], 10);
+      const v2 = parseInt(crossMatch[4], 10);
+      for (let ch = ch1; ch <= ch2; ch++) {
+        segments.push({
+          chapter: ch,
+          start: ch === ch1 ? v1 : 1,
+          end: ch === ch2 ? v2 : Infinity,
+        });
       }
-    } else {
-      const verse = Number(part);
+      currentChapter = ch2;
+      continue;
+    }
 
-      if (
-        Number.isFinite(verse) &&
-        verse > 0 &&
-        verse <= maxVerse
-      ) {
-        result.push(verse);
+    const colonIdx = part.indexOf(":");
+    let chapterNum: number;
+    let versePart: string;
+    if (colonIdx !== -1) {
+      chapterNum = parseInt(part.slice(0, colonIdx).trim(), 10);
+      versePart = part.slice(colonIdx + 1).trim();
+      currentChapter = chapterNum;
+    } else {
+      chapterNum = currentChapter || 1;
+      versePart = part;
+    }
+
+    const verses: number[] = [];
+    const cleaned = versePart.replace(/[a-zA-Z]/g, "").trim();
+    for (const chunk of cleaned.split(",")) {
+      const trimmed = chunk.trim();
+      if (!trimmed) continue;
+      if (trimmed.includes("-")) {
+        const [s, e] = trimmed.split("-").map((x) => parseInt(x, 10));
+        if (Number.isFinite(s) && Number.isFinite(e)) {
+          for (let v = s; v <= e; v++) verses.push(v);
+        }
+      } else {
+        const v = parseInt(trimmed, 10);
+        if (Number.isFinite(v)) verses.push(v);
       }
     }
+
+    segments.push({
+      chapter: chapterNum,
+      verses: [...new Set(verses)],
+    });
   }
 
-  return [...new Set(result)];
+  return segments;
+}
+
+function getTamilReference(reference: string): string {
+  const book = getBookName(reference);
+  if (!book) return reference;
+  const tn = tamilBookNames[book] || book;
+  return reference.replace(book, tn);
 }
 
 /* =====================================================
    GET ENGLISH SCRIPTURE
 ===================================================== */
 
-async function getEnglishScripture(
-  reference: string
-): Promise<string | null> {
+async function getEnglishScripture(reference: string): Promise<string | null> {
   const book = getBookName(reference);
-  const chapter = getChapter(reference);
+  if (!book) return null;
 
-  if (!book || !chapter) {
-    return null;
+  const slug = englishBookSlugs[book];
+  if (!slug) return null;
+
+  const segments = parseReferenceSegments(book, reference);
+  if (segments.length === 0) return null;
+
+  const results: string[] = [];
+
+  for (const seg of segments) {
+    const url = `https://thedouayrheims.com/api/chapter/${slug}/${seg.chapter}`;
+    try {
+      const response = await fetch(url, {
+        next: {
+          revalidate: 86400,
+        },
+      });
+
+      if (!response.ok) continue;
+
+      const data: EnglishChapter = await response.json();
+      if (!data?.verses || !Array.isArray(data.verses)) continue;
+
+      let selectedVerses: BibleVerse[] = [];
+
+      if (seg.verses && seg.verses.length > 0) {
+        const needed = new Set(seg.verses);
+        selectedVerses = data.verses.filter((v) =>
+          needed.has(Number(v.verse))
+        );
+      } else if (seg.start !== undefined && seg.end !== undefined) {
+        selectedVerses = data.verses.filter((v) => {
+          const num = Number(v.verse);
+          return num >= seg.start! && num <= seg.end!;
+        });
+      } else {
+        selectedVerses = data.verses;
+      }
+
+      for (const v of selectedVerses) {
+        const cleaned = cleanEnglishVerse(v.text);
+        if (cleaned) {
+          results.push(`${v.verse}. ${cleaned}`);
+        }
+      }
+    } catch (err) {
+      console.error(`English Bible fetch error for ${slug} ${seg.chapter}:`, err);
+    }
   }
 
-  const slug =
-    englishBookSlugs[book];
-
-  if (!slug) {
-    return null;
-  }
-
-  const url =
-    `https://thedouayrheims.com/api/chapter/` +
-    `${slug}/${chapter}`;
-
-  try {
-    const response = await fetch(url, {
-      next: {
-        revalidate: 86400,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(
-        `Douay-Rheims returned ${response.status}`
-      );
-    }
-
-    const data: EnglishChapter =
-      await response.json();
-
-    if (
-      !data?.verses ||
-      !Array.isArray(data.verses)
-    ) {
-      return null;
-    }
-
-    const versePart =
-      getVersePart(reference);
-
-    if (!versePart) {
-      return data.verses
-        .map(
-          (verse) =>
-            `${verse.verse}. ${verse.text}`
-        )
-        .join(" ");
-    }
-
-    const verseNumbers =
-      getVerseNumbers(
-        versePart,
-        data.verses.length
-      );
-
-    const selected =
-      data.verses.filter(
-        (verse) =>
-          verseNumbers.includes(
-            Number(verse.verse)
-          )
-      );
-
-    if (selected.length === 0) {
-      return null;
-    }
-
-    return selected
-      .map(
-        (verse) =>
-          `${verse.verse}. ${verse.text}`
-      )
-      .join(" ");
-  } catch (error) {
-    console.error(
-      "English Bible error:",
-      error
-    );
-
-    return null;
-  }
+  return results.length > 0 ? results.join("\n\n") : null;
 }
 
 /* =====================================================
-   GET TAMIL SCRIPTURE
+   GET RC TAMIL SCRIPTURE (OFFICIAL திருவிவிலியம்)
 ===================================================== */
 
-async function getTamilScripture(
-  reference: string
-): Promise<string | null> {
+async function getTamilScripture(reference: string): Promise<string | null> {
   const book = getBookName(reference);
-  const chapter = getChapter(reference);
+  if (!book) return null;
 
-  if (!book || !chapter) {
-    return null;
-  }
-
-  const file =
-    tamilBookFiles[book];
-
-  if (!file) {
-    return null;
-  }
-
-  const url =
-    `https://raw.githubusercontent.com/aruljohn/Bible-tamil/master/` +
-    encodeURIComponent(file);
+  const segments = parseReferenceSegments(book, reference);
+  if (segments.length === 0) return null;
 
   try {
-    const response = await fetch(url, {
-      next: {
-        revalidate: 86400,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(
-        `Tamil Bible returned ${response.status}`
-      );
-    }
-
-    const data: TamilBook =
-      await response.json();
-
-    const chapterData =
-      data.chapters?.find(
-        (item) =>
-          Number(item.chapter) === chapter
-      );
-
-    if (
-      !chapterData ||
-      !Array.isArray(
-        chapterData.verses
-      )
-    ) {
-      return null;
-    }
-
-    const versePart =
-      getVersePart(reference);
-
-    if (!versePart) {
-      return chapterData.verses
-        .map(
-          (verse) =>
-            `${verse.verse}. ${verse.text}`
-        )
-        .join(" ");
-    }
-
-    const verseNumbers =
-      getVerseNumbers(
-        versePart,
-        chapterData.verses.length
-      );
-
-    const selected =
-      chapterData.verses.filter(
-        (verse) =>
-          verseNumbers.includes(
-            Number(verse.verse)
-          )
-      );
-
-    if (selected.length === 0) {
-      return null;
-    }
-
-    return selected
-      .map(
-        (verse) =>
-          `${verse.verse}. ${verse.text}`
-      )
-      .join(" ");
-  } catch (error) {
-    console.error(
-      "Tamil Bible error:",
-      error
+    const filePath = path.join(
+      process.cwd(),
+      "data",
+      "rc-tamil-bible",
+      `${book}.json`
     );
 
+    const raw = await fs.readFile(filePath, "utf-8");
+    const bookData: RcTamilBook = JSON.parse(raw);
+
+    if (!bookData?.chapters || !Array.isArray(bookData.chapters)) {
+      return null;
+    }
+
+    const results: string[] = [];
+
+    for (const seg of segments) {
+      const chapterData = bookData.chapters.find(
+        (c) => Number(c.chapter) === seg.chapter
+      );
+      if (!chapterData?.verses) continue;
+
+      let selectedVerses: BibleVerse[] = [];
+
+      if (seg.verses && seg.verses.length > 0) {
+        const needed = new Set(seg.verses);
+        selectedVerses = chapterData.verses.filter((v) =>
+          needed.has(Number(v.verse))
+        );
+      } else if (seg.start !== undefined && seg.end !== undefined) {
+        selectedVerses = chapterData.verses.filter((v) => {
+          const num = Number(v.verse);
+          return num >= seg.start! && num <= seg.end!;
+        });
+      } else {
+        selectedVerses = chapterData.verses;
+      }
+
+      for (const v of selectedVerses) {
+        if (v.text) {
+          results.push(`${v.verse}. ${v.text}`);
+        }
+      }
+    }
+
+    return results.length > 0 ? results.join("\n\n") : null;
+  } catch (error) {
+    console.error(`RC Tamil Bible error for ${book}:`, error);
     return null;
   }
 }
@@ -585,84 +519,64 @@ async function getTamilScripture(
 ===================================================== */
 
 export default async function Readings() {
-  const data =
-    await getTodaysReadings();
+  const data = await getTodaysReadings();
+  const readings = data?.readings;
 
-  const readings =
-    data?.readings;
-
-  const readingItems: ReadingItem[] =
-    [];
+  const readingItems: ReadingItem[] = [];
 
   if (readings?.firstReading) {
     readingItems.push({
       title: "First Reading",
       tamilTitle: "முதல் வாசகம்",
-      reference:
-        readings.firstReading,
+      reference: readings.firstReading,
+      tamilReference: getTamilReference(readings.firstReading),
     });
   }
 
   if (readings?.psalm) {
     readingItems.push({
-      title:
-        "Responsorial Psalm",
-      tamilTitle:
-        "பதிலுரைப் பாடல்",
-      reference:
-        readings.psalm,
+      title: "Responsorial Psalm",
+      tamilTitle: "பதிலுரைப் பாடல்",
+      reference: readings.psalm,
+      tamilReference: getTamilReference(readings.psalm),
     });
   }
 
   if (readings?.secondReading) {
     readingItems.push({
       title: "Second Reading",
-      tamilTitle:
-        "இரண்டாம் வாசகம்",
-      reference:
-        readings.secondReading,
+      tamilTitle: "இரண்டாம் வாசகம்",
+      reference: readings.secondReading,
+      tamilReference: getTamilReference(readings.secondReading),
     });
   }
 
   if (readings?.gospel) {
     readingItems.push({
       title: "Gospel",
-      tamilTitle:
-        "நற்செய்தி வாசகம்",
-      reference:
-        readings.gospel,
+      tamilTitle: "நற்செய்தி வாசகம்",
+      reference: readings.gospel,
+      tamilReference: getTamilReference(readings.gospel),
     });
   }
 
   /*
-    Fetch English and Tamil Scripture
-    at the same time.
+    Fetch English and Tamil Scripture concurrently
   */
+  const readingsWithText = await Promise.all(
+    readingItems.map(async (reading) => {
+      const [english, tamil] = await Promise.all([
+        getEnglishScripture(reading.reference),
+        getTamilScripture(reading.reference),
+      ]);
 
-  const readingsWithText =
-    await Promise.all(
-      readingItems.map(
-        async (reading) => {
-          const [
-            english,
-            tamil,
-          ] = await Promise.all([
-            getEnglishScripture(
-              reading.reference
-            ),
-            getTamilScripture(
-              reading.reference
-            ),
-          ]);
-
-          return {
-            ...reading,
-            english,
-            tamil,
-          };
-        }
-      )
-    );
+      return {
+        ...reading,
+        english,
+        tamil,
+      };
+    })
+  );
 
   return <ReadingsContent data={data} readingsWithText={readingsWithText} />;
 }

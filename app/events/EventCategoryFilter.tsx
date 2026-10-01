@@ -171,6 +171,7 @@ export default function FeaturedEventFilter({
     if (isTamil) {
       if (category.toLowerCase() === "feast events") return "திருவிழா நிகழ்வுகள்";
       if (category.toLowerCase() === "christmas") return "கிறிஸ்துமஸ்";
+      if (category.toLowerCase() === "regular celebrations") return "வழக்கமான திருப்பலி கொண்டாட்டங்கள்";
     }
     return category;
   };

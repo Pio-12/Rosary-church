@@ -4629,6 +4629,10 @@ p {
   max-height: 100dvh;
 
   padding: 28px 30px;
+  padding-top: max(28px, env(safe-area-inset-top));
+  padding-bottom: max(32px, env(safe-area-inset-bottom));
+  padding-right: max(24px, env(safe-area-inset-right));
+  padding-left: max(24px, env(safe-area-inset-left));
   overflow-x: hidden;
   overflow-y: auto;
 
@@ -5449,57 +5453,168 @@ textarea {
 }
 
 /* =========================================================
-   TAMIL LANGUAGE SUPPORT
-   Prevents oversized Tamil text and overflow
+   TAMIL LANGUAGE SUPPORT & RESPONSIVE TYPOGRAPHY
+   Prevents text collisions, ensures proper diacritic clearance,
+   zero negative letter-spacing, and maintains readable font sizes
    ========================================================= */
 
+html[lang="ta"],
+body[data-language="ta"],
+body.tamil,
+.tamil {
+  font-family: var(--font-tamil-sans), "Noto Sans Tamil", sans-serif;
+  letter-spacing: 0 !important;
+}
+
 html[lang="ta"] body,
+body[data-language="ta"],
 body.tamil,
 .tamil {
   line-height: 1.85;
 }
 
+/* Zero negative letter-spacing across all Tamil text elements to prevent ligature clashing */
 html[lang="ta"] h1,
 html[lang="ta"] h2,
 html[lang="ta"] h3,
 html[lang="ta"] h4,
+html[lang="ta"] h5,
+html[lang="ta"] h6,
 html[lang="ta"] p,
+html[lang="ta"] span,
 html[lang="ta"] a,
 html[lang="ta"] button,
+html[lang="ta"] label,
+html[lang="ta"] strong,
+body[data-language="ta"] h1,
+body[data-language="ta"] h2,
+body[data-language="ta"] h3,
+body[data-language="ta"] h4,
+body[data-language="ta"] h5,
+body[data-language="ta"] h6,
+body[data-language="ta"] p,
+body[data-language="ta"] span,
+body[data-language="ta"] a,
+body[data-language="ta"] button,
+body[data-language="ta"] label,
+body[data-language="ta"] strong,
 body.tamil h1,
 body.tamil h2,
 body.tamil h3,
 body.tamil h4,
+body.tamil h5,
+body.tamil h6,
 body.tamil p,
+body.tamil span,
 body.tamil a,
 body.tamil button,
+body.tamil label,
+body.tamil strong,
 .tamil h1,
 .tamil h2,
 .tamil h3,
 .tamil h4,
+.tamil h5,
+.tamil h6,
 .tamil p,
+.tamil span,
 .tamil a,
-.tamil button {
-  overflow-wrap: anywhere;
+.tamil button,
+.tamil label,
+.tamil strong {
+  letter-spacing: 0 !important;
+  overflow-wrap: break-word;
   word-break: normal;
+}
+
+/* Adequate line-height for Tamil headings (diacritics/vowel markers ி, ீ, ூ, ை, ு, ் need breathing room) */
+html[lang="ta"] .hero h1,
+html[lang="ta"] .hero-title,
+html[lang="ta"] .page-hero h1,
+html[lang="ta"] .section-title,
+html[lang="ta"] .serif,
+html[lang="ta"] .home-cta h2,
+html[lang="ta"] .events-hero h1,
+html[lang="ta"] .section-heading h2,
+html[lang="ta"] .about-hero-title,
+body[data-language="ta"] .hero h1,
+body[data-language="ta"] .hero-title,
+body[data-language="ta"] .page-hero h1,
+body[data-language="ta"] .section-title,
+body[data-language="ta"] .serif,
+body[data-language="ta"] .home-cta h2,
+body[data-language="ta"] .events-hero h1,
+body[data-language="ta"] .section-heading h2,
+body[data-language="ta"] .about-hero-title,
+body.tamil .hero h1,
+body.tamil .hero-title,
+body.tamil .page-hero h1,
+body.tamil .section-title,
+body.tamil .serif,
+body.tamil .home-cta h2,
+body.tamil .events-hero h1,
+body.tamil .section-heading h2,
+body.tamil .about-hero-title {
+  line-height: 1.38 !important;
+  font-family: var(--font-tamil-serif), var(--font-tamil-sans), "Noto Serif Tamil", "Noto Sans Tamil", serif;
+  white-space: normal !important;
+}
+
+/* Ensure buttons stay at readable font sizes in Tamil */
+html[lang="ta"] .button,
+body[data-language="ta"] .button,
+body.tamil .button,
+.tamil .button {
+  font-size: 13.5px;
+  line-height: 1.4;
+  letter-spacing: 0 !important;
+}
+
+/* Category filter buttons */
+html[lang="ta"] .category-button,
+body[data-language="ta"] .category-button,
+body.tamil .category-button,
+.tamil .category-button {
+  font-size: 13px !important;
+  line-height: 1.4 !important;
+  letter-spacing: 0 !important;
+}
+
+/* Home timeline adjustments between 781px and 1024px */
+@media (min-width: 781px) and (max-width: 1024px) {
+  .timeline {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 20px !important;
+  }
+  .timeline::before {
+    display: none !important;
+  }
+  .timeline-item {
+    border-right: none !important;
+    border-bottom: 1px solid var(--line);
+    padding: 24px 12px !important;
+  }
 }
 
 @media (max-width: 780px) {
   html[lang="ta"] .hero h1,
+  body[data-language="ta"] .hero h1,
   body.tamil .hero h1,
   .tamil .hero h1 {
-    font-size: clamp(2.15rem, 11vw, 3.5rem);
-    line-height: 1.25;
+    font-size: clamp(2.15rem, 10vw, 3.2rem);
+    line-height: 1.35;
   }
 
   html[lang="ta"] .section-title,
+  body[data-language="ta"] .section-title,
   body.tamil .section-title,
   .tamil .section-title {
-    font-size: clamp(1.8rem, 8vw, 2.8rem);
+    font-size: clamp(1.75rem, 7.5vw, 2.6rem);
     line-height: 1.35;
   }
 
   html[lang="ta"] p,
+  body[data-language="ta"] p,
   body.tamil p,
   .tamil p {
     font-size: 15px;
@@ -5507,30 +5622,36 @@ body.tamil button,
   }
 
   html[lang="ta"] .mobile-nav a,
+  body[data-language="ta"] .mobile-nav a,
   body.tamil .mobile-nav a,
   .tamil .mobile-nav a {
-    font-size: clamp(1.2rem, 6.5vw, 1.6rem);
-    line-height: 1.45;
+    font-size: clamp(1.1rem, 5.5vw, 1.45rem);
+    line-height: 1.4;
   }
 
   html[lang="ta"] .button,
+  body[data-language="ta"] .button,
   body.tamil .button,
   .tamil .button {
-    font-size: 11px;
-    line-height: 1.7;
+    font-size: 13px;
+    line-height: 1.45;
+    padding: 10px 18px;
   }
 
   html[lang="ta"] .brand-copy,
+  body[data-language="ta"] .brand-copy,
   body.tamil .brand-copy,
   .tamil .brand-copy {
-    font-size: 15px;
+    font-size: 14.5px;
     line-height: 1.35;
   }
 
   html[lang="ta"] .brand-copy span,
+  body[data-language="ta"] .brand-copy span,
   body.tamil .brand-copy span,
   .tamil .brand-copy span {
-    font-size: 8px;
+    font-size: 11px;
+    line-height: 1.3;
   }
 }
 

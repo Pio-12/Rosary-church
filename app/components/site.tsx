@@ -41,7 +41,7 @@ const mobileLinks = [
   ["events", "/events"],
   ["readings", "/readings"],
   ["gallery", "/gallery"],
-  ["virtualTour", "/gallery#virtual-tour"],
+  ["prayerRequest", "/prayer-request"],
   ["contact", "/contact"],
 ] as const;
 

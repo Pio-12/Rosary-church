@@ -38,6 +38,7 @@ export function LanguageProvider({
   useEffect(() => {
     document.documentElement.lang = language;
     document.body.dataset.language = language;
+    document.body.classList.toggle("tamil", language === "ta");
   }, [language]);
 
   const setLanguage = (nextLanguage: Language) => {

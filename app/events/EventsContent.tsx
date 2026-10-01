@@ -115,10 +115,17 @@ export default function EventsContent({ events }: { events: Event[] }) {
           max-width: 850px;
           margin: 0;
           font-family: Georgia, serif;
-          font-size: clamp(48px, 7vw, 82px);
-          line-height: 1;
+          font-size: clamp(40px, 6vw, 76px);
+          line-height: 1.15;
           font-weight: 400;
-          letter-spacing: -0.04em;
+          letter-spacing: -0.02em;
+        }
+
+        :global(html[lang="ta"]) .events-hero h1,
+        :global(body.tamil) .events-hero h1 {
+          font-family: var(--font-tamil-serif), "Noto Serif Tamil", serif;
+          line-height: 1.35;
+          letter-spacing: 0;
         }
 
         .events-hero p {
@@ -163,11 +170,17 @@ export default function EventsContent({ events }: { events: Event[] }) {
           margin: 0;
           color: #0b4f69;
           font-family: Georgia, serif;
-          font-size: clamp(38px, 5vw, 56px);
-          line-height: 1.1;
+          font-size: clamp(34px, 4.5vw, 52px);
+          line-height: 1.2;
           font-weight: 400;
-          letter-spacing: -0.035em;
-          white-space: nowrap;
+          white-space: normal;
+        }
+
+        :global(html[lang="ta"]) .section-heading h2,
+        :global(body.tamil) .section-heading h2 {
+          font-family: var(--font-tamil-serif), "Noto Serif Tamil", serif;
+          line-height: 1.35;
+          letter-spacing: 0;
         }
 
         .section-heading p {

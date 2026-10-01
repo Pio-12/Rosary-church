@@ -406,7 +406,7 @@ export default function PrayerRequestPage() {
               <div
                 style={{
                   display: "grid",
-                  gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 320px), 1fr))",
                   gap: "36px",
                   alignItems: "start",
                 }}
@@ -428,21 +428,6 @@ export default function PrayerRequestPage() {
                       overflow: "hidden",
                     }}
                   >
-                    <div
-                      style={{
-                        position: "absolute",
-                        right: "-10px",
-                        bottom: "-15px",
-                        fontSize: "90px",
-                        color: "rgba(196, 154, 58, 0.08)",
-                        fontFamily: "Georgia, serif",
-                        pointerEvents: "none",
-                        lineHeight: 1,
-                      }}
-                    >
-                      ✝
-                    </div>
-
                     <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
                       <Calendar size={18} color="var(--gold)" />
                       <span
@@ -1150,7 +1135,7 @@ export default function PrayerRequestPage() {
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+                gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))",
                 gap: "28px",
               }}
             >

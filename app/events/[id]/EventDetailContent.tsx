@@ -60,6 +60,8 @@ export default function EventDetailContent({ event }: { event: EventItem }) {
         ? "திருவிழா நிகழ்வுகள்"
         : event.category.toLowerCase() === "christmas"
         ? "கிறிஸ்துமஸ்"
+        : event.category.toLowerCase() === "regular celebrations"
+        ? "வழக்கமான திருப்பலி கொண்டாட்டங்கள்"
         : event.category
       : event.category
     : null;

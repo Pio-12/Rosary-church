@@ -8,6 +8,7 @@ type ReadingWithText = {
   title: string;
   tamilTitle: string;
   reference: string;
+  tamilReference?: string;
   english: string | null;
   tamil: string | null;
 };
@@ -58,20 +59,15 @@ export default function ReadingsContent({
 
   return (
     <main>
-      <PageHero
-        title={t.pageTitle}
-        crumb={t.crumb}
-      />
+      <PageHero title={t.pageTitle} crumb={t.crumb} />
 
-      <section className="section">
+      <section className="section" style={{ paddingBottom: "90px" }}>
         <div className="container">
           {/* HEADER */}
           <div className="section-heading">
             <div>
               <div className="eyebrow">{t.eyebrow}</div>
-
               <h2 className="section-title">{t.title}</h2>
-
               <p className="body-copy">{today}</p>
             </div>
           </div>
@@ -86,11 +82,11 @@ export default function ReadingsContent({
             >
               <div className="card-body">
                 <div className="eyebrow">{t.seasonEyebrow}</div>
-
                 <h3>{getSeasonName(data.season)}</h3>
-
                 {data.liturgical_day && (
-                  <p className="body-copy">{data.liturgical_day}</p>
+                  <p className="body-copy" style={{ marginTop: "6px" }}>
+                    {data.liturgical_day}
+                  </p>
                 )}
               </div>
             </div>
@@ -101,7 +97,6 @@ export default function ReadingsContent({
             <div className="card">
               <div className="card-body">
                 <h3>{t.temporarilyUnavailable}</h3>
-
                 <p className="body-copy">{t.tryAgain}</p>
               </div>
             </div>
@@ -109,7 +104,6 @@ export default function ReadingsContent({
             <div className="card">
               <div className="card-body">
                 <h3>{t.noReadings}</h3>
-
                 <p className="body-copy">{t.noReadingsDesc}</p>
               </div>
             </div>
@@ -121,109 +115,139 @@ export default function ReadingsContent({
                 gap: "30px",
               }}
             >
-              {readingsWithText.map((reading) => (
-                <article className="card" key={reading.title}>
-                  <div className="card-body">
-                    {/* TITLE */}
-                    <div className="eyebrow">
-                      {isTamil ? reading.tamilTitle : reading.title}
-                    </div>
+              {readingsWithText.map((reading) => {
+                const displayTitle = isTamil
+                  ? reading.tamilTitle
+                  : reading.title;
+                const displayRef = isTamil
+                  ? reading.tamilReference || reading.reference
+                  : reading.reference;
 
-                    <h3>{isTamil ? reading.tamilTitle : reading.title}</h3>
+                return (
+                  <article className="card" key={reading.title}>
+                    <div className="card-body">
+                      {/* TITLE */}
+                      <div className="eyebrow">{displayTitle}</div>
+                      <h3 style={{ margin: "6px 0 8px" }}>{displayTitle}</h3>
 
-                    {/* REFERENCE */}
-                    <p
-                      className="body-copy"
-                      style={{
-                        fontWeight: 600,
-                        marginTop: "10px",
-                      }}
-                    >
-                      {reading.reference}
-                    </p>
-
-                    {/* TEXT */}
-                    <div
-                      style={{
-                        display: "grid",
-                        gridTemplateColumns:
-                          "repeat(auto-fit, minmax(280px, 1fr))",
-                        gap: "24px",
-                        marginTop: "25px",
-                      }}
-                    >
-                      {/* ENGLISH */}
-                      <div
+                      {/* SCRIPTURE REFERENCE */}
+                      <p
+                        className="body-copy"
                         style={{
-                          border: "1px solid rgba(0,0,0,0.08)",
-                          borderRadius: "14px",
-                          padding: "24px",
-                          background: "#fafafa",
+                          fontWeight: 700,
+                          color: "var(--blue-deep)",
+                          fontSize: "1.05rem",
+                          letterSpacing: "0.01em",
                         }}
                       >
-                        <div
-                          className="eyebrow"
-                          style={{
-                            marginBottom: "12px",
-                          }}
-                        >
-                          🇬🇧 English
-                        </div>
+                        {displayRef}
+                      </p>
 
-                        {reading.english ? (
-                          <p
-                            style={{
-                              lineHeight: 1.9,
-                              whiteSpace: "pre-line",
-                            }}
-                          >
-                            {reading.english}
-                          </p>
-                        ) : (
-                          <p className="body-copy">
-                            {t.englishUnavailable}
-                          </p>
-                        )}
-                      </div>
-
-                      {/* TAMIL */}
+                      {/* TEXT CONTAINER */}
                       <div
                         style={{
-                          border: "1px solid rgba(0,0,0,0.08)",
-                          borderRadius: "14px",
-                          padding: "24px",
-                          background: "#fafafa",
+                          display: "grid",
+                          gridTemplateColumns:
+                            "repeat(auto-fit, minmax(min(100%, 300px), 1fr))",
+                          gap: "24px",
+                          marginTop: "24px",
+                          alignItems: "stretch",
                         }}
                       >
+                        {/* ENGLISH SCRIPTURE CARD */}
                         <div
-                          className="eyebrow"
                           style={{
-                            marginBottom: "12px",
+                            border: "1px solid var(--line)",
+                            borderRadius: "14px",
+                            padding: "24px",
+                            background: "var(--paper, #fdfbf7)",
+                            display: "flex",
+                            flexDirection: "column",
+                            overflowWrap: "break-word",
+                            wordBreak: "break-word",
                           }}
                         >
-                          🇮🇳 தமிழ்
-                        </div>
-
-                        {reading.tamil ? (
-                          <p
+                          <div
+                            className="eyebrow"
                             style={{
-                              lineHeight: 2,
-                              whiteSpace: "pre-line",
-                              fontSize: "1.05rem",
+                              marginBottom: "14px",
+                              color: "var(--blue-deep)",
+                              fontSize: "11px",
+                              letterSpacing: "0.08em",
                             }}
                           >
-                            {reading.tamil}
-                          </p>
-                        ) : (
-                          <p className="body-copy">
-                            {t.tamilUnavailable}
-                          </p>
-                        )}
+                            🇬🇧 English (Douay-Rheims)
+                          </div>
+
+                          {reading.english ? (
+                            <div
+                              style={{
+                                lineHeight: 1.85,
+                                whiteSpace: "pre-line",
+                                fontSize: "15px",
+                                color: "var(--ink)",
+                                overflowWrap: "break-word",
+                                wordBreak: "break-word",
+                              }}
+                            >
+                              {reading.english}
+                            </div>
+                          ) : (
+                            <p className="body-copy">
+                              {t.englishUnavailable}
+                            </p>
+                          )}
+                        </div>
+
+                        {/* TAMIL SCRIPTURE CARD (RC TAMIL BIBLE) */}
+                        <div
+                          style={{
+                            border: "1px solid var(--line)",
+                            borderRadius: "14px",
+                            padding: "24px",
+                            background: "var(--paper, #fdfbf7)",
+                            display: "flex",
+                            flexDirection: "column",
+                            overflowWrap: "break-word",
+                            wordBreak: "break-word",
+                          }}
+                        >
+                          <div
+                            className="eyebrow"
+                            style={{
+                              marginBottom: "14px",
+                              color: "var(--blue-deep)",
+                              fontSize: "11px",
+                              letterSpacing: "0.08em",
+                            }}
+                          >
+                            🇮🇳 தமிழ் (கத்தோலிக்க திருவிவிலியம்)
+                          </div>
+
+                          {reading.tamil ? (
+                            <div
+                              style={{
+                                lineHeight: 1.95,
+                                whiteSpace: "pre-line",
+                                fontSize: "15px",
+                                color: "var(--ink)",
+                                overflowWrap: "break-word",
+                                wordBreak: "break-word",
+                              }}
+                            >
+                              {reading.tamil}
+                            </div>
+                          ) : (
+                            <p className="body-copy">
+                              {t.tamilUnavailable}
+                            </p>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </article>
-              ))}
+                  </article>
+                );
+              })}
             </div>
           )}
         </div>

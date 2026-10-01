@@ -259,6 +259,7 @@ export const translations = {
         "Youth",
         "Altar Boys Society",
         "Sunday Catechism",
+        "Rosary Adults Club",
       ],
 
       structuresEyebrow: "Parish Organisation",
@@ -1147,6 +1148,7 @@ export const translations = {
         "இளைஞர் இயக்கம்",
         "பீடப் பணியாளர் குழு",
         "ஞாயிறு மறைக்கல்வி",
+        "ரோசரி பெரியோர் மன்றம்",
       ],
 
       structuresEyebrow: "பங்கு கட்டமைப்பு",
