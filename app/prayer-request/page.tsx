@@ -481,6 +481,7 @@ export default function PrayerRequestPage() {
 
                   {/* 2. INTENTION FORM CARD */}
                   <div
+                    className="prayer-form-card"
                     style={{
                       background: "var(--white)",
                       border: "1px solid var(--line)",
@@ -836,6 +837,7 @@ export default function PrayerRequestPage() {
                 <div style={{ display: "grid", gap: "24px" }}>
 
                   <div
+                    className="prayer-payment-card"
                     style={{
                       background: "var(--white)",
                       border: "1.5px solid var(--line)",
@@ -1215,6 +1217,16 @@ export default function PrayerRequestPage() {
 
         </div>
       </section>
+
+      <style jsx>{`
+        @media (max-width: 600px) {
+          :global(.prayer-form-card),
+          :global(.prayer-payment-card) {
+            padding: 24px 18px !important;
+            border-radius: 14px !important;
+          }
+        }
+      `}</style>
     </main>
   );
 }

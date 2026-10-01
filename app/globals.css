@@ -26,10 +26,16 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
+  max-width: 100%;
 }
 
 body {
   margin: 0;
+  overflow-x: hidden;
+  max-width: 100%;
+  width: 100%;
+  position: relative;
   background: var(--paper);
   color: var(--ink);
   font-family: "DM Sans", sans-serif;
@@ -3814,23 +3820,24 @@ select:focus {
   }
 
   .hero {
-    min-height: 570px;
+    min-height: auto;
+    padding: 100px 0 85px;
   }
 
   .hero-inner {
-    padding: 78px 0 90px;
+    padding: 0;
   }
 
   .hero h1 {
     max-width: 100%;
-    font-size: clamp(43px, 14vw, 68px);
-    line-height: 0.94;
+    font-size: clamp(34px, 10vw, 56px);
+    line-height: 1.25;
   }
 
   .hero p {
     max-width: 100%;
-    font-size: 14px;
-    line-height: 1.7;
+    font-size: 15px;
+    line-height: 1.75;
   }
 
   .hero-actions {
@@ -5537,6 +5544,9 @@ html[lang="ta"] .home-cta h2,
 html[lang="ta"] .events-hero h1,
 html[lang="ta"] .section-heading h2,
 html[lang="ta"] .about-hero-title,
+html[lang="ta"] .gallery-showcase-title,
+html[lang="ta"] .milestone-title,
+html[lang="ta"] .history-item strong,
 body[data-language="ta"] .hero h1,
 body[data-language="ta"] .hero-title,
 body[data-language="ta"] .page-hero h1,
@@ -5546,6 +5556,9 @@ body[data-language="ta"] .home-cta h2,
 body[data-language="ta"] .events-hero h1,
 body[data-language="ta"] .section-heading h2,
 body[data-language="ta"] .about-hero-title,
+body[data-language="ta"] .gallery-showcase-title,
+body[data-language="ta"] .milestone-title,
+body[data-language="ta"] .history-item strong,
 body.tamil .hero h1,
 body.tamil .hero-title,
 body.tamil .page-hero h1,
@@ -5554,10 +5567,74 @@ body.tamil .serif,
 body.tamil .home-cta h2,
 body.tamil .events-hero h1,
 body.tamil .section-heading h2,
-body.tamil .about-hero-title {
+body.tamil .about-hero-title,
+body.tamil .gallery-showcase-title,
+body.tamil .milestone-title,
+body.tamil .history-item strong {
   line-height: 1.38 !important;
   font-family: var(--font-tamil-serif), var(--font-tamil-sans), "Noto Serif Tamil", "Noto Sans Tamil", serif;
   white-space: normal !important;
+  letter-spacing: 0 !important;
+}
+
+html[lang="ta"] .gallery-showcase-title span,
+body[data-language="ta"] .gallery-showcase-title span,
+body.tamil .gallery-showcase-title span,
+.tamil .gallery-showcase-title span {
+  display: block;
+  line-height: 1.35 !important;
+  letter-spacing: 0 !important;
+}
+
+html[lang="ta"] .gallery-showcase-button,
+body[data-language="ta"] .gallery-showcase-button,
+body.tamil .gallery-showcase-button,
+.tamil .gallery-showcase-button {
+  font-size: 14px !important;
+  line-height: 1.4 !important;
+  letter-spacing: 0 !important;
+  white-space: normal !important;
+  text-align: center;
+  height: auto !important;
+  min-height: 48px;
+}
+
+html[lang="ta"] .milestone-title,
+body[data-language="ta"] .milestone-title,
+body.tamil .milestone-title,
+.tamil .milestone-title {
+  line-height: 1.35 !important;
+  letter-spacing: 0 !important;
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+}
+
+html[lang="ta"] .milestone-text,
+body[data-language="ta"] .milestone-text,
+body.tamil .milestone-text,
+.tamil .milestone-text {
+  line-height: 1.8 !important;
+  letter-spacing: 0 !important;
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+}
+
+html[lang="ta"] .about-page .hero-pill-btn,
+body[data-language="ta"] .about-page .hero-pill-btn,
+body.tamil .about-page .hero-pill-btn,
+.tamil .about-page .hero-pill-btn {
+  font-size: 13px !important;
+  line-height: 1.4 !important;
+  letter-spacing: 0 !important;
+  white-space: normal !important;
+}
+
+html[lang="ta"] .card-body h3,
+body[data-language="ta"] .card-body h3,
+body.tamil .card-body h3,
+.tamil .card-body h3 {
+  line-height: 1.35 !important;
+  letter-spacing: 0 !important;
 }
 
 /* Ensure buttons stay at readable font sizes in Tamil */
@@ -7837,6 +7914,21 @@ body.lang-ta .mass-timings-section .schedule-item-time {
   }
 }
 
+@media (max-width: 480px) {
+  .mass-timings-section .schedule-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 14px 0;
+  }
+
+  .mass-timings-section .schedule-item-time {
+    margin-top: 2px;
+    font-size: 13.5px;
+    white-space: normal;
+  }
+}
+
 /* Accessibility: reduce animation if requested by the user/device */
 @media (prefers-reduced-motion: reduce) {
   .mass-timings-section .schedule-card {
@@ -9051,16 +9143,18 @@ select.field {
   margin: 20px 0;
   color: #ffffff;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(3.5rem, 8vw, 7rem);
+  font-size: clamp(3.2rem, 7vw, 6.5rem);
   font-weight: 400;
-  line-height: 0.95;
-  letter-spacing: -0.06em;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
 }
 
 .gallery-showcase-title span {
   display: block;
+  margin-top: 6px;
   color: #e3bc54;
   font-style: italic;
+  line-height: 1.2;
 }
 
 .gallery-showcase-copy p {
@@ -9074,7 +9168,16 @@ select.field {
 .gallery-showcase-button {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 12px;
+  min-height: 48px;
+  height: auto;
+  padding: 12px 24px;
+  line-height: 1.4;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  white-space: normal;
   background: #e0b84f;
   color: #073f53;
   border-color: #e0b84f;
@@ -9919,32 +10022,50 @@ select.field {
 @media (max-width: 760px) {
   .gallery-showcase,
   .gallery-showcase-content {
-    min-height: 680px;
+    min-height: auto;
+    height: auto;
   }
 
   .gallery-showcase-content {
-    padding-top: 80px;
-    padding-bottom: 130px;
+    padding-top: max(85px, env(safe-area-inset-top));
+    padding-bottom: 175px;
+    justify-content: flex-start;
   }
 
   .gallery-showcase-title {
-    font-size: clamp(3.1rem, 15vw, 5rem);
+    font-size: clamp(2.4rem, 10vw, 3.8rem);
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+  }
+
+  .gallery-showcase-title span {
+    margin-top: 6px;
+    line-height: 1.25;
   }
 
   .gallery-showcase-copy p {
     font-size: 0.95rem;
+    line-height: 1.75;
+    margin-bottom: 24px;
   }
 
   .showcase-caption {
     right: 20px;
-    bottom: 85px;
+    bottom: 74px;
     left: 20px;
     max-width: none;
+    z-index: 3;
+    gap: 12px;
   }
 
   .showcase-controls {
     right: 20px;
-    bottom: 25px;
+    bottom: 18px;
+    left: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 3;
   }
 
   .gallery-story-section {
@@ -10033,16 +10154,39 @@ select.field {
 @media (max-width: 480px) {
   .gallery-showcase,
   .gallery-showcase-content {
-    min-height: 620px;
+    min-height: auto;
+    height: auto;
+  }
+
+  .gallery-showcase-content {
+    padding-bottom: 195px;
   }
 
   .gallery-showcase-title {
-    font-size: 3.2rem;
+    font-size: clamp(2rem, 9vw, 2.8rem);
+    line-height: 1.3;
   }
 
   .gallery-showcase-button {
     width: 100%;
     justify-content: center;
+  }
+
+  .showcase-caption {
+    bottom: 76px;
+    left: 16px;
+    right: 16px;
+  }
+
+  .showcase-controls {
+    bottom: 16px;
+    left: 16px;
+    right: 16px;
+  }
+
+  .showcase-controls > button {
+    width: 38px;
+    height: 38px;
   }
 
   .gallery-story-visual {
@@ -12926,18 +13070,23 @@ select.field {
 
 @media (max-width: 900px) {
   .about-page .about-hero {
-    min-height: 75vh;
-    padding: 100px 0 80px;
+    min-height: auto;
+    height: auto;
+    padding: 105px 0 90px;
+  }
+
+  .about-page .about-intro-section {
+    padding: 65px 0 50px;
   }
 
   .about-page .intro-grid,
   .about-page .history-narrative-grid {
     grid-template-columns: 1fr;
-    gap: 40px;
+    gap: 36px;
   }
 
   .about-page .cinematic-photo {
-    height: 380px;
+    height: 340px;
   }
 
   .about-page .about-contact-grid {
@@ -12947,12 +13096,33 @@ select.field {
 }
 
 @media (max-width: 768px) {
+  .about-page .about-hero {
+    min-height: auto;
+    height: auto;
+    padding: 95px 0 85px;
+  }
+
   .about-page .about-hero-title {
-    font-size: clamp(38px, 11vw, 54px);
+    font-size: clamp(34px, 9vw, 50px);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
   }
 
   .about-page .about-hero-subtitle {
-    font-size: 20px;
+    font-size: 19px;
+    line-height: 1.35;
+    margin-bottom: 20px;
+  }
+
+  .about-page .about-hero-divider {
+    margin: 0 auto 22px;
+  }
+
+  .about-page .about-hero-lead {
+    font-size: 15.5px;
+    line-height: 1.8;
+    margin-bottom: 26px;
+    padding: 0 8px;
   }
 
   .about-page .about-hero-nav {
@@ -12960,43 +13130,187 @@ select.field {
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
     width: 100%;
+    max-width: 480px;
+    margin: 0 auto 26px;
   }
 
   .about-page .hero-pill-btn {
+    display: inline-flex;
+    align-items: center;
     justify-content: center;
-    padding: 10px 14px;
-    font-size: 12px;
+    width: 100%;
+    min-height: 48px;
+    height: auto;
+    padding: 11px 16px;
+    font-size: 13px;
+    line-height: 1.4;
+    text-align: center;
+    border-radius: 999px;
+    box-sizing: border-box;
+  }
+
+  .about-page .hero-pill-btn span {
+    overflow-wrap: break-word;
+    word-break: normal;
+    text-align: center;
+  }
+
+  .about-page .hero-pill-btn svg {
+    flex-shrink: 0;
+  }
+
+  .about-page .about-scroll-indicator {
+    position: absolute;
+    bottom: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    z-index: 4;
+    white-space: nowrap;
+  }
+
+  .about-page .about-intro-section {
+    padding: 55px 0 45px;
+  }
+
+  .about-page .about-identity-section {
+    padding: 60px 0;
+  }
+
+  .about-page .about-transition-divider {
+    padding: 16px 0;
+  }
+
+  .about-page .divider-content {
+    gap: 14px;
+    max-width: 280px;
+    padding: 0 16px;
+  }
+
+  .about-page .divider-ambient-glow {
+    max-width: 100%;
   }
 
   /* History Timeline: Switch to single left-aligned track */
+  .about-page .history-timeline-container {
+    max-width: 100%;
+    margin: 35px auto 0;
+    padding: 10px 0;
+  }
+
   .about-page .timeline-spine {
     left: 20px;
     transform: none;
+    top: 15px;
+    bottom: 15px;
   }
 
   .about-page .timeline-node {
     left: 20px;
+    top: 30px;
+    width: 20px;
+    height: 20px;
     transform: translate(-50%, -50%);
+    z-index: 3;
+  }
+
+  .about-page .node-halo {
+    width: 24px;
+    height: 24px;
+  }
+
+  .about-page .node-core {
+    width: 8px;
+    height: 8px;
+  }
+
+  .about-page .history-milestones-list {
+    gap: 22px;
+    padding: 0;
   }
 
   .about-page .history-milestone {
     display: block;
-    padding-left: 48px;
+    padding-left: 44px;
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .about-page .milestone-left .milestone-card,
   .about-page .milestone-right .milestone-card {
     margin: 0;
     text-align: left;
-    padding: 22px 20px;
+    padding: 20px 18px;
+    width: 100%;
+    box-sizing: border-box;
+    height: auto;
+  }
+
+  .about-page .milestone-left .milestone-meta-row,
+  .about-page .milestone-right .milestone-meta-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: left;
+    gap: 10px;
+    margin-bottom: 10px;
   }
 
   .about-page .milestone-year {
-    font-size: 28px;
+    font-size: 26px;
+    line-height: 1;
+    margin: 0;
+    color: var(--ap-gold-light);
+    font-weight: 600;
+  }
+
+  .about-page .card-step-badge {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    font-size: 11px;
+    flex-shrink: 0;
   }
 
   .about-page .milestone-title {
-    font-size: 20px;
+    font-size: clamp(18px, 4.5vw, 21px);
+    line-height: 1.35;
+    margin: 0 0 10px;
+    color: var(--ap-white);
+    word-break: normal;
+    overflow-wrap: break-word;
+  }
+
+  .about-page .milestone-text {
+    font-size: 14.5px;
+    line-height: 1.75;
+    color: #d1e7ef;
+    margin: 0;
+    word-break: normal;
+    overflow-wrap: break-word;
+  }
+
+  .about-page .photo-caption-badge {
+    bottom: 12px;
+    left: 12px;
+    right: 12px;
+    padding: 8px 12px;
+    font-size: 11.5px;
+    border-radius: 8px;
+    background: rgba(3, 45, 65, 0.92);
+  }
+
+  .about-page .photo-caption-badge span {
+    overflow-wrap: break-word;
+    line-height: 1.35;
   }
 
   /* Mobile Snap Scrolling Card Sizing */
@@ -13016,39 +13330,75 @@ select.field {
   }
 
   .about-page .closing-reflection-banner {
-    padding: 38px 24px;
+    padding: 36px 20px;
   }
 
   .about-page .cinematic-photo {
-    height: 300px;
+    height: clamp(240px, 50vw, 300px);
+    object-fit: cover;
   }
 }
 
 @media (max-width: 480px) {
   .about-page .about-hero {
-    min-height: 70vh;
-    padding: 85px 0 65px;
+    min-height: auto;
+    height: auto;
+    padding: 85px 0 80px;
   }
 
   .about-page .about-hero-title {
-    font-size: 38px;
+    font-size: clamp(30px, 9vw, 38px);
+    line-height: 1.3;
   }
 
   .about-page .about-hero-subtitle {
-    font-size: 18px;
+    font-size: 17px;
+  }
+
+  .about-page .about-hero-lead {
+    font-size: 14.5px;
+    line-height: 1.75;
   }
 
   .about-page .about-hero-nav {
     grid-template-columns: 1fr;
+    max-width: 320px;
+    gap: 9px;
   }
 
   .about-page .card-body {
-    padding: 24px 20px;
+    padding: 22px 18px;
   }
 
   .about-page .cinematic-quote {
-    font-size: 21px;
-    padding: 18px 20px;
+    font-size: 19px;
+    padding: 16px 18px;
+  }
+
+  .about-page .history-milestone {
+    padding-left: 36px;
+  }
+
+  .about-page .timeline-spine {
+    left: 14px;
+  }
+
+  .about-page .timeline-node {
+    left: 14px;
+    top: 28px;
+  }
+
+  .about-page .milestone-left .milestone-card,
+  .about-page .milestone-right .milestone-card {
+    padding: 16px 14px;
+  }
+
+  .about-page .milestone-year {
+    font-size: 24px;
+  }
+
+  .about-page .milestone-title {
+    font-size: 17.5px;
   }
 }
 

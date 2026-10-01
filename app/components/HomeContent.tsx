@@ -64,7 +64,7 @@ export default function HomeContent({
 
   const churchName =
     language === "ta"
-      ? "ஜெபமாலை அன்னையின் திருத்தலம்"
+      ? "ஜெபமாலை அன்னையின் ஆலயம்"
       : siteSettings?.church_name ??
         "Our Lady of Holy Rosary Church";
 

@@ -337,18 +337,7 @@ export default function Donations() {
           </div>
 
           {step === "form" && (
-            <div
-              style={{
-                maxWidth: 720,
-                width: "100%",
-                margin: "50px auto 0",
-                background: "#fffdf9",
-                border: "1px solid rgba(13, 91, 115, 0.12)",
-                borderRadius: 24,
-                padding: "40px",
-                boxShadow: "0 18px 50px rgba(13, 91, 115, 0.10)",
-              }}
-            >
+            <div className="donation-form-wrapper">
               <div className="donation-heading">
                 <div className="donation-heading-icon">
                   <Heart size={23} strokeWidth={1.8} />
@@ -566,6 +555,18 @@ export default function Donations() {
           animation-play-state: paused;
         }
 
+        .donation-form-wrapper {
+          max-width: 720px;
+          width: 100%;
+          margin: 50px auto 0;
+          background: #fffdf9;
+          border: 1px solid rgba(13, 91, 115, 0.12);
+          border-radius: 24px;
+          padding: 40px;
+          box-shadow: 0 18px 50px rgba(13, 91, 115, 0.10);
+          box-sizing: border-box;
+        }
+
         .donation-heading {
           display: flex;
           align-items: center;
@@ -609,8 +610,21 @@ export default function Donations() {
         .back-button { display: flex; align-items: center; gap: 4px; margin: 16px auto 0; background: none; border: none; color: #666; cursor: pointer; font-size: 0.9rem; text-decoration: underline; }
 
         @media (max-width: 640px) {
+          .donation-form-wrapper {
+            padding: 24px 18px;
+            border-radius: 16px;
+            margin-top: 30px;
+          }
           .payment-card { padding: 28px 18px; }
           .donor-ticker-item, .donor-ticker-static { font-size: 0.88rem; }
+          .quick-amounts { gap: 8px; }
+          .quick-amount {
+            flex: 1 1 calc(33.333% - 8px);
+            min-width: 0;
+            padding: 8px 10px;
+            font-size: 13px;
+            text-align: center;
+          }
         }
 
         @media (prefers-reduced-motion: reduce) {
