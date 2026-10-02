@@ -5637,6 +5637,30 @@ body.tamil .card-body h3,
   letter-spacing: 0 !important;
 }
 
+html[lang="ta"] .flip-card-back-body h3,
+body[data-language="ta"] .flip-card-back-body h3,
+body.tamil .flip-card-back-body h3,
+.tamil .flip-card-back-body h3,
+.flip-card-tamil .flip-card-back-body h3 {
+  line-height: 1.35 !important;
+  letter-spacing: 0 !important;
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+  white-space: normal !important;
+}
+
+html[lang="ta"] .flip-card-back-body p,
+body[data-language="ta"] .flip-card-back-body p,
+body.tamil .flip-card-back-body p,
+.tamil .flip-card-back-body p,
+.flip-card-tamil .flip-card-back-body p {
+  line-height: 1.65 !important;
+  letter-spacing: 0 !important;
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+  white-space: normal !important;
+}
+
 /* Ensure buttons stay at readable font sizes in Tamil */
 html[lang="ta"] .button,
 body[data-language="ta"] .button,
@@ -12396,21 +12420,28 @@ select.field {
 ========================================================= */
 
 .about-page .flip-card {
-  min-height: 270px;
+  height: auto;
+  min-height: 280px;
   perspective: 1400px;
   background: transparent;
   border: none;
   box-shadow: none;
   padding: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .about-page .flip-card-inner {
+  display: grid;
+  grid-template-columns: 100%;
+  grid-template-rows: auto;
   position: relative;
   width: 100%;
   height: 100%;
-  min-height: 270px;
+  min-height: 0;
   cursor: pointer;
   transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
   transition: transform 0.75s var(--ap-spring);
   border-radius: 18px;
   outline-offset: 4px;
@@ -12421,8 +12452,10 @@ select.field {
 }
 
 .about-page .flip-card-face {
-  position: absolute;
-  inset: 0;
+  grid-area: 1 / 1;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   border-radius: 18px;
@@ -12433,6 +12466,7 @@ select.field {
   display: flex;
   flex-direction: column;
   transition: border-color 0.35s ease, box-shadow 0.35s ease;
+  transform: rotateX(0deg);
 }
 
 .about-page .flip-card:hover .flip-card-face {
@@ -12441,22 +12475,37 @@ select.field {
 }
 
 .about-page .flip-card-front {
+  transform: rotateY(0deg);
   justify-content: center;
   align-items: flex-start;
-  padding: 30px 26px;
+  padding: 28px 24px;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.about-page .flip-card-front .card-body {
+  padding: 0 !important;
+  width: 100%;
 }
 
 .about-page .flip-card-front h3 {
   margin: 0 0 8px;
   color: var(--ap-blue-dark);
-  font-family: "Cormorant Garamond", Georgia, serif;
+  font-family: var(--font-tamil-serif), var(--font-tamil-sans), "Noto Serif Tamil", "Cormorant Garamond", Georgia, serif;
   font-size: 24px;
+  line-height: 1.35;
+  letter-spacing: 0;
+  word-break: normal;
+  overflow-wrap: break-word;
 }
 
 .about-page .flip-card-front p {
   color: var(--ap-muted);
   font-size: 15px;
+  line-height: 1.6;
   margin: 0;
+  word-break: normal;
+  overflow-wrap: break-word;
 }
 
 .about-page .flip-card-hint {
@@ -12480,32 +12529,64 @@ select.field {
   background: var(--ap-blue-dark);
   border-color: rgba(229, 201, 120, 0.4);
   color: var(--ap-white);
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.about-page .flip-card-inner.is-flipped .flip-card-back {
+  z-index: 2;
+}
+
+.about-page .flip-card-inner:not(.is-flipped) .flip-card-front {
+  z-index: 2;
 }
 
 .about-page .flip-card-image {
   width: 100%;
-  height: 58%;
+  aspect-ratio: 16 / 9;
+  height: auto;
   object-fit: cover;
   display: block;
+  flex-shrink: 0;
+  border-top-left-radius: 17px;
+  border-top-right-radius: 17px;
 }
 
 .about-page .flip-card-back-body {
-  padding: 16px 20px;
-  flex: 1;
+  padding: 16px 20px 22px;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  box-sizing: border-box;
+}
+
+.about-page .flip-card-back-body .card-step-badge {
+  margin-bottom: 12px;
+  flex-shrink: 0;
 }
 
 .about-page .flip-card-back-body h3 {
-  margin: 0 0 6px;
+  margin: 0 0 8px;
   color: var(--ap-gold-light);
-  font-family: "Cormorant Garamond", Georgia, serif;
+  font-family: var(--font-tamil-serif), var(--font-tamil-sans), "Noto Serif Tamil", "Cormorant Garamond", Georgia, serif;
   font-size: 20px;
+  line-height: 1.35;
+  letter-spacing: 0;
+  word-break: normal;
+  overflow-wrap: break-word;
 }
 
 .about-page .flip-card-back-body p {
   margin: 0;
   color: #d1e7ef;
-  font-size: 13.5px;
-  line-height: 1.5;
+  font-size: 14px;
+  line-height: 1.65;
+  letter-spacing: 0;
+  word-break: normal;
+  overflow-wrap: break-word;
 }
 
 /* =========================================================
@@ -13337,6 +13418,56 @@ select.field {
     height: clamp(240px, 50vw, 300px);
     object-fit: cover;
   }
+
+  /* Substations Section & Responsive FlipCard on Mobile */
+  .about-page .about-substations-section {
+    padding: 50px 0 28px;
+  }
+
+  .about-page .about-parish-life-section {
+    padding: 50px 0;
+  }
+
+  .about-page .mobile-scroll-hint {
+    margin-top: 12px;
+    margin-bottom: 0;
+  }
+
+  .about-page .flip-card {
+    height: auto !important;
+    min-height: 0 !important;
+  }
+
+  .about-page .flip-card-inner {
+    height: 100% !important;
+    min-height: 0 !important;
+  }
+
+  .about-page .flip-card-face {
+    height: 100% !important;
+  }
+
+  .about-page .flip-card-image {
+    width: 100% !important;
+    aspect-ratio: 16 / 9 !important;
+    height: auto !important;
+  }
+
+  .about-page .flip-card-back-body {
+    padding: 16px 18px 20px !important;
+    height: auto !important;
+  }
+
+  .about-page .flip-card-back-body h3 {
+    font-size: clamp(17px, 4.8vw, 19.5px) !important;
+    line-height: 1.35 !important;
+    margin-bottom: 7px !important;
+  }
+
+  .about-page .flip-card-back-body p {
+    font-size: clamp(13px, 3.6vw, 14px) !important;
+    line-height: 1.65 !important;
+  }
 }
 
 @media (max-width: 480px) {
@@ -13368,6 +13499,23 @@ select.field {
 
   .about-page .card-body {
     padding: 22px 18px;
+  }
+
+  .about-page .flip-card-front {
+    padding: 24px 18px !important;
+  }
+
+  .about-page .flip-card-back-body {
+    padding: 14px 16px 18px !important;
+  }
+
+  .about-page .flip-card-back-body h3 {
+    font-size: 18px !important;
+  }
+
+  .about-page .flip-card-back-body p {
+    font-size: 13.5px !important;
+    line-height: 1.6 !important;
   }
 
   .about-page .cinematic-quote {

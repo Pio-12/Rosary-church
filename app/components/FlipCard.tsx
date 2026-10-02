@@ -37,8 +37,8 @@ export function FlipCard({
     let startTimeout: number | undefined;
     let isVisible = false;
 
-    const openFor = 3000;
-    const closedFor = 3800;
+    const openFor = 5000;
+    const closedFor = 4200;
 
     const cycle = (flipTo: boolean) => {
       if (!userInteracted.current && isVisible) {
@@ -91,13 +91,13 @@ export function FlipCard({
     window.clearTimeout(resumeAutoTimeout.current);
     resumeAutoTimeout.current = window.setTimeout(() => {
       userInteracted.current = false;
-    }, 6000);
+    }, 8000);
   };
 
   return (
     <div
       ref={cardRef}
-      className="card flip-card"
+      className={`card flip-card${isTamil ? " flip-card-tamil" : ""}`}
       data-reveal="pop"
       style={{ "--i": index } as React.CSSProperties}
     >
@@ -143,6 +143,9 @@ export function FlipCard({
             className="flip-card-image"
             src={image}
             alt={`${name} church`}
+            loading="lazy"
+            width={400}
+            height={225}
           />
           <div className="flip-card-back-body">
             <div className="card-step-badge badge-gold">
