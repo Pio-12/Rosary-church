@@ -66,6 +66,32 @@ export default function EventDetailContent({ event }: { event: EventItem }) {
       : event.category
     : null;
 
+  const isCompleted = event.event_date
+    ? (() => {
+        const todayStr = new Intl.DateTimeFormat("en-CA", {
+          timeZone: "Asia/Kolkata",
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        }).format(new Date());
+        if (event.event_date < todayStr) return true;
+        if (event.event_date > todayStr) return false;
+        const checkTime = event.end_time || event.start_time;
+        if (!checkTime) return false;
+        const [hours, minutes] = checkTime.split(":").map(Number);
+        if (Number.isNaN(hours) || Number.isNaN(minutes)) return false;
+        const nowParts = new Intl.DateTimeFormat("en-GB", {
+          timeZone: "Asia/Kolkata",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        }).format(new Date()).split(":");
+        const currentH = Number(nowParts[0]);
+        const currentM = Number(nowParts[1]);
+        return currentH > hours || (currentH === hours && currentM >= minutes);
+      })()
+    : false;
+
   return (
     <main>
       <PageHero
@@ -84,11 +110,28 @@ export default function EventDetailContent({ event }: { event: EventItem }) {
           )}
 
           <div>
-            {categoryLabel && (
-              <div className="eyebrow">
-                {categoryLabel}
-              </div>
-            )}
+            <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 10 }}>
+              {categoryLabel && (
+                <div className="eyebrow" style={{ margin: 0 }}>
+                  {categoryLabel}
+                </div>
+              )}
+              <span
+                style={{
+                  padding: "3px 10px",
+                  borderRadius: 999,
+                  fontSize: 11,
+                  fontWeight: 700,
+                  letterSpacing: "0.06em",
+                  textTransform: "uppercase",
+                  background: isCompleted ? "#f1f5f9" : "rgba(181, 138, 54, 0.15)",
+                  color: isCompleted ? "#64748b" : "#b58a36",
+                  border: isCompleted ? "1px solid #cbd5e1" : "1px solid rgba(181, 138, 54, 0.3)",
+                }}
+              >
+                {isCompleted ? t.completedBadge : t.upcomingBadge}
+              </span>
+            </div>
 
             <h2 className="section-title">
               {event.title}

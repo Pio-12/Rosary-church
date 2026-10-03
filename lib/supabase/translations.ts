@@ -259,7 +259,7 @@ export const translations = {
         "Youth",
         "Altar Boys Society",
         "Sunday Catechism",
-        "Rosary Adults Club",
+        "Rosary Adults",
       ],
 
       structuresEyebrow: "Parish Organisation",
@@ -478,15 +478,22 @@ export const translations = {
       calendarDescription:
         "Discover our upcoming parish celebrations, feasts and special events.",
 
+      thisMonthHeader: "THIS MONTH'S EVENTS",
       upcomingEventsHeader: "UPCOMING EVENTS",
       allEventsHeader: "ALL EVENTS",
       feastEventsHeader: "FEAST EVENTS",
       christmasHeader: "CHRISTMAS",
 
+      thisMonthTab: "This Month",
+      upcomingTab: "Upcoming",
       featuredTab: "Featured",
       allEventsTab: "All Events",
       feastEventsTab: "Feast Events",
       christmasTab: "Christmas",
+
+      completedBadge: "Completed",
+      upcomingBadge: "Upcoming",
+      todayBadgeLabel: "Today",
 
       noEventsFound: "No Events Found",
       noEventsDesc: "There are currently no events in this category.",
@@ -1148,7 +1155,7 @@ export const translations = {
         "இளைஞர் இயக்கம்",
         "பீடப் பணியாளர் குழு",
         "ஞாயிறு மறைக்கல்வி",
-        "ரோசரி பெரியோர் மன்றம்",
+        "ரோசரி யூத்",
       ],
 
       structuresEyebrow: "பங்கு கட்டமைப்பு",
@@ -1367,15 +1374,22 @@ export const translations = {
       calendarDescription:
         "எங்கள் வரவிருக்கும் பங்குத் திருவிழாக்கள், கொண்டாட்டங்கள் மற்றும் சிறப்பு நிகழ்வுகளை அறிந்து கொள்ளுங்கள்.",
 
+      thisMonthHeader: "இந்த மாத நிகழ்வுகள்",
       upcomingEventsHeader: "வரவிருக்கும் நிகழ்வுகள்",
       allEventsHeader: "அனைத்து நிகழ்வுகள்",
       feastEventsHeader: "திருவிழா நிகழ்வுகள்",
       christmasHeader: "கிறிஸ்துமஸ்",
 
+      thisMonthTab: "இந்த மாதம்",
+      upcomingTab: "வரவிருக்கும் நிகழ்வுகள்",
       featuredTab: "சிறப்பு நிகழ்வுகள்",
       allEventsTab: "அனைத்து நிகழ்வுகள்",
       feastEventsTab: "திருவிழா நிகழ்வுகள்",
       christmasTab: "கிறிஸ்துமஸ்",
+
+      completedBadge: "நிறைவடைந்தது",
+      upcomingBadge: "வரவிருக்கிறது",
+      todayBadgeLabel: "இன்று",
 
       noEventsFound: "நிகழ்வுகள் எதுவும் காணப்படவில்லை",
       noEventsDesc: "இந்த பிரிவில் தற்போது நிகழ்வுகள் எதுவும் இல்லை.",

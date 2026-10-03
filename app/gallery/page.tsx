@@ -75,23 +75,6 @@ export default function Gallery() {
     return () => clearInterval(timer);
   }, [photos.length]);
 
-  /*
-   * Close lightbox when Escape is pressed
-   */
-  useEffect(() => {
-    function handleEscape(event: KeyboardEvent) {
-      if (event.key === "Escape") {
-        setSelectedPhoto(null);
-      }
-    }
-
-    window.addEventListener("keydown", handleEscape);
-
-    return () => {
-      window.removeEventListener("keydown", handleEscape);
-    };
-  }, []);
-
   const activePhoto = photos[activeIndex];
 
   /*
@@ -112,6 +95,40 @@ export default function Gallery() {
       return searchableText.includes(selectedCategory.toLowerCase());
     });
   }, [photos, selectedCategory]);
+
+  /*
+   * Handle keyboard navigation and body scroll lock for lightbox
+   */
+  useEffect(() => {
+    if (!selectedPhoto) {
+      document.body.style.overflow = "";
+      return;
+    }
+
+    document.body.style.overflow = "hidden";
+    const current = selectedPhoto;
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setSelectedPhoto(null);
+      } else if (event.key === "ArrowLeft") {
+        const idx = filteredPhotos.findIndex((p) => p.id === current.id);
+        const prevIdx = idx > 0 ? idx - 1 : filteredPhotos.length - 1;
+        setSelectedPhoto(filteredPhotos[prevIdx]);
+      } else if (event.key === "ArrowRight") {
+        const idx = filteredPhotos.findIndex((p) => p.id === current.id);
+        const nextIdx = idx < filteredPhotos.length - 1 ? idx + 1 : 0;
+        setSelectedPhoto(filteredPhotos[nextIdx]);
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [selectedPhoto, filteredPhotos]);
 
   /*
    * Top showcase controls
@@ -430,12 +447,6 @@ export default function Gallery() {
                   </button>
                 ))}
               </div>
-
-              {/* Mobile swipe instruction */}
-              <div className="gallery-swipe-hint">
-                <span>{t.swipeHint}</span>
-                <span className="gallery-swipe-arrow">→</span>
-              </div>
             </>
           )}
         </div>
@@ -531,6 +542,38 @@ export default function Gallery() {
           >
             ×
           </button>
+
+          {filteredPhotos.length > 1 && (
+            <>
+              <button
+                type="button"
+                className="gallery-lightbox-nav prev"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const idx = filteredPhotos.findIndex((p) => p.id === selectedPhoto.id);
+                  const prevIdx = idx > 0 ? idx - 1 : filteredPhotos.length - 1;
+                  setSelectedPhoto(filteredPhotos[prevIdx]);
+                }}
+                aria-label={t.prevImage}
+              >
+                <ChevronLeft size={28} />
+              </button>
+
+              <button
+                type="button"
+                className="gallery-lightbox-nav next"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const idx = filteredPhotos.findIndex((p) => p.id === selectedPhoto.id);
+                  const nextIdx = idx < filteredPhotos.length - 1 ? idx + 1 : 0;
+                  setSelectedPhoto(filteredPhotos[nextIdx]);
+                }}
+                aria-label={t.nextImage}
+              >
+                <ChevronRight size={28} />
+              </button>
+            </>
+          )}
 
           <div
             className="gallery-lightbox-content"
