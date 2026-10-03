@@ -68,6 +68,7 @@ async function sendEmail(params: {
 
 export async function POST(request: Request) {
   let uploadedReceiptPath: string | null = null;
+  let savedRequest: { id: string } | null = null;
 
   try {
     // 1. Read form data
@@ -173,7 +174,7 @@ export async function POST(request: Request) {
     }
 
     // 9. Insert prayer request into Supabase database
-    const { data: savedRequest, error: insertError } =
+    const { data: insertedRequest, error: insertError } =
       await supabaseAdmin
         .from("prayer_requests")
         .insert({
@@ -204,6 +205,8 @@ export async function POST(request: Request) {
       );
     }
 
+    savedRequest = insertedRequest;
+
     // 10. Prepare email
     const subject = `New Prayer Request — ${name} — ₹${amount}`;
 
@@ -231,31 +234,40 @@ export async function POST(request: Request) {
 
       <p>
         <strong>Database Request ID:</strong>
-        ${savedRequest.id}
+        ${insertedRequest.id}
       </p>
     `;
 
-    // 11. Email recipients
-    const recipients = [
-      required("PRAYER_NOTIFICATION_EMAIL_1"),
-      required("PRAYER_NOTIFICATION_EMAIL_2"),
-    ];
+    // 11. Send email notification (non-blocking for saved database & storage records)
+    let emailSent = true;
+    try {
+      const recipients = [
+        required("PRAYER_NOTIFICATION_EMAIL_1"),
+        required("PRAYER_NOTIFICATION_EMAIL_2"),
+      ];
 
-    // 12. Send email notification
-    await sendEmail({
-      recipients,
-      subject,
-      html,
-      filename: receipt.name,
-      content: receiptBase64,
-      contentType:
-        receipt.type || "application/octet-stream",
-    });
+      await sendEmail({
+        recipients,
+        subject,
+        html,
+        filename: receipt.name,
+        content: receiptBase64,
+        contentType:
+          receipt.type || "application/octet-stream",
+      });
+    } catch (emailError) {
+      emailSent = false;
+      console.error(
+        "Prayer request saved successfully, but notification email failed:",
+        emailError
+      );
+    }
 
-    // 13. Return success
+    // 12. Return success
     return NextResponse.json({
       success: true,
-      requestId: savedRequest.id,
+      requestId: insertedRequest.id,
+      emailSent,
     });
   } catch (error) {
     console.error(
@@ -263,8 +275,8 @@ export async function POST(request: Request) {
       error
     );
 
-    // Remove uploaded receipt if a later operation fails
-    if (uploadedReceiptPath) {
+    // Remove uploaded receipt ONLY if the database insertion failed before being saved
+    if (uploadedReceiptPath && !savedRequest) {
       try {
         const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
         const serviceRoleKey =

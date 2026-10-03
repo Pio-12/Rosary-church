@@ -79,33 +79,45 @@ export async function POST(request: Request) {
 
     // 6. Read the receipt path
     const body = await request.json();
-    const path = body?.path;
+    const rawPath = body?.path;
 
-    if (typeof path !== "string" || !path.trim()) {
+    if (typeof rawPath !== "string" || !rawPath.trim()) {
       return NextResponse.json(
         { error: "Invalid receipt path." },
         { status: 400 }
       );
     }
 
-    // 7. Create a temporary signed URL
+    const cleanPath = rawPath.trim();
+    const bucket = cleanPath.startsWith("donations/")
+      ? "donation-receipts"
+      : "prayer-receipts";
+
+    // 7. Create a temporary signed URL (valid for 15 minutes)
     const {
       data,
       error: signedUrlError,
     } = await admin.storage
-      .from("prayer-receipts")
-      .createSignedUrl(path.trim(), 300);
+      .from(bucket)
+      .createSignedUrl(cleanPath, 900);
 
     if (signedUrlError || !data?.signedUrl) {
       console.error("Signed URL error:", signedUrlError);
 
+      const errMessage = signedUrlError?.message || "";
+      const isNotFound =
+        errMessage.toLowerCase().includes("not found") ||
+        (signedUrlError as { statusCode?: string; code?: string })?.statusCode === "404" ||
+        (signedUrlError as { statusCode?: string; code?: string })?.code === "NoSuchKey";
+
       return NextResponse.json(
         {
-          error:
-            signedUrlError?.message ||
-            "Unable to create receipt URL.",
+          error: isNotFound
+            ? "Receipt image file was not found in storage."
+            : errMessage || "Unable to create receipt URL.",
+          code: isNotFound ? "NOT_FOUND" : "STORAGE_ERROR",
         },
-        { status: 500 }
+        { status: isNotFound ? 404 : 500 }
       );
     }
 

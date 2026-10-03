@@ -15,6 +15,9 @@ import {
   Copy,
   Check,
   CalendarDays,
+  X,
+  ExternalLink,
+  Download,
 } from "lucide-react";
 import { supabaseBrowser } from "@/lib/supabase/browser";
 
@@ -31,6 +34,14 @@ export type PrayerRequest = {
   amount: number;
   receipt_path: string | null;
   status: "new" | "reviewed" | "completed" | "rejected";
+};
+
+export type ReceiptModalData = {
+  isOpen: boolean;
+  loading: boolean;
+  request: PrayerRequest | null;
+  signedUrl: string | null;
+  error: string | null;
 };
 
 export type DateFilterType =
@@ -137,6 +148,36 @@ export default function AdminDashboard() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
 
+  // In-app Receipt Lightbox Modal state
+  const [receiptModal, setReceiptModal] = useState<ReceiptModalData>({
+    isOpen: false,
+    loading: false,
+    request: null,
+    signedUrl: null,
+    error: null,
+  });
+  const [loadingReceiptId, setLoadingReceiptId] = useState<string | null>(null);
+
+  // Close receipt modal on Escape and prevent body scrolling while modal is open
+  useEffect(() => {
+    if (!receiptModal.isOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        closeReceiptModal();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [receiptModal.isOpen]);
+
   async function loadRequests(isManualRefresh = false) {
     if (isManualRefresh) setRefreshing(true);
     else setLoading(true);
@@ -200,32 +241,70 @@ export default function AdminDashboard() {
     }
   }
 
-  async function openReceipt(path: string | null) {
-    if (!path) return;
+  async function openReceiptModal(req: PrayerRequest) {
+    if (!req.receipt_path) return;
 
-    const { data: sessionData } = await supabaseBrowser.auth.getSession();
-    const accessToken = sessionData.session?.access_token;
-    if (!accessToken) {
-      router.replace("/admin/login");
-      return;
-    }
-
-    const response = await fetch("/api/admin/receipt-url", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({ path }),
+    setLoadingReceiptId(req.id);
+    setReceiptModal({
+      isOpen: true,
+      loading: true,
+      request: req,
+      signedUrl: null,
+      error: null,
     });
 
-    const result = await response.json();
-    if (!response.ok) {
-      setError(result.error || "Unable to open receipt.");
-      return;
-    }
+    try {
+      const { data: sessionData } = await supabaseBrowser.auth.getSession();
+      const accessToken = sessionData.session?.access_token;
+      if (!accessToken) {
+        router.replace("/admin/login");
+        return;
+      }
 
-    window.open(result.url, "_blank", "noopener,noreferrer");
+      const response = await fetch("/api/admin/receipt-url", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ path: req.receipt_path }),
+      });
+
+      const result = await response.json();
+      if (!response.ok) {
+        setReceiptModal((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            result.error ||
+            "Receipt image file could not be loaded from storage.",
+        }));
+      } else {
+        setReceiptModal((prev) => ({
+          ...prev,
+          loading: false,
+          signedUrl: result.url,
+        }));
+      }
+    } catch {
+      setReceiptModal((prev) => ({
+        ...prev,
+        loading: false,
+        error: "Network error occurred while fetching the receipt URL.",
+      }));
+    } finally {
+      setLoadingReceiptId(null);
+    }
+  }
+
+  function closeReceiptModal() {
+    setReceiptModal({
+      isOpen: false,
+      loading: false,
+      request: null,
+      signedUrl: null,
+      error: null,
+    });
   }
 
   function handleCopy(text: string, id: string) {
@@ -783,14 +862,24 @@ export default function AdminDashboard() {
                     <div className="card-footer-row">
                       <button
                         type="button"
-                        disabled={!request.receipt_path}
-                        onClick={() => openReceipt(request.receipt_path)}
-                        className={`receipt-btn ${!request.receipt_path ? "disabled" : ""}`}
-                        title={request.receipt_path ? "View uploaded receipt screenshot" : "No receipt attached"}
+                        disabled={!request.receipt_path || loadingReceiptId === request.id}
+                        onClick={() => openReceiptModal(request)}
+                        className={`receipt-btn ${!request.receipt_path ? "disabled" : ""} ${loadingReceiptId === request.id ? "loading" : ""}`}
+                        title={
+                          request.receipt_path
+                            ? "View uploaded receipt screenshot"
+                            : "No receipt attached"
+                        }
                       >
-                        <FileText size={15} />
+                        {loadingReceiptId === request.id ? (
+                          <RefreshCw size={15} className="admin-spin" aria-hidden="true" />
+                        ) : (
+                          <FileText size={15} aria-hidden="true" />
+                        )}
                         <span>
-                          {request.receipt_path
+                          {loadingReceiptId === request.id
+                            ? "Opening receipt..."
+                            : request.receipt_path
                             ? "View payment receipt screenshot"
                             : "No receipt uploaded"}
                         </span>
@@ -803,6 +892,157 @@ export default function AdminDashboard() {
           )}
         </section>
       </div>
+
+      {/* ================= RECEIPT VIEWER LIGHTBOX MODAL ================= */}
+      {receiptModal.isOpen && (
+        <div
+          className="receipt-modal-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="receipt-modal-title"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) closeReceiptModal();
+          }}
+        >
+          <div className="receipt-modal-dialog">
+            {/* Modal Header */}
+            <div className="receipt-modal-header">
+              <div className="receipt-modal-header-info">
+                <span className="receipt-modal-eyebrow">Payment Receipt Screenshot</span>
+                <h2 id="receipt-modal-title" className="receipt-modal-title">
+                  {receiptModal.request?.name}
+                </h2>
+                <div className="receipt-modal-meta">
+                  <span className="modal-amount-badge">₹{receiptModal.request?.amount}</span>
+                  <span className="modal-intention-type">
+                    {receiptModal.request?.intention_type || "General Intention"}
+                  </span>
+                  {receiptModal.request?.payment_ref && (
+                    <span className="modal-ref-tag">
+                      Ref: <code>{receiptModal.request.payment_ref}</code>
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={closeReceiptModal}
+                className="receipt-modal-close-btn"
+                aria-label="Close receipt modal"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Modal Content Body */}
+            <div className="receipt-modal-body">
+              {receiptModal.loading ? (
+                <div className="receipt-modal-loading">
+                  <RefreshCw size={36} className="admin-spin admin-spin-icon" />
+                  <p>Generating secure receipt view...</p>
+                </div>
+              ) : receiptModal.error ? (
+                <div className="receipt-modal-error">
+                  <AlertCircle size={42} className="modal-error-icon" />
+                  <h3>Receipt Unavailable</h3>
+                  <p>{receiptModal.error}</p>
+                  <div className="receipt-error-details">
+                    <p>
+                      <strong>Requester:</strong> {receiptModal.request?.name} ({receiptModal.request?.email})
+                    </p>
+                    {receiptModal.request?.phone && (
+                      <p>
+                        <strong>Phone:</strong> {receiptModal.request.phone}
+                      </p>
+                    )}
+                    {receiptModal.request?.payment_ref ? (
+                      <p>
+                        <strong>UPI / Transaction Reference:</strong>{" "}
+                        <code>{receiptModal.request.payment_ref}</code>
+                      </p>
+                    ) : (
+                      <p>
+                        <strong>UPI Reference:</strong> <span className="text-muted">Not provided</span>
+                      </p>
+                    )}
+                    <p>
+                      <strong>Scheduled Prayer:</strong>{" "}
+                      {new Date(receiptModal.request?.prayer_date_time || "").toLocaleString("en-IN", {
+                        dateStyle: "medium",
+                        timeStyle: "short",
+                      })}
+                    </p>
+                  </div>
+                </div>
+              ) : receiptModal.signedUrl ? (
+                <div className="receipt-image-container">
+                  <img
+                    src={receiptModal.signedUrl}
+                    alt={`Payment receipt for ${receiptModal.request?.name}`}
+                    className="receipt-modal-img"
+                  />
+                </div>
+              ) : null}
+            </div>
+
+            {/* Modal Footer Controls */}
+            {receiptModal.signedUrl && (
+              <div className="receipt-modal-footer">
+                {receiptModal.request?.payment_ref && (
+                  <button
+                    type="button"
+                    onClick={() => handleCopy(receiptModal.request!.payment_ref!, "modal-ref")}
+                    className="admin-btn admin-btn-small"
+                    title="Copy payment reference"
+                  >
+                    {copiedId === "modal-ref" ? (
+                      <>
+                        <Check size={14} className="copied-icon" />
+                        <span>Copied Ref</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy size={14} />
+                        <span>Copy Ref</span>
+                      </>
+                    )}
+                  </button>
+                )}
+
+                <a
+                  href={receiptModal.signedUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="admin-btn admin-btn-secondary"
+                  title="Open receipt in a new tab"
+                >
+                  <ExternalLink size={15} />
+                  <span>Open in New Tab</span>
+                </a>
+
+                <a
+                  href={receiptModal.signedUrl}
+                  download={`receipt-${receiptModal.request?.name?.replace(/\s+/g, "_") || "payment"}.jpg`}
+                  className="admin-btn admin-btn-primary"
+                  title="Download receipt image"
+                >
+                  <Download size={15} />
+                  <span>Download</span>
+                </a>
+
+                <button
+                  type="button"
+                  onClick={closeReceiptModal}
+                  className="admin-btn admin-btn-secondary"
+                >
+                  Close
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* ================= COMPONENT STYLING ================= */}
       <style jsx>{`
@@ -1554,11 +1794,240 @@ export default function AdminDashboard() {
           border-color: #07516b;
         }
 
+        .receipt-btn.loading {
+          background: #f0f6f8;
+          color: #07516b;
+          cursor: wait;
+        }
+
         .receipt-btn.disabled {
           opacity: 0.5;
           cursor: not-allowed;
           color: #94a3b8;
           border-color: #e2e8f0;
+        }
+
+        /* ================= RECEIPT VIEWER LIGHTBOX MODAL ================= */
+        .receipt-modal-overlay {
+          position: fixed;
+          inset: 0;
+          z-index: 9999;
+          background: rgba(8, 28, 36, 0.78);
+          backdrop-filter: blur(6px);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 16px;
+          animation: modalFadeIn 0.2s ease-out;
+        }
+
+        .receipt-modal-dialog {
+          background: #ffffff;
+          border-radius: 18px;
+          box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.4);
+          max-width: 680px;
+          width: 100%;
+          max-height: 90vh;
+          display: flex;
+          flex-direction: column;
+          overflow: hidden;
+          border: 1px solid #d4e2e6;
+          animation: modalScaleUp 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes modalFadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+
+        @keyframes modalScaleUp {
+          from { transform: scale(0.95); opacity: 0; }
+          to { transform: scale(1); opacity: 1; }
+        }
+
+        .receipt-modal-header {
+          padding: 18px 22px;
+          background: #07516b;
+          color: #ffffff;
+          display: flex;
+          align-items: flex-start;
+          justify-content: space-between;
+          gap: 16px;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .receipt-modal-header-info {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+
+        .receipt-modal-eyebrow {
+          font-size: 11px;
+          text-transform: uppercase;
+          letter-spacing: 0.08em;
+          color: #f7d070;
+          font-weight: 700;
+        }
+
+        .receipt-modal-title {
+          font-size: 18px;
+          font-weight: 700;
+          color: #ffffff;
+          margin: 0;
+        }
+
+        .receipt-modal-meta {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          flex-wrap: wrap;
+          margin-top: 4px;
+        }
+
+        .modal-amount-badge {
+          background: #d4a329;
+          color: #0b2228;
+          font-size: 12px;
+          font-weight: 700;
+          padding: 2px 8px;
+          border-radius: 6px;
+        }
+
+        .modal-intention-type {
+          font-size: 12px;
+          color: #e2f0f4;
+        }
+
+        .modal-ref-tag {
+          font-size: 11.5px;
+          color: #cbdde3;
+        }
+
+        .modal-ref-tag code {
+          background: rgba(0, 0, 0, 0.25);
+          padding: 1px 6px;
+          border-radius: 4px;
+          color: #ffffff;
+          font-family: monospace;
+        }
+
+        .receipt-modal-close-btn {
+          background: rgba(255, 255, 255, 0.15);
+          border: none;
+          color: #ffffff;
+          width: 34px;
+          height: 34px;
+          border-radius: 8px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: background 0.15s ease;
+          flex-shrink: 0;
+        }
+
+        .receipt-modal-close-btn:hover {
+          background: rgba(255, 255, 255, 0.3);
+        }
+
+        .receipt-modal-body {
+          flex: 1;
+          overflow-y: auto;
+          padding: 20px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          background: #f8fafc;
+          min-height: 280px;
+        }
+
+        .receipt-modal-loading {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 12px;
+          color: #07516b;
+          font-size: 14px;
+          font-weight: 500;
+          padding: 40px 20px;
+        }
+
+        .receipt-modal-error {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+          padding: 24px 16px;
+          color: #1e293b;
+        }
+
+        .modal-error-icon {
+          color: #dc2626;
+          margin-bottom: 12px;
+        }
+
+        .receipt-modal-error h3 {
+          font-size: 17px;
+          font-weight: 700;
+          margin: 0 0 6px 0;
+          color: #b91c1c;
+        }
+
+        .receipt-modal-error p {
+          font-size: 13.5px;
+          color: #475569;
+          margin: 0 0 16px 0;
+          max-width: 480px;
+        }
+
+        .receipt-error-details {
+          background: #ffffff;
+          border: 1px solid #e2e8f0;
+          border-radius: 10px;
+          padding: 14px 18px;
+          font-size: 12.5px;
+          text-align: left;
+          width: 100%;
+          max-width: 440px;
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+
+        .receipt-error-details p {
+          margin: 0;
+          color: #334155;
+        }
+
+        .receipt-image-container {
+          max-width: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          border-radius: 10px;
+          overflow: hidden;
+          background: #0f172a;
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+        }
+
+        .receipt-modal-img {
+          max-width: 100%;
+          max-height: 58vh;
+          object-fit: contain;
+          display: block;
+        }
+
+        .receipt-modal-footer {
+          padding: 14px 20px;
+          background: #ffffff;
+          border-top: 1px solid #e2e8f0;
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          gap: 10px;
+          flex-wrap: wrap;
         }
 
         @keyframes spin {
